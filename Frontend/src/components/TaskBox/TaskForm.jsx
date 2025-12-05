@@ -85,6 +85,9 @@ function TaskForm() {
         <div className = 'middle-row'>
 
           {/* (WIP) Date */}
+          <button type = 'button'>
+            Date
+          </button>
 
           {/* Priority */}
           <select
@@ -126,10 +129,6 @@ function TaskForm() {
             Add task
           </button>
         </div>
-        
-
-
-
        
 
       </form>
