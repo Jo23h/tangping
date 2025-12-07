@@ -20,17 +20,19 @@ function TaskForm() {
       }));
     };
 
+    const [manualPriority, setManualPriority] = useState(false)
+
     const handleSubmit = (event) => {
         event.preventDefault();
         if (newTask.taskName.trim()){
-          const assignTaskId = {
+          const addNewTaskWithId = {
             ...newTask, 
             id: uuidv4(),
             createdAt: new Date().toISOString()
           };
         };
 
-        setTasks([...tasks, assignTaskId]); 
+        setTasks([...tasks, addNewTaskWithId]); 
 
         setNewTask({
           taskName: '',
