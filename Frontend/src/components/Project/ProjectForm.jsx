@@ -8,13 +8,31 @@ function ProjectForm() {
   const [projectData, setProjectData] = useState({
     goalstate: '',
     currentstate: '',
-    keyobstacles: ''
+    keyobstacles: []
   });
 
   const handleChange = (event) => {
     const {name, value} = event.target;
     setProjectData(input => ({
       ...input, [name]: value
+    }));
+  };
+
+  const [currentObstacle, setCurrentObstacle] = useState('');
+
+  const handleAddObstacle = () => {
+    if (currentObstacle.trim()){
+      setProjectData(input => ({
+        ...input, keyobstacles: [...input.keyobstacles, currentObstacle]
+      }));
+      setCurrentObstacle('');
+    };
+  };
+
+  const handleRemoveObstacle = (index) => {
+    setProjectData(prev => ({
+      ...prev,
+      keyobstacles: prev.keyobstacles.filter((_, i) => i !== index)
     }));
   };
 
@@ -33,8 +51,9 @@ function ProjectForm() {
       setProjectData({
         goalstate: '',
         currentstate: '',
-        keyobstacles: ''
+        keyobstacles: []
       });
+      setCurrentObstacle('');
     }
   }
 
@@ -42,8 +61,9 @@ function ProjectForm() {
     setProjectData({
       goalstate: '',
       currentstate: '',
-      keyobstacles: ''
+      keyobstacles: []
     });
+    setCurrentObstacle('');
   };
 
 
@@ -78,14 +98,45 @@ function ProjectForm() {
 
         {/* Key obstacles */}
         <div>
-            <label htmlFor ='key-obstacles'>Key obstacles</label>
-            <input
-              type = 'text'
-              id = 'keyobstacles'
-              name = 'keyobstacles'
-              value = {projectData.keyobstacles}
-              onChange = {handleChange}
-            />
+            <label htmlFor='key-obstacles'>Key obstacles</label>
+            <div>
+              <input
+                type='text'
+                id='keyobstacles'
+                name='keyobstacles'
+                value={currentObstacle}
+                onChange={(e) => setCurrentObstacle(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddObstacle();
+                  }
+                }}
+              />
+              <button
+                type='button'
+                onClick={handleAddObstacle}
+              >
+                Add Obstacle
+              </button>
+            </div>
+
+            {/* Display added obstacles */}
+            {projectData.keyobstacles.length > 0 && (
+              <ul>
+                {projectData.keyobstacles.map((obstacle, index) => (
+                  <li key={index}>
+                    {obstacle}
+                    <button
+                      type='button'
+                      onClick={() => handleRemoveObstacle(index)}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
         </div>
 
         {/* Cancel and submit button */}
@@ -116,7 +167,18 @@ function ProjectForm() {
               <li key={project.id}>
                 <p><strong>Goal State:</strong> {project.goalstate}</p>
                 <p><strong>Current State:</strong> {project.currentstate}</p>
-                <p><strong>Key Obstacles:</strong> {project.keyobstacles}</p>
+                <div>
+                  <strong>Key Obstacles:</strong>
+                  {project.keyobstacles.length > 0 ? (
+                    <ul>
+                      {project.keyobstacles.map((obstacle, index) => (
+                        <li key={index}>{obstacle}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No obstacles listed</p>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
