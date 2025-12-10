@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import './ProjectForm.css';
+import TextSection from './TextSection';
 
 function ProjectForm() {
   const [projects, setProjects] = useState([]);
@@ -12,24 +13,28 @@ function ProjectForm() {
   });
 
   const [projectTitle, setProjectTitle] = useState('New Project');
-  const [projectContent, setProjectContent] = useState('');
+  const [goalStateContent, setGoalStateContent] = useState('');
+  const [currentStateContent, setCurrentStateContent] = useState('');
 
   const handleCreateNewProject = () => {
     const newProject = {
       id: uuidv4(),
       name: 'New Project',
-      content: ''
+      goalState: '',
+      currentState: ''
     };
     setProjects([...projects, newProject]);
     setSelectedProject(newProject);
     setProjectTitle('New Project');
-    setProjectContent('');
+    setGoalStateContent('');
+    setCurrentStateContent('');
   };
 
   const handleSelectProject = (project) => {
     setSelectedProject(project);
     setProjectTitle(project.name);
-    setProjectContent(project.content || '');
+    setGoalStateContent(project.goalState || '');
+    setCurrentStateContent(project.currentState || '');
   };
 
   return (
@@ -56,12 +61,18 @@ function ProjectForm() {
             className='project-form-title-input'
           />
 
-          {/* Free-form content area */}
-          <textarea
-            value={projectContent}
-            onChange={(e) => setProjectContent(e.target.value)}
-            placeholder='Start typing...'
-            className='project-form-content-textarea'
+          {/* Goal state section - child component */}
+          <TextSection
+            title='Goal state'
+            content={goalStateContent}
+            onContentChange={setGoalStateContent}
+          />
+
+          {/* Current state section - child component */}
+          <TextSection
+            title='Current state'
+            content={currentStateContent}
+            onContentChange={setCurrentStateContent}
           />
         </div>
       </div>
