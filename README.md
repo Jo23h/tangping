@@ -11,8 +11,12 @@ Productivity apps such as Todoist and TickTick are focused around completing tas
 The problem statement: there is no app that encourages deliberate practice, a form of meaningful growth.
 
 ### What is 躺平
+躺平 in its literal translation means to "lie down". Figuratively, 躺平 is about finding peace/value in small things,  choosing your value system rather than letting the (societal) system define your worth. 
+
 躺平 is designed around three fundamental principles: 
 - Induce reflection during and post task/activity/action 
 - #rightproblem and #gapanalysis 
 - Promote filfullment through meaningful growth (or deliberate pratice)
 
+### Next steps
+Create a "Memo" tab that includes 5 min articles sharing key insights that I've found helpful such as increasing motivation through dopamine management. 

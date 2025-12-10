@@ -1,191 +1,72 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import './ProjectForm.css';
 
 function ProjectForm() {
-
   const [projects, setProjects] = useState([]);
 
-  const [projectData, setProjectData] = useState({
-    goalstate: '',
-    currentstate: '',
-    keyobstacles: []
+  const [selectedProject, setSelectedProject] = useState({
+    id: 'new',
+    name: 'New Project',
+    content: ''
   });
 
-  const handleChange = (event) => {
-    const {name, value} = event.target;
-    setProjectData(input => ({
-      ...input, [name]: value
-    }));
-  };
+  const [projectTitle, setProjectTitle] = useState('New Project');
+  const [projectContent, setProjectContent] = useState('');
 
-  const [currentObstacle, setCurrentObstacle] = useState('');
-
-  const handleAddObstacle = () => {
-    if (currentObstacle.trim()){
-      setProjectData(input => ({
-        ...input, keyobstacles: [...input.keyobstacles, currentObstacle]
-      }));
-      setCurrentObstacle('');
+  const handleCreateNewProject = () => {
+    const newProject = {
+      id: uuidv4(),
+      name: 'New Project',
+      content: ''
     };
+    setProjects([...projects, newProject]);
+    setSelectedProject(newProject);
+    setProjectTitle('New Project');
+    setProjectContent('');
   };
 
-  const handleRemoveObstacle = (index) => {
-    setProjectData(prev => ({
-      ...prev,
-      keyobstacles: prev.keyobstacles.filter((_, i) => i !== index)
-    }));
+  const handleSelectProject = (project) => {
+    setSelectedProject(project);
+    setProjectTitle(project.name);
+    setProjectContent(project.content || '');
   };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (projectData.goalstate.trim()) {
-      const newProject = {
-        ...projectData,
-        id: uuidv4(),
-        createdAt: new Date().toISOString()
-      };
-
-      setProjects([...projects, newProject]);
-
-      setProjectData({
-        goalstate: '',
-        currentstate: '',
-        keyobstacles: []
-      });
-      setCurrentObstacle('');
-    }
-  }
-
-  const handleCancel = () => {
-    setProjectData({
-      goalstate: '',
-      currentstate: '',
-      keyobstacles: []
-    });
-    setCurrentObstacle('');
-  };
-
 
   return (
-    <div>
-      <form onSubmit = {handleSubmit}>
-
-        {/* Goal state */}
-        <div>
-            <label htmlFor ='goal-state'>Goal state</label>
-            <input
-              type = 'text'
-              id = 'goalstate'
-              name = 'goalstate'
-              value = {projectData.goalstate}
-              onChange = {handleChange}
-              required
-            />
+    <div className='project-form-container'>
+      {/* Main content area */}
+      <div className='project-form-main'>
+        {/* Top bar */}
+        <div className='project-form-topbar'>
+          <div className='project-form-topbar-title'>
+            {projectTitle}
+          </div>
+          <div className='project-form-topbar-menu'>
+            <span className='project-form-menu-icon'>⋯</span>
+          </div>
         </div>
 
-        {/* Current state */}
-        <div>
-            <label htmlFor ='current-state'>Current state</label>
-            <input
-              type = 'text'
-              id = 'currentstate'
-              name = 'currentstate'
-              value = {projectData.currentstate}
-              onChange = {handleChange}
-            />
+        {/* Content area */}
+        <div className='project-form-content'>
+          {/* Project title - editable */}
+          <input
+            type='text'
+            value={projectTitle}
+            onChange={(e) => setProjectTitle(e.target.value)}
+            className='project-form-title-input'
+          />
+
+          {/* Free-form content area */}
+          <textarea
+            value={projectContent}
+            onChange={(e) => setProjectContent(e.target.value)}
+            placeholder='Start typing...'
+            className='project-form-content-textarea'
+          />
         </div>
-
-        {/* Key obstacles */}
-        <div>
-            <label htmlFor='key-obstacles'>Key obstacles</label>
-            <div>
-              <input
-                type='text'
-                id='keyobstacles'
-                name='keyobstacles'
-                value={currentObstacle}
-                onChange={(e) => setCurrentObstacle(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAddObstacle();
-                  }
-                }}
-              />
-              <button
-                type='button'
-                onClick={handleAddObstacle}
-              >
-                Add Obstacle
-              </button>
-            </div>
-
-            {/* Display added obstacles */}
-            {projectData.keyobstacles.length > 0 && (
-              <ul>
-                {projectData.keyobstacles.map((obstacle, index) => (
-                  <li key={index}>
-                    {obstacle}
-                    <button
-                      type='button'
-                      onClick={() => handleRemoveObstacle(index)}
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-        </div>
-
-        {/* Cancel and submit button */}
-        <button
-          type = 'button'
-          onClick = {handleCancel}
-        >
-          Cancel
-        </button>
-
-        <button
-          type = 'submit'
-          onClick = {handleSubmit}
-        >
-          Submit
-        </button>
-
-      </form>
-
-      {/* Display submitted projects */}
-      <div className='projects-list'>
-        <h2>Created Projects</h2>
-        {projects.length === 0 ? (
-          <p>No projects created yet.</p>
-        ) : (
-          <ul>
-            {projects.map((project) => (
-              <li key={project.id}>
-                <p><strong>Goal State:</strong> {project.goalstate}</p>
-                <p><strong>Current State:</strong> {project.currentstate}</p>
-                <div>
-                  <strong>Key Obstacles:</strong>
-                  {project.keyobstacles.length > 0 ? (
-                    <ul>
-                      {project.keyobstacles.map((obstacle, index) => (
-                        <li key={index}>{obstacle}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>No obstacles listed</p>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
     </div>
-  )
+  );
 }
 
-export default ProjectForm
+export default ProjectForm;
