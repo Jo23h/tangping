@@ -10,6 +10,7 @@ function TaskInput() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showOtherOptions, setShowOtherOptions] = useState(false);
   const [dueDate, setDueDate] = useState('');
+  const [priority, setPriority] = useState('none');
   const [tasks, setTasks] = useState([]);
 
   const handleKeyDown = (e) => {
@@ -20,13 +21,19 @@ function TaskInput() {
         id: uuidv4(),
         text: taskText,
         dueDate: dueDate,
+        priority: priority,
         completed: false
       };
       setTasks([...tasks, newTask]);
       setTaskText('');
       setDueDate('');
+      setPriority('none');
       setShowDatePicker(false);
     }
+  };
+
+  const handlePrioritySelect = (selectedPriority) => {
+    setPriority(selectedPriority);
   };
 
   const handleDateSelect = (date) => {
@@ -46,8 +53,76 @@ function TaskInput() {
     setTasks(updatedTasks);
   };
 
+  // Format date for display
+  const formatDueDate = (dateString) => {
+    if (!dateString) return null;
+
+    const dueDate = new Date(dateString);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+
+    const diffTime = dueDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    let displayText = '';
+    let isOverdue = false;
+
+    if (diffDays < -1) {
+      // More than 1 day overdue - show date like "Dec 9"
+      displayText = `${monthNames[dueDate.getMonth()]} ${dueDate.getDate()}`;
+      isOverdue = true;
+    } else if (diffDays === -1) {
+      // Yesterday
+      displayText = 'Yesterday';
+      isOverdue = true;
+    } else if (diffDays === 0) {
+      // Today
+      displayText = 'Today';
+      isOverdue = false;
+    } else if (diffDays === 1) {
+      // Tomorrow
+      displayText = 'Tomorrow';
+      isOverdue = false;
+    } else if (diffDays <= 6) {
+      // Within next week - show day name like "Next Wed"
+      displayText = `Next ${dayNames[dueDate.getDay()]}`;
+      isOverdue = false;
+    } else {
+      // Further in future - show date like "Dec 18"
+      displayText = `${monthNames[dueDate.getMonth()]} ${dueDate.getDate()}`;
+      isOverdue = false;
+    }
+
+    return { displayText, isOverdue };
+  };
+
+  // Sort tasks by date, then by priority
+  const sortTasks = (tasksToSort) => {
+    return [...tasksToSort].sort((a, b) => {
+      // First, sort by date
+      const dateA = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+      const dateB = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+
+      if (dateA !== dateB) {
+        return dateA - dateB; // Earlier dates first
+      }
+
+      // If dates are the same, sort by priority
+      const priorityOrder = { high: 1, medium: 2, low: 3, none: 4 };
+      const priorityA = priorityOrder[a.priority] || 4;
+      const priorityB = priorityOrder[b.priority] || 4;
+
+      return priorityA - priorityB; // Higher priority first
+    });
+  };
+
   // Use the filter logic from TaskFilterLogic
-  const filteredTasks = filterTasks(tasks, activeFilter);
+  const filteredTasks = sortTasks(filterTasks(tasks, activeFilter));
 
   return (
     <div className='task-input-section'>
@@ -86,7 +161,7 @@ function TaskInput() {
             {showOtherOptions && (
               <TaskOtherOptions
                 onClose={() => setShowOtherOptions(false)}
-                onPrioritySelect={(priority) => console.log('Priority:', priority)}
+                onPrioritySelect={handlePrioritySelect}
               />
             )}
           </div>
@@ -125,14 +200,14 @@ function TaskInput() {
               onChange={() => handleToggleTask(task.id)}
               className='task-checkbox'
             />
-            <div className='task-content'>
-              <span className={`task-text ${task.completed ? 'task-completed' : ''}`}>
-                {task.text}
+            <span className={`task-text ${task.completed ? 'task-completed' : ''}`}>
+              {task.text}
+            </span>
+            {task.dueDate && formatDueDate(task.dueDate) && (
+              <span className={`task-due-date ${formatDueDate(task.dueDate).isOverdue ? 'overdue' : ''}`}>
+                {formatDueDate(task.dueDate).displayText}
               </span>
-              {task.dueDate && (
-                <span className='task-due-date'>📅 {task.dueDate}</span>
-              )}
-            </div>
+            )}
             <button
               onClick={() => handleDeleteTask(task.id)}
               className='task-delete-btn'
