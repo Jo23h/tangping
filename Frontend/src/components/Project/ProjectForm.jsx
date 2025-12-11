@@ -9,30 +9,45 @@ import MemoSection from '../MemoSection/MemoSection';
 
 function ProjectForm() {
   const [projects, setProjects] = useState([]);
-
-  const [selectedProject, setSelectedProject] = useState({
-    id: 'new',
-    name: 'New Project',
-    content: ''
-  });
-
-  const [projectTitle, setProjectTitle] = useState('New Project');
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [projectTitle, setProjectTitle] = useState('Inbox');
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleCreateNewProject = () => {
+  const handleCreateNewProject = (projectName) => {
     const newProject = {
       id: uuidv4(),
-      name: 'New Project',
+      name: projectName || 'New Project',
       tasks: []
     };
     setProjects([...projects, newProject]);
     setSelectedProject(newProject);
-    setProjectTitle('New Project');
+    setProjectTitle(newProject.name);
   };
 
   const handleSelectProject = (project) => {
     setSelectedProject(project);
     setProjectTitle(project.name);
+  };
+
+  const handleProjectTitleChange = (newTitle) => {
+    setProjectTitle(newTitle);
+    if (selectedProject) {
+      const updatedProjects = projects.map(p =>
+        p.id === selectedProject.id ? { ...p, name: newTitle } : p
+      );
+      setProjects(updatedProjects);
+      setSelectedProject({ ...selectedProject, name: newTitle });
+    }
+  };
+
+  const handleDeleteProject = (projectId) => {
+    const updatedProjects = projects.filter(p => p.id !== projectId);
+    setProjects(updatedProjects);
+    // If the deleted project was selected, clear selection (go to Inbox)
+    if (selectedProject?.id === projectId) {
+      setSelectedProject(null);
+      setProjectTitle('Inbox');
+    }
   };
 
   const handleItemClick = (item) => {
@@ -55,7 +70,13 @@ function ProjectForm() {
   return (
     <div className='project-form-container'>
       {/* Navbar - left sidebar */}
-      <Navbar />
+      <Navbar
+        projects={projects}
+        selectedProject={selectedProject}
+        onCreateProject={handleCreateNewProject}
+        onSelectProject={handleSelectProject}
+        onDeleteProject={handleDeleteProject}
+      />
 
       {/* Main content area */}
       <div className='project-form-main'>
@@ -66,8 +87,9 @@ function ProjectForm() {
             <input
               type='text'
               value={projectTitle}
-              onChange={(e) => setProjectTitle(e.target.value)}
+              onChange={(e) => handleProjectTitleChange(e.target.value)}
               className='project-form-title-input'
+              readOnly={!selectedProject}
             />
             <span className='project-form-menu-icon'>⋯</span>
           </div>

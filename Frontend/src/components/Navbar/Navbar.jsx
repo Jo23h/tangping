@@ -1,8 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './Navbar.css';
 
-function Navbar() {
+function Navbar({ projects, selectedProject, onCreateProject, onSelectProject, onDeleteProject }) {
   const [selectedItem, setSelectedItem] = useState('inbox');
+  const [isAddingProject, setIsAddingProject] = useState(false);
+  const [newProjectName, setNewProjectName] = useState('');
+
+  const handleAddProject = (e) => {
+    e.stopPropagation();
+    setIsAddingProject(true);
+  };
+
+  const handleProjectNameSubmit = (e) => {
+    if (e.key === 'Enter' && newProjectName.trim()) {
+      onCreateProject(newProjectName.trim());
+      setNewProjectName('');
+      setIsAddingProject(false);
+    } else if (e.key === 'Escape') {
+      setNewProjectName('');
+      setIsAddingProject(false);
+    }
+  };
+
+  const handleProjectNameBlur = () => {
+    if (newProjectName.trim()) {
+      onCreateProject(newProjectName.trim());
+    }
+    setNewProjectName('');
+    setIsAddingProject(false);
+  };
 
   return (
     <div className='navbar'>
@@ -18,28 +44,57 @@ function Navbar() {
         </div>
       </nav>
 
-      {/* Lists Section */}
+      {/* Projects Section */}
       <div className='navbar-section'>
-        <div className='navbar-section-header'>Lists</div>
-
-        <div className='navbar-item'>
-          <span className='navbar-icon'>☰</span>
-          <span className='navbar-label'>My Todoist</span>
-          <span className='navbar-count'>5</span>
+        <div className='navbar-section-header'>
+          <span>Projects</span>
+          <button className='navbar-add-btn' onClick={handleAddProject}>+</button>
         </div>
 
-        <div className='navbar-item'>
-          <span className='navbar-icon'>📋</span>
-          <span className='navbar-label'>躺平</span>
-          <span className='navbar-dot blue'></span>
-          <span className='navbar-count'>2</span>
-        </div>
+        {/* Project List */}
+        {projects.map((project) => (
+          <div
+            key={project.id}
+            className={`navbar-item ${selectedProject?.id === project.id ? 'active' : ''}`}
+            onClick={() => onSelectProject(project)}
+          >
+            <span className='navbar-icon'>📋</span>
+            <span className='navbar-label'>{project.name}</span>
+            <button
+              className='navbar-delete-btn'
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteProject(project.id);
+              }}
+            >
+              ×
+            </button>
+          </div>
+        ))}
 
-        <div className='navbar-item'>
-          <span className='navbar-icon'>👋</span>
-          <span className='navbar-label'>Welcome</span>
-          <span className='navbar-count'>10</span>
-        </div>
+        {/* Add Project Input */}
+        {isAddingProject && (
+          <div className='navbar-item navbar-input-item'>
+            <span className='navbar-icon'>📋</span>
+            <input
+              type='text'
+              value={newProjectName}
+              onChange={(e) => setNewProjectName(e.target.value)}
+              onKeyDown={handleProjectNameSubmit}
+              onBlur={handleProjectNameBlur}
+              placeholder='Project name'
+              className='navbar-project-input'
+              autoFocus
+            />
+          </div>
+        )}
+
+        {/* Empty State Placeholder */}
+        {projects.length === 0 && !isAddingProject && (
+          <div className='navbar-section-description'>
+            Use lists to categorize and manage your tasks and notes
+          </div>
+        )}
       </div>
 
       {/* Filters Section */}
@@ -53,11 +108,8 @@ function Navbar() {
       {/* Tags Section */}
       <div className='navbar-section'>
         <div className='navbar-section-header'>Tags</div>
-
-        <div className='navbar-item'>
-          <span className='navbar-icon'>🏷️</span>
-          <span className='navbar-label'>Best</span>
-          <span className='navbar-dot yellow'></span>
+        <div className='navbar-section-description'>
+          Categorize your tasks with tags. Quickly select a tag by typing "#" when adding a task
         </div>
       </div>
 
