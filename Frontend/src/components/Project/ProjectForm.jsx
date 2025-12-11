@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import './ProjectForm.css';
-import TextSection from './TextSection';
-import TaskInput from './TaskInput';
+import TextSection from './TextSection/TextSection';
+import TaskInput from './TaskSection/AddTask/TaskInput';
 
 function ProjectForm() {
   const [projects, setProjects] = useState([]);

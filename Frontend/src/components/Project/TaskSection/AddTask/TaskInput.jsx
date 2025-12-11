@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { filterTasks } from './TaskFilterLogic';
+import { filterTasks } from '../FilterLogic/TaskFilterLogic';
 import DateSelector from './DateSelector';
 
 function TaskInput() {
