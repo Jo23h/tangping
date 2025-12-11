@@ -17,11 +17,14 @@ export const filterTasks = (tasks, filterType) => {
       });
 
     case 'Upcoming':
-      // Tasks with no due date OR tasks with future due dates
+      // Tasks with no due date OR tasks due after 3 days
       return tasks.filter(task => {
         if (!task.dueDate) return true; // No due date goes to Upcoming
         const taskDate = new Date(task.dueDate);
-        return taskDate > today;
+        const diffTime = taskDate - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        // Only tasks due more than 3 days from now
+        return diffDays > 3;
       });
 
     case 'All':

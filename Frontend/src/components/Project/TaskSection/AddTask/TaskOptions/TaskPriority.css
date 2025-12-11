@@ -1,0 +1,36 @@
+/* Priority checkbox colors */
+.task-checkbox.priority-high {
+  border-color: #dc4c3e;
+}
+
+.task-checkbox.priority-high:checked {
+  background-color: #dc4c3e;
+  border-color: #dc4c3e;
+}
+
+.task-checkbox.priority-medium {
+  border-color: #ff9a14;
+}
+
+.task-checkbox.priority-medium:checked {
+  background-color: #ff9a14;
+  border-color: #ff9a14;
+}
+
+.task-checkbox.priority-low {
+  border-color: #246fe0;
+}
+
+.task-checkbox.priority-low:checked {
+  background-color: #246fe0;
+  border-color: #246fe0;
+}
+
+.task-checkbox.priority-none {
+  border-color: #ddd;
+}
+
+.task-checkbox.priority-none:checked {
+  background-color: #999;
+  border-color: #999;
+}

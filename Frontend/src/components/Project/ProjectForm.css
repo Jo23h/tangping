@@ -286,6 +286,12 @@
   justify-content: center;
 }
 
+.task-calendar-btn.has-date {
+  font-size: 12px;
+  color: #246fe0;
+  font-weight: 500;
+}
+
 .task-calendar-btn:hover,
 .task-dropdown-btn:hover {
   color: #333;
@@ -332,6 +338,24 @@
   height: 20px;
   cursor: pointer;
   flex-shrink: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  outline: none;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.task-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .task-text {
@@ -376,4 +400,34 @@
 
 .task-delete-btn:hover {
   color: #dc3545;
+}
+
+/* Completed section */
+.completed-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.completed-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 4px 0;
+  margin-bottom: 8px;
+}
+
+.completed-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+  margin: 0;
+}
+
+.completed-count {
+  font-size: 14px;
+  color: #999;
+  font-weight: normal;
+  margin-left: 4px;
 }

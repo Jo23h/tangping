@@ -18,34 +18,34 @@ function TaskOtherOptions({ onClose, onPrioritySelect }) {
         {/* Priority section */}
         <div className='task-options-section'>
           <div className='task-options-section-title'>Priority</div>
-          <div className='task-priority-options'>
+          <div className='task-priority-flags'>
             <button
-              className={`task-priority-option ${selectedPriority === 'high' ? 'selected' : ''}`}
+              className={`task-priority-flag ${selectedPriority === 'high' ? 'selected' : ''}`}
               onClick={() => handlePriorityClick('high')}
+              title='High priority'
             >
-              <span className='task-priority-flag high'>🚩</span>
-              <span className='task-priority-label'>High</span>
+              🚩
             </button>
             <button
-              className={`task-priority-option ${selectedPriority === 'medium' ? 'selected' : ''}`}
+              className={`task-priority-flag ${selectedPriority === 'medium' ? 'selected' : ''}`}
               onClick={() => handlePriorityClick('medium')}
+              title='Medium priority'
             >
-              <span className='task-priority-flag medium'>🚩</span>
-              <span className='task-priority-label'>Medium</span>
+              🚩
             </button>
             <button
-              className={`task-priority-option ${selectedPriority === 'low' ? 'selected' : ''}`}
+              className={`task-priority-flag ${selectedPriority === 'low' ? 'selected' : ''}`}
               onClick={() => handlePriorityClick('low')}
+              title='Low priority'
             >
-              <span className='task-priority-flag low'>🚩</span>
-              <span className='task-priority-label'>Low</span>
+              🚩
             </button>
             <button
-              className={`task-priority-option ${selectedPriority === 'none' ? 'selected' : ''}`}
+              className={`task-priority-flag ${selectedPriority === 'none' ? 'selected' : ''}`}
               onClick={() => handlePriorityClick('none')}
+              title='No priority'
             >
-              <span className='task-priority-flag none'>🏳️</span>
-              <span className='task-priority-label'>No priority</span>
+              🏳️
             </button>
           </div>
         </div>
