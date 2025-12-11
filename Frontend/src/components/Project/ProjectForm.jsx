@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import './ProjectForm.css';
 import TextSection from './TextSection';
+import TaskInput from './TaskInput';
 
 function ProjectForm() {
   const [projects, setProjects] = useState([]);
@@ -21,7 +22,8 @@ function ProjectForm() {
       id: uuidv4(),
       name: 'New Project',
       goalState: '',
-      currentState: ''
+      currentState: '',
+      tasks: []
     };
     setProjects([...projects, newProject]);
     setSelectedProject(newProject);
@@ -41,25 +43,18 @@ function ProjectForm() {
     <div className='project-form-container'>
       {/* Main content area */}
       <div className='project-form-main'>
-        {/* Top bar */}
-        <div className='project-form-topbar'>
-          <div className='project-form-topbar-title'>
-            {projectTitle}
-          </div>
-          <div className='project-form-topbar-menu'>
-            <span className='project-form-menu-icon'>⋯</span>
-          </div>
-        </div>
-
         {/* Content area */}
         <div className='project-form-content'>
-          {/* Project title - editable */}
-          <input
-            type='text'
-            value={projectTitle}
-            onChange={(e) => setProjectTitle(e.target.value)}
-            className='project-form-title-input'
-          />
+          {/* Project title row with menu */}
+          <div className='project-form-title-row'>
+            <input
+              type='text'
+              value={projectTitle}
+              onChange={(e) => setProjectTitle(e.target.value)}
+              className='project-form-title-input'
+            />
+            <span className='project-form-menu-icon'>⋯</span>
+          </div>
 
           {/* Goal state section - child component */}
           <TextSection
@@ -74,6 +69,9 @@ function ProjectForm() {
             content={currentStateContent}
             onContentChange={setCurrentStateContent}
           />
+
+          {/* Task input - child component */}
+          <TaskInput />
         </div>
       </div>
     </div>
