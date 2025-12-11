@@ -1,56 +1,47 @@
-import { useRef, useEffect, useState } from 'react';
+import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import DateSelector from '../TaskSection/AddTask/TaskOptions/DateSelector';
+import NoteInputBar from './NoteInputBar';
+import NoteList from './NoteList';
+import { formatDueDate } from '../TaskSection/AddTask/utils/dateFormatter';
 
-function TextSection({ title, content, onContentChange }) {
-  const textareaRef = useRef(null);
+function TextSection({ title, onItemClick }) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [noteText, setNoteText] = useState('');
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [dueDate, setDueDate] = useState('');
+  const [notes, setNotes] = useState([]);
 
   // Check if there's any content
   const hasContent = () => {
-    return content && content.trim() !== '';
+    return notes.length > 0;
   };
-
-  // Auto-resize textarea based on content
-  const adjustHeight = () => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = 'auto'; // Reset height
-      textarea.style.height = `${textarea.scrollHeight}px`; // Set to scroll height
-    }
-  };
-
-  // Adjust height when content changes
-  useEffect(() => {
-    adjustHeight();
-  }, [content]);
 
   const handleKeyDown = (e) => {
-    // Handle dash key for bullet points
-    if (e.key === '-') {
-      const textarea = e.target;
-      const cursorPosition = textarea.selectionStart;
-      const textBeforeCursor = content.substring(0, cursorPosition);
+    if (e.key === 'Enter' && noteText.trim()) {
+      e.preventDefault();
 
-      // Check if we're at the start of a line (beginning of text or after a newline)
-      if (cursorPosition === 0 || textBeforeCursor.endsWith('\n')) {
-        e.preventDefault();
-        const textAfterCursor = content.substring(cursorPosition);
-        // Adjust the number of spaces after '• ' to increase/decrease indent
-        const bulletPoint = '   • ';  // 3 spaces before bullet - change this number to adjust indent
-        const newContent = textBeforeCursor + bulletPoint + textAfterCursor;
-        onContentChange(newContent);
-
-        // Move cursor after the bullet point
-        setTimeout(() => {
-          textarea.selectionStart = textarea.selectionEnd = cursorPosition + bulletPoint.length;
-          adjustHeight();
-        }, 0);
-      }
+      // Create new note
+      const newNote = {
+        id: uuidv4(),
+        text: noteText,
+        dueDate: dueDate
+      };
+      setNotes([...notes, newNote]);
+      setNoteText('');
+      setDueDate('');
+      setShowDatePicker(false);
     }
   };
 
-  const handleChange = (e) => {
-    onContentChange(e.target.value);
-    adjustHeight();
+  const handleDateSelect = (date) => {
+    setDueDate(date);
+    setShowDatePicker(false);
+  };
+
+  const handleDeleteNote = (noteId) => {
+    const updatedNotes = notes.filter(note => note.id !== noteId);
+    setNotes(updatedNotes);
   };
 
   return (
@@ -69,17 +60,35 @@ function TextSection({ title, content, onContentChange }) {
         )}
       </div>
 
-      {/* Free-form content area - only show when expanded */}
+      {/* Note input and list - only show when expanded */}
       {isExpanded && (
-        <textarea
-          ref={textareaRef}
-          value={content}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          placeholder='Start typing...'
-          className='project-form-content-textarea'
-          rows={1}
-        />
+        <>
+          <NoteInputBar
+            value={noteText}
+            onChange={(e) => setNoteText(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onCalendarClick={() => setShowDatePicker(!showDatePicker)}
+            dueDate={dueDate}
+            formatDueDate={formatDueDate}
+          />
+
+          {/* Note list */}
+          <NoteList
+            notes={notes}
+            onDelete={handleDeleteNote}
+            formatDueDate={formatDueDate}
+            onItemClick={onItemClick}
+          />
+
+          {/* Date selector modal */}
+          {showDatePicker && (
+            <DateSelector
+              onDateSelect={handleDateSelect}
+              onClose={() => setShowDatePicker(false)}
+              initialDate={dueDate ? new Date(dueDate) : null}
+            />
+          )}
+        </>
       )}
     </div>
   );

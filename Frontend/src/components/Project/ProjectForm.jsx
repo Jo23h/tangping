@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import './ProjectForm.css';
 import TextSection from './TextSection/TextSection';
 import TaskInput from './TaskSection/AddTask/TaskInput';
+import MemoSection from './MemoSection/MemoSection';
 
 function ProjectForm() {
   const [projects, setProjects] = useState([]);
@@ -14,29 +15,33 @@ function ProjectForm() {
   });
 
   const [projectTitle, setProjectTitle] = useState('New Project');
-  const [goalStateContent, setGoalStateContent] = useState('');
-  const [currentStateContent, setCurrentStateContent] = useState('');
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const handleCreateNewProject = () => {
     const newProject = {
       id: uuidv4(),
       name: 'New Project',
-      goalState: '',
-      currentState: '',
       tasks: []
     };
     setProjects([...projects, newProject]);
     setSelectedProject(newProject);
     setProjectTitle('New Project');
-    setGoalStateContent('');
-    setCurrentStateContent('');
   };
 
   const handleSelectProject = (project) => {
     setSelectedProject(project);
     setProjectTitle(project.name);
-    setGoalStateContent(project.goalState || '');
-    setCurrentStateContent(project.currentState || '');
+  };
+
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+  };
+
+  const handleMemoChange = (itemId, memoContent) => {
+    setSelectedItem(prev => ({
+      ...prev,
+      memo: memoContent
+    }));
   };
 
   return (
@@ -57,23 +62,21 @@ function ProjectForm() {
           </div>
 
           {/* Goal state section - child component */}
-          <TextSection
-            title='Goal state'
-            content={goalStateContent}
-            onContentChange={setGoalStateContent}
-          />
+          <TextSection title='Goal state' onItemClick={handleItemClick} />
 
           {/* Current state section - child component */}
-          <TextSection
-            title='Current state'
-            content={currentStateContent}
-            onContentChange={setCurrentStateContent}
-          />
+          <TextSection title='Current state' onItemClick={handleItemClick} />
 
           {/* Task input - child component */}
-          <TaskInput />
+          <TaskInput onItemClick={handleItemClick} />
         </div>
       </div>
+
+      {/* Memo section - right sidebar */}
+      <MemoSection
+        selectedItem={selectedItem}
+        onMemoChange={handleMemoChange}
+      />
     </div>
   );
 }

@@ -11,6 +11,8 @@
   display: flex;
   flex-direction: column;
   background-color: #fff;
+  max-width: 60%;
+  border-right: 1px solid #e0e0e0;
 }
 
 .project-form-topbar {
@@ -153,6 +155,123 @@
   color: #999;
   margin-left: 8px;
   font-weight: normal;
+}
+
+/* Note Input Styles */
+.note-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  margin-left: 24px;
+}
+
+.note-plus-icon {
+  font-size: 20px;
+  color: #666;
+  font-weight: 300;
+}
+
+.note-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  background: transparent;
+  font-family: inherit;
+}
+
+.note-input::placeholder {
+  color: #ccc;
+}
+
+.note-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.note-calendar-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 16px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.note-calendar-btn.has-date {
+  font-size: 12px;
+  color: #246fe0;
+  font-weight: 500;
+}
+
+.note-calendar-btn:hover {
+  color: #333;
+}
+
+.note-list {
+  margin-left: 24px;
+  margin-top: 12px;
+}
+
+.note-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.note-item:hover {
+  background-color: #fafafa;
+}
+
+.note-text {
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.note-due-date {
+  font-size: 12px;
+  color: #246fe0;
+  font-weight: 500;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.note-due-date.overdue {
+  color: #dc4c3e;
+}
+
+.note-delete-btn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  padding: 0 8px;
+  display: none;
+  line-height: 1;
+}
+
+.note-item:hover .note-delete-btn {
+  display: block;
+}
+
+.note-delete-btn:hover {
+  color: #dc3545;
 }
 
 /* Task Input Section Styles */
@@ -430,4 +549,58 @@
   color: #999;
   font-weight: normal;
   margin-left: 4px;
+}
+
+/* Memo Section - Right Sidebar */
+.memo-section {
+  width: 40%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.memo-blank {
+  width: 100%;
+  height: 100%;
+  background-color: #fafafa;
+}
+
+.memo-header {
+  padding: 40px 40px 20px 40px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.memo-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.memo-content {
+  padding: 20px 40px;
+  flex: 1;
+}
+
+.memo-textarea {
+  font-size: 16px;
+  line-height: 1.6;
+  border: none;
+  outline: none;
+  width: 100%;
+  min-height: 24px;
+  max-height: none;
+  resize: none;
+  overflow: hidden;
+  background-color: transparent;
+  color: #000;
+  font-family: inherit;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.memo-textarea::placeholder {
+  color: #ccc;
 }

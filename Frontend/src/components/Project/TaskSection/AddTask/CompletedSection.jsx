@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import TaskList from './TaskList';
 
-function CompletedSection({ tasks, onToggle, onDelete, formatDueDate, sortTasks }) {
+function CompletedSection({ tasks, onToggle, onDelete, formatDueDate, sortTasks, onItemClick }) {
   const [showCompleted, setShowCompleted] = useState(true);
 
   if (tasks.length === 0) {
@@ -27,6 +27,7 @@ function CompletedSection({ tasks, onToggle, onDelete, formatDueDate, sortTasks 
           onToggle={onToggle}
           onDelete={onDelete}
           formatDueDate={formatDueDate}
+          onItemClick={onItemClick}
         />
       )}
     </div>

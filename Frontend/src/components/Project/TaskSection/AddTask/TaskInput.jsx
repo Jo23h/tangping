@@ -11,7 +11,7 @@ import CompletedSection from './CompletedSection';
 import { formatDueDate } from './utils/dateFormatter.jsx';
 import { sortTasks } from './utils/taskSorter.jsx';
 
-function TaskInput() {
+function TaskInput({ onItemClick }) {
   const [taskText, setTaskText] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -115,6 +115,7 @@ function TaskInput() {
         onToggle={handleToggleTask}
         onDelete={handleDeleteTask}
         formatDueDate={formatDueDate}
+        onItemClick={onItemClick}
       />
 
       {/* Completed section */}
@@ -124,6 +125,7 @@ function TaskInput() {
         onDelete={handleDeleteTask}
         formatDueDate={formatDueDate}
         sortTasks={sortTasks}
+        onItemClick={onItemClick}
       />
 
       {/* Date selector modal */}
