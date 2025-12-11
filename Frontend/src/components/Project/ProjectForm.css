@@ -295,7 +295,7 @@
 
 .principle-input-container {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
   padding: 12px;
   border: 1px solid #e0e0e0;
@@ -308,18 +308,16 @@
   font-size: 20px;
   color: #666;
   font-weight: 300;
-  margin-top: 2px;
 }
 
 .principle-input-fields {
   flex: 1;
   display: flex;
-  gap: 12px;
-  align-items: flex-start;
+  gap: 8px;
+  align-items: center;
 }
 
 .principle-tag-input {
-  flex: 0 0 150px;
   border: none;
   outline: none;
   font-size: 16px;
@@ -331,6 +329,12 @@
 
 .principle-tag-input::placeholder {
   color: #ccc;
+}
+
+.principle-separator {
+  font-size: 16px;
+  color: #666;
+  font-weight: 400;
 }
 
 .principle-description-input {

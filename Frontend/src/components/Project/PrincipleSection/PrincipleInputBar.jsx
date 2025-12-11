@@ -8,6 +8,7 @@ function PrincipleInputBar({
   onKeyDown
 }) {
   const textareaRef = useRef(null);
+  const tagInputRef = useRef(null);
 
   // Auto-resize textarea based on content
   const adjustHeight = () => {
@@ -18,10 +19,32 @@ function PrincipleInputBar({
     }
   };
 
+  // Auto-resize tag input based on content
+  const adjustTagWidth = () => {
+    const input = tagInputRef.current;
+    if (input) {
+      // Create a temporary span to measure text width
+      const span = document.createElement('span');
+      span.style.font = window.getComputedStyle(input).font;
+      span.style.visibility = 'hidden';
+      span.style.position = 'absolute';
+      span.textContent = input.value || input.placeholder;
+      document.body.appendChild(span);
+      const width = span.offsetWidth + 20; // Add some padding
+      input.style.width = Math.max(width, 150) + 'px'; // Minimum 150px
+      document.body.removeChild(span);
+    }
+  };
+
   // Adjust height when description changes
   useEffect(() => {
     adjustHeight();
   }, [description]);
+
+  // Adjust tag width when tag changes
+  useEffect(() => {
+    adjustTagWidth();
+  }, [tag]);
 
   const handleDescriptionChange = (e) => {
     onDescriptionChange(e);
@@ -33,13 +56,15 @@ function PrincipleInputBar({
       <span className='principle-plus-icon'>+</span>
       <div className='principle-input-fields'>
         <input
+          ref={tagInputRef}
           type='text'
           value={tag}
           onChange={onTagChange}
           onKeyDown={onKeyDown}
-          placeholder='#tag'
+          placeholder='#addprinciple'
           className='principle-tag-input'
         />
+        <span className='principle-separator'>:</span>
         <textarea
           ref={textareaRef}
           value={description}
