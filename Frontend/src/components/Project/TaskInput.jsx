@@ -1,17 +1,51 @@
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { filterTasks } from './TaskFilterLogic';
+import DateSelector from './DateSelector';
 
 function TaskInput() {
   const [taskText, setTaskText] = useState('');
-  const [activeFilter, setActiveFilter] = useState('Outcomes');
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [dueDate, setDueDate] = useState('');
+  const [tasks, setTasks] = useState([]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && taskText.trim()) {
       e.preventDefault();
-      // Handle task creation here
-      console.log('Task created:', taskText);
+      // Create new task
+      const newTask = {
+        id: uuidv4(),
+        text: taskText,
+        dueDate: dueDate,
+        completed: false
+      };
+      setTasks([...tasks, newTask]);
       setTaskText('');
+      setDueDate('');
+      setShowDatePicker(false);
     }
   };
+
+  const handleDateSelect = (date) => {
+    setDueDate(date);
+    setShowDatePicker(false);
+  };
+
+  const handleToggleTask = (taskId) => {
+    const updatedTasks = tasks.map(task =>
+      task.id === taskId ? { ...task, completed: !task.completed } : task
+    );
+    setTasks(updatedTasks);
+  };
+
+  const handleDeleteTask = (taskId) => {
+    const updatedTasks = tasks.filter(task => task.id !== taskId);
+    setTasks(updatedTasks);
+  };
+
+  // Use the filter logic from TaskFilterLogic
+  const filteredTasks = filterTasks(tasks, activeFilter);
 
   return (
     <div className='task-input-section'>
@@ -32,7 +66,11 @@ function TaskInput() {
           className='task-input'
         />
         <div className='task-input-actions'>
-          <button className='task-calendar-btn' type='button'>
+          <button
+            className='task-calendar-btn'
+            type='button'
+            onClick={() => setShowDatePicker(!showDatePicker)}
+          >
             📅
           </button>
           <button className='task-dropdown-btn' type='button'>
@@ -44,18 +82,61 @@ function TaskInput() {
       {/* Filter tabs */}
       <div className='task-filters'>
         <button
-          className={`task-filter-btn ${activeFilter === 'Outcomes' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('Outcomes')}
+          className={`task-filter-btn ${activeFilter === 'All' ? 'active' : ''}`}
+          onClick={() => setActiveFilter('All')}
         >
-          Outcomes
+          All
         </button>
         <button
-          className={`task-filter-btn ${activeFilter === 'Courses' ? 'active' : ''}`}
-          onClick={() => setActiveFilter('Courses')}
+          className={`task-filter-btn ${activeFilter === 'Overdue/due soon' ? 'active' : ''}`}
+          onClick={() => setActiveFilter('Overdue/due soon')}
         >
-          Courses
+          Overdue/due soon
+        </button>
+        <button
+          className={`task-filter-btn ${activeFilter === 'Upcoming' ? 'active' : ''}`}
+          onClick={() => setActiveFilter('Upcoming')}
+        >
+          Upcoming
         </button>
       </div>
+
+      {/* Task list */}
+      <div className='task-list'>
+        {filteredTasks.map((task) => (
+          <div key={task.id} className='task-item'>
+            <input
+              type='checkbox'
+              checked={task.completed}
+              onChange={() => handleToggleTask(task.id)}
+              className='task-checkbox'
+            />
+            <div className='task-content'>
+              <span className={`task-text ${task.completed ? 'task-completed' : ''}`}>
+                {task.text}
+              </span>
+              {task.dueDate && (
+                <span className='task-due-date'>📅 {task.dueDate}</span>
+              )}
+            </div>
+            <button
+              onClick={() => handleDeleteTask(task.id)}
+              className='task-delete-btn'
+            >
+              ×
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Date selector modal */}
+      {showDatePicker && (
+        <DateSelector
+          onDateSelect={handleDateSelect}
+          onClose={() => setShowDatePicker(false)}
+          initialDate={dueDate ? new Date(dueDate) : null}
+        />
+      )}
     </div>
   );
 }
