@@ -1,16 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import DateSelector from '../TaskSection/AddTask/TaskOptions/DateSelector';
 import NoteInputBar from './NoteInputBar';
 import NoteList from './NoteList';
 import { formatDueDate } from '../TaskSection/AddTask/utils/dateFormatter';
 
-function TextSection({ title, onItemClick }) {
+function TextSection({ title, onItemClick, selectedItem }) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [noteText, setNoteText] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dueDate, setDueDate] = useState('');
   const [notes, setNotes] = useState([]);
+
+  // Update note memo when selectedItem changes
+  useEffect(() => {
+    if (selectedItem && selectedItem.memo !== undefined) {
+      setNotes(prevNotes =>
+        prevNotes.map(note =>
+          note.id === selectedItem.id
+            ? { ...note, memo: selectedItem.memo }
+            : note
+        )
+      );
+    }
+  }, [selectedItem]);
 
   // Check if there's any content
   const hasContent = () => {

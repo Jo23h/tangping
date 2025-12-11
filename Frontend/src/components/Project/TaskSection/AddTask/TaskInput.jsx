@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { filterTasks } from '../FilterLogic/TaskFilterLogic';
 import DateSelector from './TaskOptions/DateSelector';
@@ -11,13 +11,27 @@ import CompletedSection from './CompletedSection';
 import { formatDueDate } from './utils/dateFormatter.jsx';
 import { sortTasks } from './utils/taskSorter.jsx';
 
-function TaskInput({ onItemClick }) {
+function TaskInput({ onItemClick, selectedItem }) {
   const [taskText, setTaskText] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showOtherOptions, setShowOtherOptions] = useState(false);
   const [dueDate, setDueDate] = useState('');
   const [tasks, setTasks] = useState([]);
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  // Update task memo when selectedItem changes
+  useEffect(() => {
+    if (selectedItem && selectedItem.memo !== undefined) {
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task.id === selectedItem.id
+            ? { ...task, memo: selectedItem.memo }
+            : task
+        )
+      );
+    }
+  }, [selectedItem]);
 
   // Use TaskPriority component
   const priorityService = TaskPriority({
@@ -78,63 +92,82 @@ function TaskInput({ onItemClick }) {
   const filteredActiveTasks = sortTasks(filterTasks(activeTasks, activeFilter));
   const filteredCompletedTasks = sortTasks(filterTasks(completedTasks, activeFilter));
 
+  // Check if there's any content
+  const hasContent = () => {
+    return tasks.length > 0;
+  };
+
   return (
     <div className='task-input-section'>
-      {/* Section header - non-collapsible */}
-      <div className='task-input-header'>
+      {/* Section header - collapsible */}
+      <div
+        className='text-section-header'
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <span className='text-section-arrow'>
+          {isExpanded ? 'v' : '>'}
+        </span>
         <h2 className='project-form-section-title'>All Tasks</h2>
+        {!isExpanded && hasContent() && (
+          <span className='text-section-ellipsis'>...</span>
+        )}
       </div>
 
-      {/* Task input box */}
-      <TaskInputBar
-        value={taskText}
-        onChange={(e) => setTaskText(e.target.value)}
-        onKeyDown={handleKeyDown}
-        onCalendarClick={() => setShowDatePicker(!showDatePicker)}
-        onOptionsClick={() => setShowOtherOptions(!showOtherOptions)}
-        showOtherOptions={showOtherOptions}
-        dueDate={dueDate}
-        formatDueDate={formatDueDate}
-        TaskOtherOptionsComponent={
-          <TaskOtherOptions
-            onClose={() => setShowOtherOptions(false)}
-            onPrioritySelect={priorityService.handlePrioritySelect}
+      {/* Task content - only show when expanded */}
+      {isExpanded && (
+        <>
+          {/* Task input box */}
+          <TaskInputBar
+            value={taskText}
+            onChange={(e) => setTaskText(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onCalendarClick={() => setShowDatePicker(!showDatePicker)}
+            onOptionsClick={() => setShowOtherOptions(!showOtherOptions)}
+            showOtherOptions={showOtherOptions}
+            dueDate={dueDate}
+            formatDueDate={formatDueDate}
+            TaskOtherOptionsComponent={
+              <TaskOtherOptions
+                onClose={() => setShowOtherOptions(false)}
+                onPrioritySelect={priorityService.handlePrioritySelect}
+              />
+            }
           />
-        }
-      />
 
-      {/* Filter tabs */}
-      <TaskFilters
-        activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
-      />
+          {/* Filter tabs */}
+          <TaskFilters
+            activeFilter={activeFilter}
+            onFilterChange={setActiveFilter}
+          />
 
-      {/* Active Task list */}
-      <TaskList
-        tasks={filteredActiveTasks}
-        onToggle={handleToggleTask}
-        onDelete={handleDeleteTask}
-        formatDueDate={formatDueDate}
-        onItemClick={onItemClick}
-      />
+          {/* Active Task list */}
+          <TaskList
+            tasks={filteredActiveTasks}
+            onToggle={handleToggleTask}
+            onDelete={handleDeleteTask}
+            formatDueDate={formatDueDate}
+            onItemClick={onItemClick}
+          />
 
-      {/* Completed section */}
-      <CompletedSection
-        tasks={filteredCompletedTasks}
-        onToggle={handleToggleTask}
-        onDelete={handleDeleteTask}
-        formatDueDate={formatDueDate}
-        sortTasks={sortTasks}
-        onItemClick={onItemClick}
-      />
+          {/* Completed section */}
+          <CompletedSection
+            tasks={filteredCompletedTasks}
+            onToggle={handleToggleTask}
+            onDelete={handleDeleteTask}
+            formatDueDate={formatDueDate}
+            sortTasks={sortTasks}
+            onItemClick={onItemClick}
+          />
 
-      {/* Date selector modal */}
-      {showDatePicker && (
-        <DateSelector
-          onDateSelect={handleDateSelect}
-          onClose={() => setShowDatePicker(false)}
-          initialDate={dueDate ? new Date(dueDate) : null}
-        />
+          {/* Date selector modal */}
+          {showDatePicker && (
+            <DateSelector
+              onDateSelect={handleDateSelect}
+              onClose={() => setShowDatePicker(false)}
+              initialDate={dueDate ? new Date(dueDate) : null}
+            />
+          )}
+        </>
       )}
     </div>
   );

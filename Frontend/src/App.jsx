@@ -2,11 +2,7 @@ import './App.css'
 import ProjectForm from './components/Project/ProjectForm'
 
 function App() {
-  return (
-    <div>
-      <ProjectForm />
-    </div>
-  )
+  return <ProjectForm />
 }
 
 export default App

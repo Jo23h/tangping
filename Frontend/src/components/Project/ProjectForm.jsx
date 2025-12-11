@@ -34,14 +34,20 @@ function ProjectForm() {
   };
 
   const handleItemClick = (item) => {
-    setSelectedItem(item);
+    setSelectedItem({ ...item });
   };
 
   const handleMemoChange = (itemId, memoContent) => {
+    // Update the selected item
     setSelectedItem(prev => ({
       ...prev,
       memo: memoContent
     }));
+  };
+
+  const handleMemoUpdate = (itemId, memoContent) => {
+    // This will be called by TaskInput/TextSection to persist memo changes
+    handleMemoChange(itemId, memoContent);
   };
 
   return (
@@ -62,13 +68,24 @@ function ProjectForm() {
           </div>
 
           {/* Goal state section - child component */}
-          <TextSection title='Goal state' onItemClick={handleItemClick} />
+          <TextSection
+            title='Goal state'
+            onItemClick={handleItemClick}
+            selectedItem={selectedItem}
+          />
 
           {/* Current state section - child component */}
-          <TextSection title='Current state' onItemClick={handleItemClick} />
+          <TextSection
+            title='Current state'
+            onItemClick={handleItemClick}
+            selectedItem={selectedItem}
+          />
 
           {/* Task input - child component */}
-          <TaskInput onItemClick={handleItemClick} />
+          <TaskInput
+            onItemClick={handleItemClick}
+            selectedItem={selectedItem}
+          />
         </div>
       </div>
 

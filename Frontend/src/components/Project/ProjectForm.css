@@ -1,18 +1,23 @@
 .project-form-container {
   display: flex;
+  width: 100vw;
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
+  padding: 0;
   overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 .project-form-main {
-  flex: 1;
+  flex: 0 0 60%;
   display: flex;
   flex-direction: column;
   background-color: #fff;
-  max-width: 60%;
   border-right: 1px solid #e0e0e0;
+  overflow: hidden;
 }
 
 .project-form-topbar {
@@ -229,6 +234,7 @@
   padding: 12px;
   border-bottom: 1px solid #f0f0f0;
   position: relative;
+  cursor: pointer;
 }
 
 .note-item:hover {
@@ -241,6 +247,13 @@
   text-align: left;
   flex: 1;
   min-width: 0;
+}
+
+.note-memo-icon {
+  font-size: 14px;
+  color: #999;
+  margin-left: 8px;
+  flex-shrink: 0;
 }
 
 .note-due-date {
@@ -292,7 +305,8 @@
   display: flex;
   gap: 20px;
   margin-top: 12px;
-  padding-left: 0;
+  padding-left: 24px;
+  margin-left: 0;
 }
 
 .task-filter-btn {
@@ -360,6 +374,7 @@
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   margin-bottom: 12px;
+  margin-left: 24px;
 }
 
 .task-plus-icon {
@@ -437,6 +452,7 @@
 
 .task-list {
   margin-top: 12px;
+  margin-left: 24px;
 }
 
 .task-item {
@@ -446,6 +462,7 @@
   padding: 12px;
   border-bottom: 1px solid #f0f0f0;
   position: relative;
+  cursor: pointer;
 }
 
 .task-item:hover {
@@ -488,6 +505,13 @@
 .task-completed {
   text-decoration: line-through;
   color: #999;
+}
+
+.task-memo-icon {
+  font-size: 14px;
+  color: #999;
+  margin-left: 8px;
+  flex-shrink: 0;
 }
 
 .task-due-date {
@@ -535,6 +559,7 @@
   cursor: pointer;
   padding: 4px 0;
   margin-bottom: 8px;
+  margin-left: 24px;
 }
 
 .completed-section-title {
@@ -553,11 +578,12 @@
 
 /* Memo Section - Right Sidebar */
 .memo-section {
-  width: 40%;
+  flex: 0 0 40%;
   background-color: #fff;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  height: 100vh;
 }
 
 .memo-blank {
