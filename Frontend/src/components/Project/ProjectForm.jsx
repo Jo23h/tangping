@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import './ProjectForm.css';
 import TextSection from './TextSection/TextSection';
+import PrincipleSection from './PrincipleSection/PrincipleSection';
 import TaskInput from './TaskSection/AddTask/TaskInput';
 import MemoSection from './MemoSection/MemoSection';
 
@@ -77,6 +78,13 @@ function ProjectForm() {
           {/* Current state section - child component */}
           <TextSection
             title='Current state'
+            onItemClick={handleItemClick}
+            selectedItem={selectedItem}
+          />
+
+          {/* Principle section - child component */}
+          <PrincipleSection
+            title='Principles'
             onItemClick={handleItemClick}
             selectedItem={selectedItem}
           />

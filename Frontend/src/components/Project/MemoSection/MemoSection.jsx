@@ -32,10 +32,13 @@ function MemoSection({ selectedItem, onMemoChange }) {
     );
   }
 
+  // Get the display title - use tag if it exists (for principles), otherwise text
+  const displayTitle = selectedItem.tag || selectedItem.text;
+
   return (
     <div className='memo-section'>
       <div className='memo-header'>
-        <h3 className='memo-title'>{selectedItem.text}</h3>
+        <h3 className='memo-title'>{displayTitle}</h3>
       </div>
       <div className='memo-content'>
         <textarea

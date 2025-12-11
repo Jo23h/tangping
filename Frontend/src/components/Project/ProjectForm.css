@@ -287,6 +287,133 @@
   color: #dc3545;
 }
 
+/* Principle Section Styles */
+.principle-section {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.principle-input-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  margin-left: 24px;
+}
+
+.principle-plus-icon {
+  font-size: 20px;
+  color: #666;
+  font-weight: 300;
+  margin-top: 2px;
+}
+
+.principle-input-fields {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.principle-tag-input {
+  flex: 0 0 150px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #7c3aed;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.principle-tag-input::placeholder {
+  color: #ccc;
+}
+
+.principle-description-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  background: transparent;
+  font-family: inherit;
+  resize: none;
+  overflow: hidden;
+  min-height: 24px;
+  line-height: 1.5;
+}
+
+.principle-description-input::placeholder {
+  color: #ccc;
+}
+
+.principle-list {
+  margin-left: 24px;
+  margin-top: 12px;
+}
+
+.principle-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+  cursor: pointer;
+}
+
+.principle-item:hover {
+  background-color: #fafafa;
+}
+
+.principle-tag {
+  font-size: 14px;
+  color: #7c3aed;
+  font-weight: 600;
+  flex-shrink: 0;
+  background-color: #f3f0ff;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.principle-description {
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.principle-memo-icon {
+  font-size: 14px;
+  color: #999;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.principle-delete-btn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  padding: 0 8px;
+  display: none;
+  line-height: 1;
+}
+
+.principle-item:hover .principle-delete-btn {
+  display: block;
+}
+
+.principle-delete-btn:hover {
+  color: #dc3545;
+}
+
 /* Task Input Section Styles */
 .task-input-section {
   width: 100%;
