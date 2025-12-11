@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import DateSelector from '../TaskSection/AddTask/TaskOptions/DateSelector';
+import DateSelector from '../Project/TaskSection/AddTask/TaskOptions/DateSelector';
 import NoteInputBar from './NoteInputBar';
 import NoteList from './NoteList';
-import { formatDueDate } from '../TaskSection/AddTask/utils/dateFormatter';
+import { formatDueDate } from '../Project/TaskSection/AddTask/utils/dateFormatter';
 
 function TextSection({ title, onItemClick, selectedItem }) {
   const [isExpanded, setIsExpanded] = useState(true);

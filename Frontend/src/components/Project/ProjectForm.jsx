@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import './ProjectForm.css';
-import TextSection from './TextSection/TextSection';
-import PrincipleSection from './PrincipleSection/PrincipleSection';
+import Navbar from '../Navbar/Navbar';
+import TextSection from '../TextSection/TextSection';
+import PrincipleSection from '../PrincipleSection/PrincipleSection';
 import TaskInput from './TaskSection/AddTask/TaskInput';
-import MemoSection from './MemoSection/MemoSection';
+import MemoSection from '../MemoSection/MemoSection';
 
 function ProjectForm() {
   const [projects, setProjects] = useState([]);
@@ -53,6 +54,9 @@ function ProjectForm() {
 
   return (
     <div className='project-form-container'>
+      {/* Navbar - left sidebar */}
+      <Navbar />
+
       {/* Main content area */}
       <div className='project-form-main'>
         {/* Content area */}
@@ -68,6 +72,13 @@ function ProjectForm() {
             <span className='project-form-menu-icon'>⋯</span>
           </div>
 
+          {/* Principle section - child component */}
+          <PrincipleSection
+            title='Principles'
+            onItemClick={handleItemClick}
+            selectedItem={selectedItem}
+          />
+
           {/* Goal state section - child component */}
           <TextSection
             title='Goal state'
@@ -82,9 +93,9 @@ function ProjectForm() {
             selectedItem={selectedItem}
           />
 
-          {/* Principle section - child component */}
-          <PrincipleSection
-            title='Principles'
+          {/* Key Obstacles section - child component */}
+          <TextSection
+            title='Key Obstacles'
             onItemClick={handleItemClick}
             selectedItem={selectedItem}
           />

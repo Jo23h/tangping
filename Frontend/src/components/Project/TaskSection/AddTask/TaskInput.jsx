@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { filterTasks } from '../FilterLogic/TaskFilterLogic';
-import DateSelector from './TaskOptions/DateSelector';
-import TaskOtherOptions from '../TaskOption/TaskOtherOptions';
-import TaskPriority from './TaskOptions/TaskPriority';
-import TaskInputBar from './TaskInputBar';
-import TaskFilters from './TaskFilters';
-import TaskList from './TaskList';
-import CompletedSection from './CompletedSection';
+import { filterTasks } from '../FilterLogic/TaskFilterLogic.jsx';
+import DateSelector from './TaskOptions/DateSelector.jsx';
+import TaskOtherOptions from '../TaskOption/TaskOtherOptions.jsx';
+import TaskPriority from './TaskOptions/TaskPriority.jsx';
+import TaskInputBar from './TaskInputBar.jsx';
+import TaskFilters from './TaskFilters.jsx';
+import TaskList from './TaskList.jsx';
+import CompletedSection from './CompletedSection.jsx';
 import { formatDueDate } from './utils/dateFormatter.jsx';
 import { sortTasks } from './utils/taskSorter.jsx';
 

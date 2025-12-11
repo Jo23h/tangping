@@ -30,8 +30,8 @@ function PrincipleInputBar({
       span.style.position = 'absolute';
       span.textContent = input.value || input.placeholder;
       document.body.appendChild(span);
-      const width = span.offsetWidth + 20; // Add some padding
-      input.style.width = Math.max(width, 150) + 'px'; // Minimum 150px
+      const width = span.offsetWidth + 8; // Add minimal padding
+      input.style.width = Math.max(width, 20) + 'px'; // Minimum 20px
       document.body.removeChild(span);
     }
   };
