@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { filterTasks } from '../FilterLogic/TaskFilterLogic';
-import DateSelector from './DateSelector';
+import DateSelector from './TaskOptions/DateSelector';
+import TaskOtherOptions from '../TaskOption/TaskOtherOptions';
 
 function TaskInput() {
   const [taskText, setTaskText] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showOtherOptions, setShowOtherOptions] = useState(false);
   const [dueDate, setDueDate] = useState('');
   const [tasks, setTasks] = useState([]);
 
@@ -73,9 +75,21 @@ function TaskInput() {
           >
             📅
           </button>
-          <button className='task-dropdown-btn' type='button'>
-            ▼
-          </button>
+          <div style={{ position: 'relative' }}>
+            <button
+              className='task-dropdown-btn'
+              type='button'
+              onClick={() => setShowOtherOptions(!showOtherOptions)}
+            >
+              ▼
+            </button>
+            {showOtherOptions && (
+              <TaskOtherOptions
+                onClose={() => setShowOtherOptions(false)}
+                onPrioritySelect={(priority) => console.log('Priority:', priority)}
+              />
+            )}
+          </div>
         </div>
       </div>
 
