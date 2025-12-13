@@ -2,58 +2,46 @@ import { useState } from 'react';
 import './PrincipleModal.css';
 
 function PrincipleModal({ onClose, onSave, existingPrinciples = [] }) {
-  const [tag, setTag] = useState('#');
-  const [description, setDescription] = useState('');
+  const [principleInput, setPrincipleInput] = useState('');
   const [error, setError] = useState('');
 
-  const handleTagChange = (e) => {
-    let value = e.target.value;
+  const invalidChars = /[\\/"#:*?<>|\s]/;
 
-    // Always ensure it starts with #
-    if (!value.startsWith('#')) {
-      value = '#' + value;
-    }
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setPrincipleInput(value);
 
-    // Remove spaces and special characters except # at the beginning
-    const tagPart = value.substring(1); // Get everything after #
-    const cleanedTagPart = tagPart.replace(/[^a-zA-Z0-9]/g, ''); // Only allow alphanumeric
-
-    const newTag = '#' + cleanedTagPart;
-    setTag(newTag);
-
-    // Clear error when user types
-    if (error) {
+    // Check for invalid characters
+    if (invalidChars.test(value)) {
+      setError('Principle name can\'t contain \\/"#:*?<>|space');
+    } else {
       setError('');
     }
   };
 
-  const handleTagKeyDown = (e) => {
-    const input = e.target;
-    const selectionStart = input.selectionStart;
-
-    // Prevent deleting the # character
-    if ((e.key === 'Backspace' || e.key === 'Delete') && selectionStart <= 1) {
-      e.preventDefault();
-    }
-  };
-
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value);
-  };
-
   const handleSave = () => {
-    if (tag.length > 1) {
-      // Check for duplicate
-      const isDuplicate = existingPrinciples.some(p => p.tag.toLowerCase() === tag.toLowerCase());
+    const trimmedValue = principleInput.trim();
 
-      if (isDuplicate) {
-        setError('This principle already exists');
-        return;
+    // Don't save if empty or has invalid characters
+    if (!trimmedValue || invalidChars.test(trimmedValue)) {
+      if (!error && invalidChars.test(trimmedValue)) {
+        setError('Principle name can\'t contain \\/"#:*?<>|space');
       }
-
-      onSave({ tag, description });
-      onClose();
+      return;
     }
+
+    const tag = '#' + trimmedValue;
+
+    // Check for duplicate
+    const isDuplicate = existingPrinciples.some(p => p.tag.toLowerCase() === tag.toLowerCase());
+
+    if (isDuplicate) {
+      setError('This principle already exists');
+      return;
+    }
+
+    onSave({ tag, description: '' });
+    onClose();
   };
 
   const handleKeyPress = (e) => {
@@ -64,42 +52,29 @@ function PrincipleModal({ onClose, onSave, existingPrinciples = [] }) {
     }
   };
 
+  const isDisabled = !principleInput.trim() || !!error;
+
   return (
     <div className='principle-modal-overlay' onClick={onClose}>
       <div className='principle-modal' onClick={(e) => e.stopPropagation()}>
         <div className='principle-modal-header'>
-          <h3>Add Principle</h3>
-          <button className='principle-modal-close' onClick={onClose}>×</button>
+          <h3>Input a principle</h3>
         </div>
 
         <div className='principle-modal-body'>
-          <div className='principle-modal-field'>
-            <label>Tag</label>
+          <div className='principle-modal-input-container'>
+            <span className='principle-modal-hash'>#</span>
             <input
               type='text'
-              value={tag}
-              onChange={handleTagChange}
-              onKeyDown={handleTagKeyDown}
+              value={principleInput}
+              onChange={handleInputChange}
               onKeyPress={handleKeyPress}
-              className={`principle-modal-input ${error ? 'error' : ''}`}
-              placeholder='#principle'
+              className='principle-modal-input-simple'
+              placeholder='principle'
               autoFocus
             />
-            <span className='principle-modal-hint'>Only alphanumeric characters, no spaces</span>
-            {error && <span className='principle-modal-error'>{error}</span>}
           </div>
-
-          <div className='principle-modal-field'>
-            <label>Description (Optional)</label>
-            <input
-              type='text'
-              value={description}
-              onChange={handleDescriptionChange}
-              onKeyPress={handleKeyPress}
-              className='principle-modal-input'
-              placeholder='Add a description'
-            />
-          </div>
+          {error && <span className='principle-modal-error'>{error}</span>}
         </div>
 
         <div className='principle-modal-footer'>
@@ -109,9 +84,9 @@ function PrincipleModal({ onClose, onSave, existingPrinciples = [] }) {
           <button
             className='principle-modal-save'
             onClick={handleSave}
-            disabled={tag.length <= 1}
+            disabled={isDisabled}
           >
-            Add
+            OK
           </button>
         </div>
       </div>

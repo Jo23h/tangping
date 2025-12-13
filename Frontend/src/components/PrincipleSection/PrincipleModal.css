@@ -21,89 +21,64 @@
 }
 
 .principle-modal-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid #e0e0e0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: 20px 20px 16px 20px;
+  text-align: center;
 }
 
 .principle-modal-header h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #000;
 }
 
-.principle-modal-close {
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #999;
-  cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
+.principle-modal-body {
+  padding: 0 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.principle-modal-input-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.principle-modal-close:hover {
-  color: #333;
-}
-
-.principle-modal-body {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.principle-modal-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.principle-modal-field label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-}
-
-.principle-modal-input {
-  padding: 10px 12px;
-  font-size: 16px;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
-  outline: none;
-  font-family: inherit;
+  padding: 10px 12px;
+  background-color: white;
   transition: border-color 0.2s;
 }
 
-.principle-modal-input:focus {
+.principle-modal-input-container:focus-within {
   border-color: #7c3aed;
 }
 
-.principle-modal-hint {
-  font-size: 12px;
-  color: #999;
+.principle-modal-hash {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  margin-right: 2px;
+  user-select: none;
+}
+
+.principle-modal-input-simple {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  font-family: inherit;
+  padding: 0;
+  background-color: transparent;
+}
+
+.principle-modal-input-simple::placeholder {
+  color: #ccc;
 }
 
 .principle-modal-error {
   font-size: 12px;
   color: #dc3545;
   font-weight: 500;
-}
-
-.principle-modal-input.error {
-  border-color: #dc3545;
-}
-
-.principle-modal-input.error:focus {
-  border-color: #dc3545;
+  margin-top: 8px;
 }
 
 .principle-modal-footer {
