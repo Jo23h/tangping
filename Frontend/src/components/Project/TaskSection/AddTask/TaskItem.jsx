@@ -5,8 +5,6 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick }) {
     }
   };
 
-  const hasMemo = task.memo && task.memo.trim() !== '';
-
   return (
     <div className='task-item' onClick={handleTaskClick}>
       <input
@@ -21,9 +19,6 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick }) {
       <span className={`task-text ${task.completed ? 'task-completed' : ''}`}>
         {task.text}
       </span>
-      {hasMemo && (
-        <span className='task-memo-icon'>📄</span>
-      )}
       {task.dueDate && formatDueDate(task.dueDate) && (
         <span className={`task-due-date ${formatDueDate(task.dueDate).isOverdue ? 'overdue' : ''}`}>
           {formatDueDate(task.dueDate).displayText}

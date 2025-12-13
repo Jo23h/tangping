@@ -12,8 +12,6 @@ function NoteList({ notes, onDelete, formatDueDate, onItemClick }) {
   return (
     <div className='note-list'>
       {notes.map((note) => {
-        const hasMemo = note.memo && note.memo.trim() !== '';
-
         return (
           <div
             key={note.id}
@@ -21,9 +19,6 @@ function NoteList({ notes, onDelete, formatDueDate, onItemClick }) {
             onClick={() => handleNoteClick(note)}
           >
             <span className='note-text'>{note.text}</span>
-            {hasMemo && (
-              <span className='note-memo-icon'>📄</span>
-            )}
             {note.dueDate && formatDueDate(note.dueDate) && (
               <span
                 className={`note-due-date ${

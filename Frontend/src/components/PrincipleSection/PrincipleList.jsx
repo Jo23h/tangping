@@ -12,8 +12,6 @@ function PrincipleList({ principles, onDelete, onItemClick }) {
   return (
     <div className='principle-list'>
       {principles.map((principle) => {
-        const hasMemo = principle.memo && principle.memo.trim() !== '';
-
         return (
           <div
             key={principle.id}
@@ -22,9 +20,6 @@ function PrincipleList({ principles, onDelete, onItemClick }) {
           >
             <span className='principle-tag'>{principle.tag}</span>
             <span className='principle-description'>{principle.description}</span>
-            {hasMemo && (
-              <span className='principle-memo-icon'>📄</span>
-            )}
             <button
               onClick={(e) => {
                 e.stopPropagation();

@@ -142,10 +142,29 @@
 .text-section-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  cursor: pointer;
+  justify-content: space-between;
   margin-bottom: 4px;
   padding: 2px 0;
+}
+
+.text-section-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.text-section-add-icon {
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  padding: 0 8px;
+  user-select: none;
+}
+
+.text-section-add-icon:hover {
+  color: #333;
 }
 
 .text-section-arrow {
@@ -292,6 +311,37 @@
 .principle-section {
   width: 100%;
   margin-bottom: 4px;
+}
+
+.principle-textarea-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  margin-left: 24px;
+}
+
+.principle-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  background: transparent;
+  font-family: inherit;
+  resize: none;
+  overflow: hidden;
+  line-height: 24px;
+  padding: 0;
+  margin: 0;
+  min-height: 24px;
+}
+
+.principle-textarea::placeholder {
+  color: #ccc;
 }
 
 .principle-input-container {
@@ -735,6 +785,9 @@
 .memo-header {
   padding: 40px 40px 20px 40px;
   border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .memo-title {
@@ -743,6 +796,22 @@
   color: #000;
   margin: 0;
   word-wrap: break-word;
+}
+
+.memo-title-input {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-family: inherit;
+  padding: 0;
+  width: 100%;
+}
+
+.memo-title-input::placeholder {
+  color: #ccc;
 }
 
 .memo-content {

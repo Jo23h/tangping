@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './Navbar.css';
 
-function Navbar({ projects, selectedProject, onCreateProject, onSelectProject, onDeleteProject }) {
+function Navbar({ projects, selectedProject, onCreateProject, onSelectProject, onDeleteProject, inboxTaskCount = 0, onViewTaskSelect, selectedView = 'inbox' }) {
   const [selectedItem, setSelectedItem] = useState('inbox');
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
@@ -35,12 +35,28 @@ function Navbar({ projects, selectedProject, onCreateProject, onSelectProject, o
       {/* Main Navigation */}
       <nav className='navbar-main'>
         <div
-          className={`navbar-item ${selectedItem === 'inbox' ? 'active' : ''}`}
-          onClick={() => setSelectedItem('inbox')}
+          className={`navbar-item ${selectedView === 'viewtask' ? 'active' : ''}`}
+          onClick={() => {
+            setSelectedItem('viewtask');
+            onViewTaskSelect();
+          }}
+        >
+          <span className='navbar-icon'>👁️</span>
+          <span className='navbar-label'>View Task</span>
+        </div>
+
+        <div
+          className={`navbar-item ${selectedView === 'inbox' ? 'active' : ''}`}
+          onClick={() => {
+            setSelectedItem('inbox');
+            onSelectProject(null);
+          }}
         >
           <span className='navbar-icon'>📥</span>
           <span className='navbar-label'>Inbox</span>
-          <span className='navbar-count'>11</span>
+          {inboxTaskCount > 0 && (
+            <span className='navbar-count'>{inboxTaskCount}</span>
+          )}
         </div>
       </nav>
 
@@ -55,7 +71,7 @@ function Navbar({ projects, selectedProject, onCreateProject, onSelectProject, o
         {projects.map((project) => (
           <div
             key={project.id}
-            className={`navbar-item ${selectedProject?.id === project.id ? 'active' : ''}`}
+            className={`navbar-item ${selectedView === 'project' && selectedProject?.id === project.id ? 'active' : ''}`}
             onClick={() => onSelectProject(project)}
           >
             <span className='navbar-icon'>📋</span>
@@ -97,20 +113,9 @@ function Navbar({ projects, selectedProject, onCreateProject, onSelectProject, o
         )}
       </div>
 
-      {/* Filters Section */}
+      {/* Principles Section */}
       <div className='navbar-section'>
-        <div className='navbar-section-header'>Filters</div>
-        <div className='navbar-section-description'>
-          Display tasks filtered by list, date, priority, tag, and more
-        </div>
-      </div>
-
-      {/* Tags Section */}
-      <div className='navbar-section'>
-        <div className='navbar-section-header'>Tags</div>
-        <div className='navbar-section-description'>
-          Categorize your tasks with tags. Quickly select a tag by typing "#" when adding a task
-        </div>
+        <div className='navbar-section-header'>Principles</div>
       </div>
 
       {/* Bottom Section */}

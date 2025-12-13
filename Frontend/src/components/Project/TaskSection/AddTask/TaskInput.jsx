@@ -11,22 +11,31 @@ import CompletedSection from './CompletedSection.jsx';
 import { formatDueDate } from './utils/dateFormatter.jsx';
 import { sortTasks } from './utils/taskSorter.jsx';
 
-function TaskInput({ onItemClick, selectedItem }) {
+function TaskInput({ onItemClick, selectedItem, showHeader = true, onTaskCountChange, tasks: externalTasks, onTasksChange, projectId = null }) {
   const [taskText, setTaskText] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showOtherOptions, setShowOtherOptions] = useState(false);
   const [dueDate, setDueDate] = useState('');
-  const [tasks, setTasks] = useState([]);
+  const [internalTasks, setInternalTasks] = useState([]);
   const [isExpanded, setIsExpanded] = useState(true);
 
-  // Update task memo when selectedItem changes
+  // Use external tasks if provided, otherwise use internal state
+  const tasks = externalTasks !== undefined ? externalTasks : internalTasks;
+  const setTasks = onTasksChange || setInternalTasks;
+
+  // Update task when selectedItem changes
   useEffect(() => {
-    if (selectedItem && selectedItem.memo !== undefined) {
+    if (selectedItem) {
       setTasks(prevTasks =>
         prevTasks.map(task =>
           task.id === selectedItem.id
-            ? { ...task, memo: selectedItem.memo }
+            ? {
+                ...task,
+                text: selectedItem.text !== undefined ? selectedItem.text : task.text,
+                memo: selectedItem.memo !== undefined ? selectedItem.memo : task.memo,
+                memoLastModified: selectedItem.memoLastModified
+              }
             : task
         )
       );
@@ -57,7 +66,8 @@ function TaskInput({ onItemClick, selectedItem }) {
         text: finalText,
         dueDate: dueDate,
         priority: finalPriority,
-        completed: false
+        completed: false,
+        projectId: projectId // Track which project this task belongs to
       };
       setTasks([...tasks, newTask]);
       setTaskText('');
@@ -88,6 +98,20 @@ function TaskInput({ onItemClick, selectedItem }) {
   const activeTasks = tasks.filter(task => !task.completed);
   const completedTasks = tasks.filter(task => task.completed);
 
+  // Notify parent of task changes (for centralized state management)
+  useEffect(() => {
+    if (onTasksChange) {
+      onTasksChange(tasks);
+    }
+  }, [tasks, onTasksChange]);
+
+  // Notify parent of task count changes
+  useEffect(() => {
+    if (onTaskCountChange) {
+      onTaskCountChange(activeTasks.length);
+    }
+  }, [activeTasks.length, onTaskCountChange]);
+
   // Use the filter logic from TaskFilterLogic - on both active and completed tasks
   const filteredActiveTasks = sortTasks(filterTasks(activeTasks, activeFilter));
   const filteredCompletedTasks = sortTasks(filterTasks(completedTasks, activeFilter));
@@ -99,22 +123,24 @@ function TaskInput({ onItemClick, selectedItem }) {
 
   return (
     <div className='task-input-section'>
-      {/* Section header - collapsible */}
-      <div
-        className='text-section-header'
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <span className='text-section-arrow'>
-          {isExpanded ? 'v' : '>'}
-        </span>
-        <h2 className='project-form-section-title'>All Tasks</h2>
-        {!isExpanded && hasContent() && (
-          <span className='text-section-ellipsis'>...</span>
-        )}
-      </div>
+      {/* Section header - collapsible (only show if showHeader is true) */}
+      {showHeader && (
+        <div
+          className='text-section-header'
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <span className='text-section-arrow'>
+            {isExpanded ? 'v' : '>'}
+          </span>
+          <h2 className='project-form-section-title'>All Tasks</h2>
+          {!isExpanded && hasContent() && (
+            <span className='text-section-ellipsis'>...</span>
+          )}
+        </div>
+      )}
 
-      {/* Task content - only show when expanded */}
-      {isExpanded && (
+      {/* Task content - only show when expanded (or always show if no header) */}
+      {(isExpanded || !showHeader) && (
         <>
           {/* Task input box */}
           <TaskInputBar

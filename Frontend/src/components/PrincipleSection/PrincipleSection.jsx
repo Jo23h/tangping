@@ -1,21 +1,25 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import PrincipleInputBar from './PrincipleInputBar';
 import PrincipleList from './PrincipleList';
+import PrincipleModal from './PrincipleModal';
 
 function PrincipleSection({ title, onItemClick, selectedItem }) {
   const [isExpanded, setIsExpanded] = useState(true);
-  const [tag, setTag] = useState('#');
-  const [description, setDescription] = useState('');
   const [principles, setPrinciples] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
-  // Update principle memo when selectedItem changes
+  // Update principle when selectedItem changes
   useEffect(() => {
-    if (selectedItem && selectedItem.memo !== undefined) {
+    if (selectedItem) {
       setPrinciples(prevPrinciples =>
         prevPrinciples.map(principle =>
           principle.id === selectedItem.id
-            ? { ...principle, memo: selectedItem.memo }
+            ? {
+                ...principle,
+                tag: selectedItem.tag !== undefined ? selectedItem.tag : principle.tag,
+                memo: selectedItem.memo !== undefined ? selectedItem.memo : principle.memo,
+                memoLastModified: selectedItem.memoLastModified
+              }
             : principle
         )
       );
@@ -27,32 +31,17 @@ function PrincipleSection({ title, onItemClick, selectedItem }) {
     return principles.length > 0;
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && tag.trim() && tag !== '#') {
-      e.preventDefault();
-
-      // Ensure tag starts with #
-      const finalTag = tag.startsWith('#') ? tag : `#${tag}`;
-
-      // Create new principle
-      const newPrinciple = {
-        id: uuidv4(),
-        tag: finalTag,
-        description: description
-      };
-      setPrinciples([...principles, newPrinciple]);
-      setTag('#');
-      setDescription('');
-    }
+  const handleAddPrinciple = () => {
+    setShowModal(true);
   };
 
-  const handleTagChange = (e) => {
-    let value = e.target.value;
-    // Ensure it always starts with #
-    if (!value.startsWith('#')) {
-      value = '#' + value;
-    }
-    setTag(value);
+  const handleSavePrinciple = ({ tag, description }) => {
+    const newPrinciple = {
+      id: uuidv4(),
+      tag: tag,
+      description: description || ''
+    };
+    setPrinciples([...principles, newPrinciple]);
   };
 
   const handleDeletePrinciple = (principleId) => {
@@ -62,38 +51,47 @@ function PrincipleSection({ title, onItemClick, selectedItem }) {
 
   return (
     <div className='principle-section'>
-      {/* Section header with collapse arrow */}
-      <div
-        className='text-section-header'
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <span className='text-section-arrow'>
-          {isExpanded ? 'v' : '>'}
+      {/* Section header with collapse arrow and add principle icon */}
+      <div className='text-section-header'>
+        <div
+          className='text-section-header-left'
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <span className='text-section-arrow'>
+            {isExpanded ? 'v' : '>'}
+          </span>
+          <h2 className='project-form-section-title'>{title}</h2>
+          {!isExpanded && hasContent() && (
+            <span className='text-section-ellipsis'>...</span>
+          )}
+        </div>
+        <span
+          className='text-section-add-icon'
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAddPrinciple();
+          }}
+        >
+          +
         </span>
-        <h2 className='project-form-section-title'>{title}</h2>
-        {!isExpanded && hasContent() && (
-          <span className='text-section-ellipsis'>...</span>
-        )}
       </div>
 
-      {/* Principle input and list - only show when expanded */}
+      {/* Principle list - only show when expanded */}
       {isExpanded && (
-        <>
-          <PrincipleInputBar
-            tag={tag}
-            description={description}
-            onTagChange={handleTagChange}
-            onDescriptionChange={(e) => setDescription(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
+        <PrincipleList
+          principles={principles}
+          onDelete={handleDeletePrinciple}
+          onItemClick={onItemClick}
+        />
+      )}
 
-          {/* Principle list */}
-          <PrincipleList
-            principles={principles}
-            onDelete={handleDeletePrinciple}
-            onItemClick={onItemClick}
-          />
-        </>
+      {/* Principle Modal */}
+      {showModal && (
+        <PrincipleModal
+          onClose={() => setShowModal(false)}
+          onSave={handleSavePrinciple}
+          existingPrinciples={principles}
+        />
       )}
     </div>
   );

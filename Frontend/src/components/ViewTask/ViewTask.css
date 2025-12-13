@@ -1,0 +1,20 @@
+.view-task-container {
+  width: 100%;
+}
+
+/* Remove left margins/padding for view task page alignment */
+.view-task-container .task-input-container {
+  margin-left: 0;
+}
+
+.view-task-container .task-filters {
+  padding-left: 0;
+}
+
+.view-task-container .task-list {
+  margin-left: 0;
+}
+
+.view-task-container .completed-section-header {
+  margin-left: 0;
+}
