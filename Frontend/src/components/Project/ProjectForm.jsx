@@ -8,6 +8,7 @@ import TaskInput from './TaskSection/AddTask/TaskInput';
 import MemoSection from '../MemoSection/MemoSection';
 import InboxPage from '../InboxPage/InboxPage';
 import ViewTask from '../ViewTask/ViewTask';
+import PrinciplesPage from '../PrinciplesPage/PrinciplesPage';
 
 function ProjectForm() {
   const [projects, setProjects] = useState([]);
@@ -15,11 +16,14 @@ function ProjectForm() {
   const [projectTitle, setProjectTitle] = useState('Inbox');
   const [selectedItem, setSelectedItem] = useState(null);
   const [inboxTaskCount, setInboxTaskCount] = useState(0);
-  const [selectedView, setSelectedView] = useState('inbox'); // 'inbox', 'viewtask', or project
+  const [selectedView, setSelectedView] = useState('inbox'); // 'inbox', 'viewtask', 'principles', or 'project'
 
   // Centralized task management
   const [inboxTasks, setInboxTasks] = useState([]);
   const [projectTasks, setProjectTasks] = useState({}); // { projectId: [tasks] }
+
+  // Centralized principle management
+  const [projectPrinciples, setProjectPrinciples] = useState({}); // { projectId: [principles] }
 
   const handleCreateNewProject = (projectName) => {
     const newProject = {
@@ -31,8 +35,9 @@ function ProjectForm() {
     setSelectedProject(newProject);
     setProjectTitle(newProject.name);
     setSelectedView('project');
-    // Initialize empty task array for new project
+    // Initialize empty task and principle arrays for new project
     setProjectTasks(prev => ({ ...prev, [newProject.id]: [] }));
+    setProjectPrinciples(prev => ({ ...prev, [newProject.id]: [] }));
   };
 
   const handleSelectProject = (project) => {
@@ -63,10 +68,13 @@ function ProjectForm() {
   const handleDeleteProject = (projectId) => {
     const updatedProjects = projects.filter(p => p.id !== projectId);
     setProjects(updatedProjects);
-    // Remove project tasks
+    // Remove project tasks and principles
     const updatedProjectTasks = { ...projectTasks };
     delete updatedProjectTasks[projectId];
     setProjectTasks(updatedProjectTasks);
+    const updatedProjectPrinciples = { ...projectPrinciples };
+    delete updatedProjectPrinciples[projectId];
+    setProjectPrinciples(updatedProjectPrinciples);
     // If the deleted project was selected, clear selection (go to Inbox)
     if (selectedProject?.id === projectId) {
       setSelectedProject(null);
@@ -112,6 +120,12 @@ function ProjectForm() {
     setProjectTitle('View Task');
   };
 
+  const handlePrinciplesViewSelect = () => {
+    setSelectedView('principles');
+    setSelectedProject(null);
+    setProjectTitle('Principles');
+  };
+
   // Get all tasks across all projects and inbox
   const getAllTasks = () => {
     const allTasks = [...inboxTasks];
@@ -119,6 +133,16 @@ function ProjectForm() {
       allTasks.push(...tasks);
     });
     return allTasks;
+  };
+
+  // Get all principles across all projects
+  const getAllPrinciples = () => {
+    const allPrinciples = [];
+    Object.entries(projectPrinciples).forEach(([projectId, principles]) => {
+      const principlesWithProject = principles.map(p => ({ ...p, projectId }));
+      allPrinciples.push(...principlesWithProject);
+    });
+    return allPrinciples;
   };
 
   // Update inbox task count
@@ -131,6 +155,11 @@ function ProjectForm() {
   // Update project tasks
   const handleProjectTasksChange = (projectId, tasks) => {
     setProjectTasks(prev => ({ ...prev, [projectId]: tasks }));
+  };
+
+  // Update project principles
+  const handleProjectPrinciplesChange = (projectId, principles) => {
+    setProjectPrinciples(prev => ({ ...prev, [projectId]: principles }));
   };
 
   // Handle task changes from ViewTask (update source based on projectId)
@@ -159,6 +188,28 @@ function ProjectForm() {
     });
   };
 
+  // Handle principle changes from PrinciplesPage (update source based on projectId)
+  const handleViewPrinciplesChange = (updatedPrinciples) => {
+    // Separate principles by their projectId
+    const projectPrinciplesMap = {};
+
+    updatedPrinciples.forEach(principle => {
+      if (principle.projectId) {
+        if (!projectPrinciplesMap[principle.projectId]) {
+          projectPrinciplesMap[principle.projectId] = [];
+        }
+        // Remove the projectId property before storing
+        const { projectId, ...principleData } = principle;
+        projectPrinciplesMap[principle.projectId].push(principleData);
+      }
+    });
+
+    // Update project principles
+    Object.keys(projectPrinciplesMap).forEach(projectId => {
+      setProjectPrinciples(prev => ({ ...prev, [projectId]: projectPrinciplesMap[projectId] }));
+    });
+  };
+
   return (
     <div className='project-form-container'>
       {/* Navbar - left sidebar */}
@@ -170,6 +221,7 @@ function ProjectForm() {
         onDeleteProject={handleDeleteProject}
         inboxTaskCount={inboxTaskCount}
         onViewTaskSelect={handleViewTaskSelect}
+        onPrinciplesViewSelect={handlePrinciplesViewSelect}
         selectedView={selectedView}
       />
 
@@ -189,7 +241,7 @@ function ProjectForm() {
             <span className='project-form-menu-icon'>⋯</span>
           </div>
 
-          {/* Conditional rendering: ViewTask, Inbox, or Project page */}
+          {/* Conditional rendering: ViewTask, Principles, Inbox, or Project page */}
           {selectedView === 'viewtask' ? (
             /* View Task page - all tasks across projects and inbox */
             <ViewTask
@@ -197,6 +249,14 @@ function ProjectForm() {
               selectedItem={selectedItem}
               tasks={getAllTasks()}
               onTasksChange={handleViewTaskChange}
+            />
+          ) : selectedView === 'principles' ? (
+            /* Principles page - all principles across projects */
+            <PrinciplesPage
+              onItemClick={handleItemClick}
+              selectedItem={selectedItem}
+              principles={getAllPrinciples()}
+              onPrinciplesChange={handleViewPrinciplesChange}
             />
           ) : selectedView === 'inbox' ? (
             /* Inbox page - only inbox tasks */
@@ -214,6 +274,8 @@ function ProjectForm() {
                 title='Principles'
                 onItemClick={handleItemClick}
                 selectedItem={selectedItem}
+                principles={projectPrinciples[selectedProject?.id] || []}
+                onPrinciplesChange={(principles) => handleProjectPrinciplesChange(selectedProject?.id, principles)}
               />
 
               {/* Goal state section - child component */}

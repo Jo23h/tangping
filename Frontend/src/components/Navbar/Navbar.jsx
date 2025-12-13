@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './Navbar.css';
 
-function Navbar({ projects, selectedProject, onCreateProject, onSelectProject, onDeleteProject, inboxTaskCount = 0, onViewTaskSelect, selectedView = 'inbox' }) {
+function Navbar({ projects, selectedProject, onCreateProject, onSelectProject, onDeleteProject, inboxTaskCount = 0, onViewTaskSelect, onPrinciplesViewSelect, selectedView = 'inbox' }) {
   const [selectedItem, setSelectedItem] = useState('inbox');
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
@@ -115,33 +115,16 @@ function Navbar({ projects, selectedProject, onCreateProject, onSelectProject, o
 
       {/* Principles Section */}
       <div className='navbar-section'>
-        <div className='navbar-section-header'>Principles</div>
-      </div>
-
-      {/* Bottom Section */}
-      <div className='navbar-bottom'>
-        <div className='navbar-item'>
-          <span className='navbar-icon'>✓</span>
-          <span className='navbar-label'>Completed</span>
+        <div
+          className={`navbar-item ${selectedView === 'principles' ? 'active' : ''}`}
+          onClick={() => {
+            setSelectedItem('principles');
+            onPrinciplesViewSelect();
+          }}
+        >
+          <span className='navbar-icon'>🏷️</span>
+          <span className='navbar-label'>Principles</span>
         </div>
-
-        <div className='navbar-item'>
-          <span className='navbar-icon'>🗑️</span>
-          <span className='navbar-label'>Trash</span>
-        </div>
-      </div>
-
-      {/* Bottom Actions */}
-      <div className='navbar-actions'>
-        <button className='navbar-action-btn'>
-          <span>🔄</span>
-        </button>
-        <button className='navbar-action-btn'>
-          <span>🔔</span>
-        </button>
-        <button className='navbar-action-btn'>
-          <span>?</span>
-        </button>
       </div>
     </div>
   );
