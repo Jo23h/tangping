@@ -2,7 +2,7 @@ import { useState } from 'react';
 import TaskList from '../TaskInputBar/TaskList';
 import './CompletedSection.css';
 
-function CompletedSection({ tasks, onToggle, onDelete, formatDueDate, onItemClick }) {
+function CompletedSection({ tasks, onToggle, onDelete, formatDueDate, onItemClick, onTaskEdit }) {
   const [showCompleted, setShowCompleted] = useState(true);
 
   if (tasks.length === 0) {
@@ -29,6 +29,7 @@ function CompletedSection({ tasks, onToggle, onDelete, formatDueDate, onItemClic
           onDelete={onDelete}
           formatDueDate={formatDueDate}
           onItemClick={onItemClick}
+          onTaskEdit={onTaskEdit}
         />
       )}
     </div>

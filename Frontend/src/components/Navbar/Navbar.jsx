@@ -1,6 +1,7 @@
 import './Navbar.css'
 import ProjectWindow from './ProjectWindow/ProjectWindow'
 
+
 function NavBar() {
   return (
     <div className="navbar">
@@ -9,15 +10,8 @@ function NavBar() {
           📋
         </button>
 
-        <button className="navbar-icon" title="Inbox">
-          📧
-        </button>
+        {/* <ProjectWindow /> */}
 
-        <ProjectWindow />
-
-        <button className="navbar-icon" title="Principles">
-          #️⃣
-        </button>
       </div>
     </div>
   )

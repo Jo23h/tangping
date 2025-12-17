@@ -83,6 +83,18 @@
   min-width: 0;
 }
 
+.task-text-input {
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+  border: none;
+  padding: 0;
+  outline: none;
+  background-color: transparent;
+}
+
 .task-completed {
   text-decoration: line-through;
   color: #999;
