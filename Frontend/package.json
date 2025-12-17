@@ -1,5 +1,5 @@
 {
-  "name": "front-end",
+  "name": "close-in-the-distance",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "react": "^19.2.0",
+    "react-datepicker": "^9.0.0",
     "react-dom": "^19.2.0",
     "uuid": "^13.0.0"
   },

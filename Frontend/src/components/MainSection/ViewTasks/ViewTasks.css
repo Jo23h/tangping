@@ -1,0 +1,40 @@
+.view-task {
+    padding: 20px;
+    height: 100%;
+  }
+
+  .view-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .view-task-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+  }
+
+  .view-task-menu {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #666;
+    transition: all 0.2s;
+  }
+
+  .view-task-menu:hover {
+    background-color: #f0f0f0;
+    color: #1a1a1a;
+  }
+
+  .view-task-content {
+    /* Content area for tasks */
+  }

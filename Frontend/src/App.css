@@ -1,37 +1,31 @@
-/* Root styles moved to index.css for full-screen layout */
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
   }
-  to {
-    transform: rotate(360deg);
+
+  /* Left sidebar - Navbar */
+  .app-container > :nth-child(1) {
+    width: 60px;
+    flex-shrink: 0;
+    background-color: #e3e6e3;
   }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  /* Center - Main content */
+  .app-container > :nth-child(2) {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #fafafa;
   }
-}
 
-.card {
-  padding: 2em;
-}
+  /* Right sidebar - Memo section */
+  .app-container > :nth-child(3) {
+    width: 40%;
+    flex-shrink: 0;
+    background-color: white;
+    border-left: 1px solid #e0e0e0;
+    overflow-y: auto;
+  }
 
-.read-the-docs {
-  color: #888;
-}
+

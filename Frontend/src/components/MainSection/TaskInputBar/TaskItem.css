@@ -1,0 +1,120 @@
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+  cursor: pointer;
+}
+
+.task-item:hover {
+  background-color: #fafafa;
+}
+
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  outline: none;
+  transition: all 0.2s;
+  position: relative;
+}
+
+/* Priority-based checkbox border colors */
+.task-checkbox.priority-high {
+  border-color: #dc4c3e;
+}
+
+.task-checkbox.priority-medium {
+  border-color: #ff9a14;
+}
+
+.task-checkbox.priority-low {
+  border-color: #246fe0;
+}
+
+.task-checkbox.priority-none {
+  border-color: #ddd;
+}
+
+/* Checked state with priority colors */
+.task-checkbox.priority-high:checked {
+  background-color: #dc4c3e;
+  border-color: #dc4c3e;
+}
+
+.task-checkbox.priority-medium:checked {
+  background-color: #ff9a14;
+  border-color: #ff9a14;
+}
+
+.task-checkbox.priority-low:checked {
+  background-color: #246fe0;
+  border-color: #246fe0;
+}
+
+.task-checkbox.priority-none:checked {
+  background-color: #999;
+  border-color: #999;
+}
+
+.task-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.task-text {
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.task-completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.task-due-date {
+  font-size: 12px;
+  color: #246fe0;
+  font-weight: 500;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.task-due-date.overdue {
+  color: #dc4c3e;
+}
+
+.task-delete-btn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  padding: 0 8px;
+  display: none;
+  line-height: 1;
+}
+
+.task-item:hover .task-delete-btn {
+  display: block;
+}
+
+.task-delete-btn:hover {
+  color: #dc3545;
+}

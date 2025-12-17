@@ -1,0 +1,49 @@
+.task-input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    margin-left: 24px;
+  }
+
+  .task-plus-button {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .task-plus-button:hover {
+    background-color: #f0f0f0;
+    color: #1a1a1a;
+  }
+
+  .task-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 4px 0;
+    background: transparent;
+  }
+
+  .task-input::placeholder {
+    color: #999;
+  }
+
+  .task-list {
+    margin-top: 12px;
+    margin-left: 24px;
+  }

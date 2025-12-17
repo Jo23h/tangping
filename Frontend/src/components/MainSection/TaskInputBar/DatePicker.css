@@ -1,0 +1,43 @@
+.date-picker {
+    position: relative;
+  }
+
+  .date-picker-button {
+    background: none;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.2s;
+  }
+
+  .date-picker-button:hover {
+    background-color: #f0f0f0;
+    color: #1a1a1a;
+  }
+
+  .date-picker-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .date-picker-actions button {
+    flex: 1;
+    padding: 6px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+  }
+
+  .date-picker-actions button:hover {
+    background-color: #f0f0f0;
+  }
+
