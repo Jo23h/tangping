@@ -1,0 +1,21 @@
+.signup-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 90%;
+  color: #64748b;
+}
+
+.signup-link a {
+  color: #06b6d4;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}

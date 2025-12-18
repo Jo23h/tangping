@@ -6,7 +6,7 @@ const saltRounds = 10
 
 const signUp = async (req, res) => {
     try {
-        const { name, email, password } = req.body
+        const { name, email, password, role } = req.body
 
         const existingUser = await User.findOne({ email })
         if (existingUser) {
@@ -18,11 +18,15 @@ const signUp = async (req, res) => {
         const newUser = await User.create({
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            role: role || 'user'
         })
 
         const token = jwt.sign(
-            { userId: newUser._id },
+            {
+                userId: newUser._id,
+                role: newUser.role
+            },
             process.env.JWT_SECRET)
 
         res.status(201).json(
@@ -31,7 +35,8 @@ const signUp = async (req, res) => {
                 user: {
                     _id: newUser._id,
                     name: newUser.name,
-                    email: newUser.email
+                    email: newUser.email,
+                    role: newUser.role
                 }
             })
 
@@ -55,7 +60,10 @@ const signIn = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { userId: user._id },
+            {
+                userId: user._id,
+                role: user.role
+            },
             process.env.JWT_SECRET
         )
 
@@ -64,7 +72,8 @@ const signIn = async (req, res) => {
             user: {
                 _id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                role: user.role
             }
         })
 
