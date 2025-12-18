@@ -1,7 +1,6 @@
 import './Navbar.css'
 import ProjectWindow from './ProjectWindow/ProjectWindow'
 
-
 function NavBar() {
   return (
     <div className="navbar">

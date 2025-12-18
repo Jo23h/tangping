@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import TaskFilter, { filterTasks } from '../TaskFilter/TaskFilter';
+import TaskFilter, { filterTasks } from './TaskFilter';
 import TaskList from '../TaskInputBar/TaskList';
-import CompletedSection from '../TaskFilter/CompletedSection';
+import CompletedSection from './CompletedSection';
 import { sortTasks } from '../TaskInputBar/TaskSorter';
 import { formatDueDate } from '../TaskInputBar/dateFormatter';
 import './TaskManager.css';

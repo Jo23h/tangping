@@ -8,7 +8,7 @@ function ViewTasks() {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    // Listen for task updates from MemoSection
+    // Task updates
     const handleTaskUpdatedFromMemo = (event) => {
       const updatedTask = event.detail;
       const updatedTasks = tasks.map(task =>
@@ -16,7 +16,6 @@ function ViewTasks() {
       );
       setTasks(updatedTasks);
 
-      // Re-emit to keep MemoSection in sync
       const syncEvent = new CustomEvent('taskUpdated', { detail: updatedTask });
       window.dispatchEvent(syncEvent);
     };

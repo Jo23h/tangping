@@ -23,6 +23,10 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
   const handleTextClick = (e) => {
     e.stopPropagation();
     setIsEditing(true);
+    // Also open memo when clicking text
+    if (onItemClick) {
+      onItemClick(task);
+    }
   };
 
   const handleSave = () => {
