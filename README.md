@@ -1,5 +1,3 @@
-<img width="1032" height="996" alt="Screenshot 2025-12-19 at 11 31 01 PM" src="https://github.com/user-attachments/assets/460c17cf-1aba-4b21-85b9-5a9ebb486456" /># 躺平 tangping
-
 ### Context
 Fundamental to happiness is enjoying the journey, not achieving the outcome. Put differently, people fill more fulfilled when they experience meaningful growth. 
 
