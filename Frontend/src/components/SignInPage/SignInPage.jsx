@@ -11,20 +11,20 @@ function SignInPage() {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        setError("") // Clear previous errors
+        setError("")
         try {
             await signIn(email, password)
-            navigate("/dashboard") // Navigate to dashboard after successful login
+            navigate("/dashboard") 
         } catch (error) {
             setError(error.message || "Invalid credentials")
         }
     }
 
     const handleGuestSignIn = async () => {
-        setError("") // Clear previous errors
+        setError("") 
         try {
             await guestSignIn()
-            navigate("/dashboard") // Navigate to dashboard as guest
+            navigate("/dashboard") 
         } catch (error) {
             setError(error.message || "Guest sign in failed")
         }

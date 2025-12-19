@@ -12,10 +12,10 @@ function SignUpPage() {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        setError("") // Clear previous errors
+        setError("") 
         try {
             await signUp(name, email, password)
-            navigate("/dashboard") // Navigate to dashboard after successful signup
+            navigate("/dashboard") 
         } catch (error) {
             setError(error.message || "Signup failed. Email may already be in use")
         }
