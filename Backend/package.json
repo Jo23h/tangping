@@ -20,14 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Pressturn/OSPS-BE.git"
+    "url": "git+https://github.com/Jo23h/tangping.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/Pressturn/OSPS-BE/issues"
+    "url": "https://github.com/Jo23h/tangping/issues"
   },
-  "homepage": "https://github.com/Pressturn/OSPS-BE#readme"
+  "homepage": "https://github.com/Jo23h/tangping#readme"
 }

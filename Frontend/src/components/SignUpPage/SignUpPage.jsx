@@ -1,6 +1,6 @@
 import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
 import { signUp } from "../../services/authService"
-import { Link } from "react-router-dom"
 import "./SignUpPage.css"
 
 function SignUpPage() {
@@ -8,14 +8,16 @@ function SignUpPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
+    const navigate = useNavigate()
 
     const handleSubmit = async (event) => {
         event.preventDefault()
+        setError("") // Clear previous errors
         try {
             await signUp(name, email, password)
-            window.location.href = "/signin"
+            navigate("/dashboard") // Navigate to dashboard after successful signup
         } catch (error) {
-            setError("Signup Failed. Email is in use")
+            setError(error.message || "Signup failed. Email may already be in use")
             console.error(error)
         }
     }
@@ -24,7 +26,7 @@ function SignUpPage() {
         <div className="page-container">
             <div className="page-box">
                 <h1 className="page-title">Create Account</h1>
-                <p className="page-subtitle">Join OSPS to start splitting expenses</p>
+                <p className="page-subtitle">Join Tangping to start managing your tasks</p>
 
                 <form onSubmit={handleSubmit} className="signup-form">
                     <input

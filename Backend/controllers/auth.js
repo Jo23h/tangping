@@ -22,6 +22,8 @@ const signUp = async (req, res) => {
             role: role || 'user'
         })
 
+        console.log('User created successfully:', { email: newUser.email, role: newUser.role });
+
         const token = jwt.sign(
             {
                 userId: newUser._id,
@@ -41,6 +43,7 @@ const signUp = async (req, res) => {
             })
 
     } catch (error) {
+        console.log('Signup error:', error);
         res.status(500).json({ error: 'Signup Failed' })
     }
 }

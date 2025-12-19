@@ -1,22 +1,26 @@
 import { useState, useEffect } from 'react';
 import './MemoSection.css';
+import * as taskService from '../../services/taskService';
 
 function MemoSection() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskTitle, setTaskTitle] = useState('');
+  const [memoContent, setMemoContent] = useState('');
 
   useEffect(() => {
     // Listen for task selection events
     const handleTaskSelected = (event) => {
       setSelectedTask(event.detail);
       setTaskTitle(event.detail.text);
+      setMemoContent(event.detail.memo || '');
     };
 
     // Listen for task update events
     const handleTaskUpdated = (event) => {
-      if (selectedTask && selectedTask.id === event.detail.id) {
+      if (selectedTask && selectedTask._id === event.detail._id) {
         setSelectedTask(event.detail);
         setTaskTitle(event.detail.text);
+        setMemoContent(event.detail.memo || '');
       }
     };
 
@@ -34,12 +38,17 @@ function MemoSection() {
     setTaskTitle(e.target.value);
   };
 
-  const handleTitleBlur = () => {
+  const handleTitleBlur = async () => {
     if (taskTitle.trim() && taskTitle !== selectedTask.text) {
-      const updatedTask = { ...selectedTask, text: taskTitle.trim() };
-      // Emit event to update the task
-      const event = new CustomEvent('taskUpdatedFromMemo', { detail: updatedTask });
-      window.dispatchEvent(event);
+      try {
+        const updatedTask = await taskService.updateTask(selectedTask._id, { text: taskTitle.trim() });
+        // Emit event to update the task
+        const event = new CustomEvent('taskUpdatedFromMemo', { detail: updatedTask });
+        window.dispatchEvent(event);
+      } catch (err) {
+        console.error('Error updating task title:', err);
+        setTaskTitle(selectedTask.text);
+      }
     } else {
       setTaskTitle(selectedTask.text);
     }
@@ -51,6 +60,18 @@ function MemoSection() {
     } else if (e.key === 'Escape') {
       setTaskTitle(selectedTask.text);
       e.target.blur();
+    }
+  };
+
+  const handleMemoBlur = async (e) => {
+    const newMemo = e.target.textContent;
+    if (newMemo !== selectedTask.memo) {
+      try {
+        const updatedTask = await taskService.updateTask(selectedTask._id, { memo: newMemo });
+        setSelectedTask(updatedTask);
+      } catch (err) {
+        console.error('Error updating memo:', err);
+      }
     }
   };
 
@@ -88,6 +109,8 @@ function MemoSection() {
         contentEditable
         suppressContentEditableWarning
         data-placeholder='Start writing...'
+        onBlur={handleMemoBlur}
+        dangerouslySetInnerHTML={{ __html: memoContent }}
       />
     </div>
   );

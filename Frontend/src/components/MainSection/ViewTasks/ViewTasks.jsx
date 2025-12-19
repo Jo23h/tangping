@@ -2,17 +2,38 @@ import { useState, useEffect } from 'react';
 import './ViewTasks.css';
 import TaskInput from '../TaskInputBar/TaskInput';
 import TaskManager from '../TaskManager/TaskManager';
-import { createTask } from '../TaskInputBar/TaskSchema';
+import * as taskService from '../../../services/taskService';
 
 function ViewTasks() {
   const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch tasks on mount
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks = async () => {
+    try {
+      setLoading(true);
+      const fetchedTasks = await taskService.getAllTasks();
+      setTasks(fetchedTasks);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error fetching tasks:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Task updates
     const handleTaskUpdatedFromMemo = (event) => {
       const updatedTask = event.detail;
       const updatedTasks = tasks.map(task =>
-        task.id === updatedTask.id ? updatedTask : task
+        task._id === updatedTask._id ? updatedTask : task
       );
       setTasks(updatedTasks);
 
@@ -27,23 +48,48 @@ function ViewTasks() {
     };
   }, [tasks]);
 
-  const handleAddTask = (taskText, dueDate, priority) => {
-    const newTask = createTask(taskText);
-    newTask.dueDate = dueDate;
-    newTask.priority = priority;
-    setTasks([...tasks, newTask]);
+  const handleAddTask = async (taskText, dueDate, priority) => {
+    try {
+      const taskData = {
+        text: taskText,
+        dueDate: dueDate || null,
+        priority: priority || 'none',
+        completed: false,
+        memo: ''
+      };
+      const newTask = await taskService.createTask(taskData);
+      setTasks([...tasks, newTask]);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error creating task:', err);
+    }
   };
 
-  const handleToggleTask = (taskId) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === taskId ? { ...task, completed: !task.completed } : task
-    );
-    setTasks(updatedTasks);
+  const handleToggleTask = async (taskId) => {
+    try {
+      const task = tasks.find(t => t._id === taskId);
+      const updatedTask = await taskService.updateTask(taskId, {
+        completed: !task.completed
+      });
+      const updatedTasks = tasks.map(t =>
+        t._id === taskId ? updatedTask : t
+      );
+      setTasks(updatedTasks);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error toggling task:', err);
+    }
   };
 
-  const handleDeleteTask = (taskId) => {
-    const updatedTasks = tasks.filter(task => task.id !== taskId);
-    setTasks(updatedTasks);
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await taskService.deleteTask(taskId);
+      const updatedTasks = tasks.filter(task => task._id !== taskId);
+      setTasks(updatedTasks);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error deleting task:', err);
+    }
   };
 
   const handleTaskClick = (task) => {
@@ -52,19 +98,35 @@ function ViewTasks() {
     window.dispatchEvent(event);
   };
 
-  const handleTaskEdit = (taskId, newText) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === taskId ? { ...task, text: newText } : task
-    );
-    setTasks(updatedTasks);
+  const handleTaskEdit = async (taskId, newText) => {
+    try {
+      const updatedTask = await taskService.updateTask(taskId, { text: newText });
+      const updatedTasks = tasks.map(task =>
+        task._id === taskId ? updatedTask : task
+      );
+      setTasks(updatedTasks);
 
-    // Emit event to update MemoSection if this task is selected
-    const updatedTask = updatedTasks.find(t => t.id === taskId);
-    if (updatedTask) {
+      // Emit event to update MemoSection if this task is selected
       const event = new CustomEvent('taskUpdated', { detail: updatedTask });
       window.dispatchEvent(event);
+    } catch (err) {
+      setError(err.message);
+      console.error('Error updating task:', err);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="view-task">
+        <div className="view-task-header">
+          <h1 className="view-task-title">View Task</h1>
+        </div>
+        <div className="view-task-content">
+          <p>Loading tasks...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="view-task">
@@ -72,6 +134,8 @@ function ViewTasks() {
         <h1 className="view-task-title">View Task</h1>
         <button className="view-task-menu">...</button>
       </div>
+
+      {error && <div className="error-message" style={{ color: 'red', padding: '10px' }}>{error}</div>}
 
       <div className="view-task-content">
         <TaskInput onAddTask={handleAddTask} />

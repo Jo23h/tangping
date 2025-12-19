@@ -32,7 +32,7 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
   const handleSave = () => {
     if (editText.trim() && editText !== task.text) {
       if (onTaskEdit) {
-        onTaskEdit(task.id, editText.trim());
+        onTaskEdit(task._id, editText.trim());
       }
     } else {
       setEditText(task.text);
@@ -60,7 +60,7 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
         checked={task.completed}
         onChange={(e) => {
           e.stopPropagation();
-          onToggle(task.id);
+          onToggle(task._id);
         }}
         className={`task-checkbox priority-${task.priority || 'none'}`}
       />
@@ -91,7 +91,7 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
       <button
         onClick={(e) => {
           e.stopPropagation();
-          onDelete(task.id);
+          onDelete(task._id);
         }}
         className='task-delete-btn'
       >
