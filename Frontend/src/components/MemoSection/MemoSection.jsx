@@ -46,7 +46,6 @@ function MemoSection() {
         const event = new CustomEvent('taskUpdatedFromMemo', { detail: updatedTask });
         window.dispatchEvent(event);
       } catch (err) {
-        console.error('Error updating task title:', err);
         setTaskTitle(selectedTask.text);
       }
     } else {
@@ -70,7 +69,6 @@ function MemoSection() {
         const updatedTask = await taskService.updateTask(selectedTask._id, { memo: newMemo });
         setSelectedTask(updatedTask);
       } catch (err) {
-        console.error('Error updating memo:', err);
       }
     }
   };

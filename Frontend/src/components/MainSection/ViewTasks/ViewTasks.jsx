@@ -24,7 +24,6 @@ function ViewTasks() {
       setError(null);
     } catch (err) {
       setError(err.message);
-      console.error('Error fetching tasks:', err);
     } finally {
       setLoading(false);
     }
@@ -63,7 +62,6 @@ function ViewTasks() {
       setTasks([...tasks, newTask]);
     } catch (err) {
       setError(err.message);
-      console.error('Error creating task:', err);
     }
   };
 
@@ -79,7 +77,6 @@ function ViewTasks() {
       setTasks(updatedTasks);
     } catch (err) {
       setError(err.message);
-      console.error('Error toggling task:', err);
     }
   };
 
@@ -90,7 +87,6 @@ function ViewTasks() {
       setTasks(updatedTasks);
     } catch (err) {
       setError(err.message);
-      console.error('Error deleting task:', err);
     }
   };
 
@@ -113,7 +109,6 @@ function ViewTasks() {
       window.dispatchEvent(event);
     } catch (err) {
       setError(err.message);
-      console.error('Error updating task:', err);
     }
   };
 

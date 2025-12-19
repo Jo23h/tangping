@@ -22,8 +22,6 @@ const signUp = async (req, res) => {
             role: role || 'user'
         })
 
-        console.log('User created successfully:', { email: newUser.email, role: newUser.role });
-
         const token = jwt.sign(
             {
                 userId: newUser._id,
@@ -43,7 +41,6 @@ const signUp = async (req, res) => {
             })
 
     } catch (error) {
-        console.log('Signup error:', error);
         res.status(500).json({ error: 'Signup Failed' })
     }
 }
@@ -81,7 +78,6 @@ const signIn = async (req, res) => {
         })
 
     } catch (error) {
-        console.log('Signin error:', error);
         res.status(500).json({ error: 'Signin Failed' })
     }
 }
@@ -114,7 +110,6 @@ const guestSignIn = async (req, res) => {
             }
         })
     } catch (error) {
-        console.log('Guest signin error:', error);
         res.status(500).json({ error: 'Guest Signin Failed' })
     }
 }

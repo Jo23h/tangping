@@ -2,6 +2,9 @@ const Task = require('../models/task.js');
 
 async function createTask(req, res) {
     try {
+        if (req.user.role === 'guest') {
+            return res.status(403).json({ error: 'Guests cannot create tasks' });
+        }
         const taskData = {
             ...req.body,
             userId: req.user.userId
@@ -15,7 +18,12 @@ async function createTask(req, res) {
 
 async function getAllTasks(req, res) {
     try {
-        const tasks = await Task.find({ userId: req.user.userId });
+        let tasks;
+        if (req.user.role === 'guest') {
+            tasks = await Task.find();
+        } else {
+            tasks = await Task.find({ userId: req.user.userId });
+        }
         return res.json(tasks);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -39,6 +47,9 @@ async function getSpecificTask(req, res) {
 
 async function updateTask(req, res) {
     try {
+        if (req.user.role === 'guest') {
+            return res.status(403).json({ error: 'Guests cannot update tasks' });
+        }
         const task = await Task.findOneAndUpdate(
             { _id: req.params.id, userId: req.user.userId },
             req.body,
@@ -55,6 +66,9 @@ async function updateTask(req, res) {
 
 async function deleteTask(req, res) {
     try {
+        if (req.user.role === 'guest') {
+            return res.status(403).json({ error: 'Guests cannot delete tasks' });
+        }
         const task = await Task.findOneAndDelete({
             _id: req.params.id,
             userId: req.user.userId

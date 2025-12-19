@@ -18,7 +18,6 @@ function SignUpPage() {
             navigate("/dashboard") // Navigate to dashboard after successful signup
         } catch (error) {
             setError(error.message || "Signup failed. Email may already be in use")
-            console.error(error)
         }
     }
 

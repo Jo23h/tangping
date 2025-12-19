@@ -17,7 +17,6 @@ function SignInPage() {
             navigate("/dashboard") // Navigate to dashboard after successful login
         } catch (error) {
             setError(error.message || "Invalid credentials")
-            console.error(error)
         }
     }
 
@@ -28,7 +27,6 @@ function SignInPage() {
             navigate("/dashboard") // Navigate to dashboard as guest
         } catch (error) {
             setError(error.message || "Guest sign in failed")
-            console.error(error)
         }
     }
 

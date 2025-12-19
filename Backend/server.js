@@ -25,5 +25,4 @@ app.use('/auth', authRouter);
 app.use('/tasks', taskRouter);
 
 app.listen(PORT, () => {
-  console.log(`The express app is ready on port ${PORT}`);
 });
