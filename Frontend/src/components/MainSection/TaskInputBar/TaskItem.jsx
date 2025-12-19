@@ -20,8 +20,8 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
     }
   };
 
-  const handleTextClick = (e) => {
-    e.stopPropagation();
+  const handleTextClick = (event) => {
+    event.stopPropagation();
     // Only allow editing if onTaskEdit is provided
     if (onTaskEdit) {
       setIsEditing(true);
@@ -43,10 +43,10 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
     setIsEditing(false);
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
       handleSave();
-    } else if (e.key === 'Escape') {
+    } else if (event.key === 'Escape') {
       setEditText(task.text);
       setIsEditing(false);
     }
@@ -61,8 +61,8 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
       <input
         type='checkbox'
         checked={task.completed}
-        onChange={(e) => {
-          e.stopPropagation();
+        onChange={(event) => {
+          event.stopPropagation();
           if (onToggle) {
             onToggle(task._id);
           }
@@ -75,10 +75,10 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
           ref={inputRef}
           type='text'
           value={editText}
-          onChange={(e) => setEditText(e.target.value)}
+          onChange={(event) => setEditText(event.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(event) => event.stopPropagation()}
           className='task-text-input'
         />
       ) : (
@@ -96,8 +96,8 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
       )}
       {onDelete && (
         <button
-          onClick={(e) => {
-            e.stopPropagation();
+          onClick={(event) => {
+            event.stopPropagation();
             onDelete(task._id);
           }}
           className='task-delete-btn'
