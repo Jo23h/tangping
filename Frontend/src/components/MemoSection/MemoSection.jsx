@@ -34,8 +34,8 @@ function MemoSection() {
     };
   }, [selectedTask]);
 
-  const handleTitleChange = (e) => {
-    setTaskTitle(e.target.value);
+  const handleTitleChange = (event) => {
+    setTaskTitle(event.target.value);
   };
 
   const handleTitleBlur = async () => {
@@ -53,17 +53,17 @@ function MemoSection() {
     }
   };
 
-  const handleTitleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.target.blur();
-    } else if (e.key === 'Escape') {
+  const handleTitleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.target.blur();
+    } else if (event.key === 'Escape') {
       setTaskTitle(selectedTask.text);
-      e.target.blur();
+      event.target.blur();
     }
   };
 
-  const handleMemoBlur = async (e) => {
-    const newMemo = e.target.textContent;
+  const handleMemoBlur = async (event) => {
+    const newMemo = event.target.textContent;
     if (newMemo !== selectedTask.memo) {
       try {
         const updatedTask = await taskService.updateTask(selectedTask._id, { memo: newMemo });
