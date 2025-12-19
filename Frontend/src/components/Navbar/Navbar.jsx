@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import './Navbar.css'
-import ProjectWindow from './ProjectWindow/ProjectWindow'
 import { signOut, getCurrentUser } from '../../services/authService'
 
 function NavBar() {
@@ -18,9 +17,6 @@ function NavBar() {
         <button className="navbar-icon" title="View All Tasks">
           📋
         </button>
-
-        {/* <ProjectWindow /> */}
-
       </div>
 
       <div className="navbar-user">

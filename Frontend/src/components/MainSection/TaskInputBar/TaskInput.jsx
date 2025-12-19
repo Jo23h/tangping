@@ -9,6 +9,7 @@ function TaskInput({ onAddTask }) {
 
   const parsePriority = (text) => {
     const priorityRegex = /^!(high|medium|low|none)\s+(.+)/i;
+    
     const match = text.match(priorityRegex);
 
     if (match) {

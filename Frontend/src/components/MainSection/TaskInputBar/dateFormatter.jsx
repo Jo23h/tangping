@@ -1,17 +1,14 @@
-// Format date for display
 export const formatDueDate = (dateString) => {
-  if (!dateString) return null;
 
   const dueDate = new Date(dateString);
+    dueDate.setHours(0, 0, 0, 0);
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  dueDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
 
   const diffTime = dueDate - today;
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   let displayText = '';
@@ -20,19 +17,28 @@ export const formatDueDate = (dateString) => {
   if (diffDays < -1) {
     displayText = `${monthNames[dueDate.getMonth()]} ${dueDate.getDate()}`;
     isOverdue = true;
-  } else if (diffDays === -1) {
+  } 
+    else if (diffDays === -1) {
     displayText = 'Yesterday';
     isOverdue = true;
-  } else if (diffDays === 0) {
+
+  } 
+    else if (diffDays === 0) {
     displayText = 'Today';
     isOverdue = false;
-  } else if (diffDays === 1) {
+
+  } 
+    else if (diffDays === 1) {
     displayText = 'Tomorrow';
     isOverdue = false;
-  } else if (diffDays <= 6) {
+
+  } 
+    else if (diffDays <= 6) {
     displayText = `Next ${dayNames[dueDate.getDay()]}`;
     isOverdue = false;
-  } else {
+
+  } 
+    else {
     displayText = `${monthNames[dueDate.getMonth()]} ${dueDate.getDate()}`;
     isOverdue = false;
   }

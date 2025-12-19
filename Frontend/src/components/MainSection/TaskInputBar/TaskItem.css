@@ -36,7 +36,7 @@
 }
 
 .task-checkbox.priority-low {
-  border-color: #246fe0;
+  border-color: #fbbf24;
 }
 
 .task-checkbox.priority-none {
@@ -55,8 +55,8 @@
 }
 
 .task-checkbox.priority-low:checked {
-  background-color: #246fe0;
-  border-color: #246fe0;
+  background-color: #fbbf24;
+  border-color: #fbbf24;
 }
 
 .task-checkbox.priority-none:checked {
