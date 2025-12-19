@@ -22,7 +22,10 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
 
   const handleTextClick = (e) => {
     e.stopPropagation();
-    setIsEditing(true);
+    // Only allow editing if onTaskEdit is provided
+    if (onTaskEdit) {
+      setIsEditing(true);
+    }
     // Also open memo when clicking text
     if (onItemClick) {
       onItemClick(task);
@@ -60,8 +63,11 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
         checked={task.completed}
         onChange={(e) => {
           e.stopPropagation();
-          onToggle(task._id);
+          if (onToggle) {
+            onToggle(task._id);
+          }
         }}
+        disabled={!onToggle}
         className={`task-checkbox priority-${task.priority || 'none'}`}
       />
       {isEditing ? (
@@ -88,15 +94,17 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
           {formatDueDate(task.dueDate).displayText}
         </span>
       )}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete(task._id);
-        }}
-        className='task-delete-btn'
-      >
-        ×
-      </button>
+      {onDelete && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(task._id);
+          }}
+          className='task-delete-btn'
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 }

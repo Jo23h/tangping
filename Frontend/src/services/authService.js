@@ -47,6 +47,26 @@ export const signOut = () => {
   localStorage.removeItem('user');
 };
 
+export const guestSignIn = async () => {
+  const response = await fetch(`${API_URL}/auth/guest`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Guest signin failed');
+  }
+
+  const data = await response.json();
+  // Store token and user in localStorage
+  localStorage.setItem('token', data.token);
+  localStorage.setItem('user', JSON.stringify(data.user));
+  return data;
+};
+
 export const getCurrentUser = () => {
   const userStr = localStorage.getItem('user');
   return userStr ? JSON.parse(userStr) : null;

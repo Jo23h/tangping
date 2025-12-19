@@ -10,10 +10,11 @@ function DatePicker({selectedDate, onDateChange}) {
     const formatDisplayDate = () => {
       if (!selectedDate)
         return '📅';
+
       const date = new Date(selectedDate);
       const today = new Date();
       const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setDate(tomorrow.getDate() + 1);
 
       if (date.toDateString() === today.toDateString())
         return 'Today';

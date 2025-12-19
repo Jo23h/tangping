@@ -1,4 +1,3 @@
-import './MainSection.css'
 import ViewTasks from './ViewTasks/ViewTasks'
 
 function MainSection() {

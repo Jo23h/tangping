@@ -94,4 +94,29 @@ const signOut = async (req, res) => {
     }
 }
 
-module.exports = { signUp, signIn, signOut}
+const guestSignIn = async (req, res) => {
+    try {
+        const token = jwt.sign(
+            {
+                userId: 'guest',
+                role: 'guest'
+            },
+            process.env.JWT_SECRET
+        )
+
+        res.status(200).json({
+            token,
+            user: {
+                _id: 'guest',
+                name: 'Guest User',
+                email: 'guest@tangping.com',
+                role: 'guest'
+            }
+        })
+    } catch (error) {
+        console.log('Guest signin error:', error);
+        res.status(500).json({ error: 'Guest Signin Failed' })
+    }
+}
+
+module.exports = { signUp, signIn, signOut, guestSignIn }

@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import { taskPriorities } from './TaskSchema'
 import './PrioritySelection.css'
 
 function PrioritySelection({ selectedPriority, onPriorityChange }) {
@@ -24,11 +23,11 @@ function PrioritySelection({ selectedPriority, onPriorityChange }) {
 
   const getPriorityIcon = () => {
     switch (selectedPriority) {
-      case taskPriorities.HIGH:
+      case 'high':
         return '🔴'
-      case taskPriorities.MEDIUM:
+      case 'medium':
         return '🟠'
-      case taskPriorities.LOW:
+      case 'low':
         return '🟡'
       default:
         return '🏳️'
@@ -49,28 +48,28 @@ function PrioritySelection({ selectedPriority, onPriorityChange }) {
         <div className="priority-menu">
           <div
             className="priority-option"
-            onClick={() => handleSelectPriority(taskPriorities.HIGH)}
+            onClick={() => handleSelectPriority('high')}
           >
             <span>🔴</span>
             <span>High</span>
           </div>
           <div
             className="priority-option"
-            onClick={() => handleSelectPriority(taskPriorities.MEDIUM)}
+            onClick={() => handleSelectPriority('medium')}
           >
             <span>🟠</span>
             <span>Medium</span>
           </div>
           <div
             className="priority-option"
-            onClick={() => handleSelectPriority(taskPriorities.LOW)}
+            onClick={() => handleSelectPriority('low')}
           >
             <span>🟡</span>
             <span>Low</span>
           </div>
           <div
             className="priority-option"
-            onClick={() => handleSelectPriority(taskPriorities.NONE)}
+            onClick={() => handleSelectPriority('none')}
           >
             <span>🏳️</span>
             <span>None</span>

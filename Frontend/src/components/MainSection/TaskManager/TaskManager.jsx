@@ -6,7 +6,7 @@ import { sortTasks } from '../TaskInputBar/TaskSorter';
 import { formatDueDate } from '../TaskInputBar/dateFormatter';
 import './TaskManager.css';
 
-function TaskManager({ tasks, onToggle, onDelete, onItemClick, onTaskEdit }) {
+function TaskManager({ tasks, onToggle, onDelete, onItemClick, onTaskEdit, isGuest }) {
   const [activeFilter, setActiveFilter] = useState('All');
 
   const activeTasks = tasks.filter(task => !task.completed);
@@ -21,20 +21,20 @@ function TaskManager({ tasks, onToggle, onDelete, onItemClick, onTaskEdit }) {
 
       <TaskList
         tasks={filteredActiveTasks}
-        onToggle={onToggle}
-        onDelete={onDelete}
+        onToggle={isGuest ? null : onToggle}
+        onDelete={isGuest ? null : onDelete}
         formatDueDate={formatDueDate}
         onItemClick={onItemClick}
-        onTaskEdit={onTaskEdit}
+        onTaskEdit={isGuest ? null : onTaskEdit}
       />
 
       <CompletedSection
         tasks={filteredCompletedTasks}
-        onToggle={onToggle}
-        onDelete={onDelete}
+        onToggle={isGuest ? null : onToggle}
+        onDelete={isGuest ? null : onDelete}
         formatDueDate={formatDueDate}
         onItemClick={onItemClick}
-        onTaskEdit={onTaskEdit}
+        onTaskEdit={isGuest ? null : onTaskEdit}
       />
     </div>
   );

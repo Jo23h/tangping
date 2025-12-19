@@ -3,11 +3,13 @@ import './ViewTasks.css';
 import TaskInput from '../TaskInputBar/TaskInput';
 import TaskManager from '../TaskManager/TaskManager';
 import * as taskService from '../../../services/taskService';
+import { getCurrentUser } from '../../../services/authService';
 
 function ViewTasks() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const currentUser = getCurrentUser();
 
   // Fetch tasks on mount
   useEffect(() => {
@@ -138,13 +140,14 @@ function ViewTasks() {
       {error && <div className="error-message" style={{ color: 'red', padding: '10px' }}>{error}</div>}
 
       <div className="view-task-content">
-        <TaskInput onAddTask={handleAddTask} />
+        {currentUser?.role !== 'guest' && <TaskInput onAddTask={handleAddTask} />}
         <TaskManager
           tasks={tasks}
           onToggle={handleToggleTask}
           onDelete={handleDeleteTask}
           onItemClick={handleTaskClick}
           onTaskEdit={handleTaskEdit}
+          isGuest={currentUser?.role === 'guest'}
         />
       </div>
     </div>

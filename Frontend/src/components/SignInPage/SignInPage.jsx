@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
-import { signIn } from "../../services/authService"
+import { signIn, guestSignIn } from "../../services/authService"
 import "./SignInPage.css"
 
 function SignInPage() {
@@ -17,6 +17,17 @@ function SignInPage() {
             navigate("/dashboard") // Navigate to dashboard after successful login
         } catch (error) {
             setError(error.message || "Invalid credentials")
+            console.error(error)
+        }
+    }
+
+    const handleGuestSignIn = async () => {
+        setError("") // Clear previous errors
+        try {
+            await guestSignIn()
+            navigate("/dashboard") // Navigate to dashboard as guest
+        } catch (error) {
+            setError(error.message || "Guest sign in failed")
             console.error(error)
         }
     }
@@ -49,6 +60,11 @@ function SignInPage() {
                 </form>
 
                 {error && <p className="error-message">{error}</p>}
+
+                <button onClick={handleGuestSignIn} className="btn-guest">
+                    Sign in as Guest
+                </button>
+
                 <p className="signin-link">
                     Don't have an account? <Link to="/signup">Sign Up</Link>
                 </p>
