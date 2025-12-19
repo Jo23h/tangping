@@ -28,11 +28,12 @@ function SignInPage() {
                 <p className="page-subtitle">Sign in to your Tangping account</p>
                 <form onSubmit={handleSubmit} className="signin-form">
                     <input
-                        types="email"
+                        type="email"
                         placeholder="Email"
                         className="form-input"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
+                        required
                     />
                     <input
                         type="password"
@@ -40,9 +41,10 @@ function SignInPage() {
                         className="form-input"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
+                        required
                     />
-                    <button type="submit" className="btn-primary"
-                    >Sign In
+                    <button type="submit" className="btn-primary">
+                        Sign In
                     </button>
                 </form>
 

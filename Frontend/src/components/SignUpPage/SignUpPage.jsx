@@ -35,7 +35,7 @@ function SignUpPage() {
                         className="form-input"
                         value={name}
                         onChange={(event) => setName(event.target.value)}
-
+                        required
                     />
                     <input
                         type="email"
@@ -43,6 +43,7 @@ function SignUpPage() {
                         className="form-input"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
+                        required
                     />
                     <input
                         type="password"
@@ -50,9 +51,10 @@ function SignUpPage() {
                         className="form-input"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
+                        required
                     />
-                    <button type="submit" className="btn-primary"
-                    >Sign Up
+                    <button type="submit" className="btn-primary">
+                        Sign Up
                     </button>
                 </form>
 
