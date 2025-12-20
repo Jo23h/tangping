@@ -8,18 +8,32 @@ import MainSection from './components/MainSection/MainSection'
 import MemoSection from './components/MemoSection/MemoSection'
 import { isAuthenticated } from './services/authService'
 
-// Protected Route Component
 function ProtectedRoute({ children }) {
   return isAuthenticated() ? children : <Navigate to="/signin" />
 }
 
-// Main Dashboard Component
 function Dashboard() {
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  const handleTaskUpdate = (updatedTask) => {
+    // Update the selected task if it's the one being edited
+    if (selectedTask && selectedTask._id === updatedTask._id) {
+      setSelectedTask(updatedTask);
+    }
+  };
+
   return (
     <div className="app-container">
       <NavBar />
-      <MainSection />
-      <MemoSection />
+      <MainSection
+        onTaskSelect={setSelectedTask}
+        onTaskUpdate={handleTaskUpdate}
+      />
+      <MemoSection
+        selectedTask={selectedTask}
+        onTaskUpdate={handleTaskUpdate}
+        onTaskSelect={setSelectedTask}
+      />
     </div>
   )
 }

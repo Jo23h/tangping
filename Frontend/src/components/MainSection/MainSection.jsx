@@ -1,9 +1,12 @@
 import ViewTasks from './ViewTasks/ViewTasks'
 
-function MainSection() {
+function MainSection({ onTaskSelect, onTaskUpdate }) {
   return (
     <div className="main-section">
-      <ViewTasks />
+      <ViewTasks
+        onTaskSelect={onTaskSelect}
+        onTaskUpdate={onTaskUpdate}
+      />
     </div>
   )
 }

@@ -2,36 +2,15 @@ import { useState, useEffect } from 'react';
 import './MemoSection.css';
 import * as taskService from '../../services/taskService';
 
-function MemoSection() {
-  const [selectedTask, setSelectedTask] = useState(null);
+function MemoSection({ selectedTask, onTaskUpdate, onTaskSelect }) {
   const [taskTitle, setTaskTitle] = useState('');
   const [memoContent, setMemoContent] = useState('');
 
   useEffect(() => {
-    // Listen for task selection events
-    const handleTaskSelected = (event) => {
-      setSelectedTask(event.detail);
-      setTaskTitle(event.detail.text);
-      setMemoContent(event.detail.memo || '');
-    };
-
-    // Listen for task update events
-    const handleTaskUpdated = (event) => {
-      if (selectedTask && selectedTask._id === event.detail._id) {
-        setSelectedTask(event.detail);
-        setTaskTitle(event.detail.text);
-        setMemoContent(event.detail.memo || '');
-      }
-    };
-
-    window.addEventListener('taskSelected', handleTaskSelected);
-    window.addEventListener('taskUpdated', handleTaskUpdated);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('taskSelected', handleTaskSelected);
-      window.removeEventListener('taskUpdated', handleTaskUpdated);
-    };
+    if (selectedTask) {
+      setTaskTitle(selectedTask.text);
+      setMemoContent(selectedTask.memo || '');
+    }
   }, [selectedTask]);
 
   const handleTitleChange = (event) => {
@@ -42,9 +21,7 @@ function MemoSection() {
     if (taskTitle.trim() && taskTitle !== selectedTask.text) {
       try {
         const updatedTask = await taskService.updateTask(selectedTask._id, { text: taskTitle.trim() });
-        // Emit event to update the task
-        const event = new CustomEvent('taskUpdatedFromMemo', { detail: updatedTask });
-        window.dispatchEvent(event);
+        onTaskUpdate(updatedTask);
       } catch (err) {
         setTaskTitle(selectedTask.text);
       }
@@ -67,7 +44,7 @@ function MemoSection() {
     if (newMemo !== selectedTask.memo) {
       try {
         const updatedTask = await taskService.updateTask(selectedTask._id, { memo: newMemo });
-        setSelectedTask(updatedTask);
+        onTaskUpdate(updatedTask);
       } catch (err) {
       }
     }
@@ -97,7 +74,7 @@ function MemoSection() {
         />
         <button
           className='memo-close-btn'
-          onClick={() => setSelectedTask(null)}
+          onClick={() => onTaskSelect(null)}
         >
           ×
         </button>

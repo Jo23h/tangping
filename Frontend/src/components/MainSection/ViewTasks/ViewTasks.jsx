@@ -5,7 +5,7 @@ import TaskManager from '../TaskManager/TaskManager';
 import * as taskService from '../../../services/taskService';
 import { getCurrentUser } from '../../../services/authService';
 
-function ViewTasks() {
+function ViewTasks({ onTaskSelect, onTaskUpdate }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,25 +29,6 @@ function ViewTasks() {
     }
   };
 
-  useEffect(() => {
-    // Task updates
-    const handleTaskUpdatedFromMemo = (event) => {
-      const updatedTask = event.detail;
-      const updatedTasks = tasks.map(task =>
-        task._id === updatedTask._id ? updatedTask : task
-      );
-      setTasks(updatedTasks);
-
-      const syncEvent = new CustomEvent('taskUpdated', { detail: updatedTask });
-      window.dispatchEvent(syncEvent);
-    };
-
-    window.addEventListener('taskUpdatedFromMemo', handleTaskUpdatedFromMemo);
-
-    return () => {
-      window.removeEventListener('taskUpdatedFromMemo', handleTaskUpdatedFromMemo);
-    };
-  }, [tasks]);
 
   const handleAddTask = async (taskText, dueDate, priority) => {
     try {
@@ -91,9 +72,7 @@ function ViewTasks() {
   };
 
   const handleTaskClick = (task) => {
-    // Emit custom event for MemoSection to listen
-    const event = new CustomEvent('taskSelected', { detail: task });
-    window.dispatchEvent(event);
+    onTaskSelect(task);
   };
 
   const handleTaskEdit = async (taskId, newText) => {
@@ -103,10 +82,7 @@ function ViewTasks() {
         task._id === taskId ? updatedTask : task
       );
       setTasks(updatedTasks);
-
-      // Emit event to update MemoSection if this task is selected
-      const event = new CustomEvent('taskUpdated', { detail: updatedTask });
-      window.dispatchEvent(event);
+      onTaskUpdate(updatedTask);
     } catch (err) {
       setError(err.message);
     }
