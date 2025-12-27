@@ -70,6 +70,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const PORT = process.env.PORT || "3000";
+console.log("🔌 Port Configuration:");
+console.log("  - process.env.PORT:", process.env.PORT || "NOT SET");
+console.log("  - Using PORT:", PORT);
 
   // Routes
 app.use("/users", userRouter);

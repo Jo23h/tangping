@@ -17,7 +17,8 @@ router.get('/google', (req, res, next) => {
 
   passport.authenticate('google', {
     scope: ['profile', 'email'],
-    session: false
+    session: false,
+    state: false  // Disable state parameter to prevent session requirement
   }, (err, user, info) => {
     if (err) {
       console.error("PASSPORT AUTH ERROR:", err);
@@ -33,6 +34,7 @@ router.get('/google/callback', (req, res, next) => {
 
   passport.authenticate('google', {
     session: false,
+    state: false,  // Disable state parameter
     failureRedirect: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/signin?error=auth_failed`
   }, (err, user, info) => {
     if (err) {
