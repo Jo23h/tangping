@@ -14,19 +14,12 @@ router.get('/google', (req, res, next) => {
   console.log("Request URL:", req.url);
   console.log("Request Protocol:", req.protocol);
   console.log("Request Host:", req.get('host'));
-
-  passport.authenticate('google', {
-    scope: ['profile', 'email'],
-    session: false,
-    state: false  // Disable state parameter to prevent session requirement
-  }, (err, user, info) => {
-    if (err) {
-      console.error("PASSPORT AUTH ERROR:", err);
-      return res.status(500).json({ error: 'OAuth initialization failed', details: err.message });
-    }
-    // If no error, continue with normal flow
-  })(req, res, next);
-})
+  next();
+}, passport.authenticate('google', {
+  scope: ['profile', 'email'],
+  session: false,
+  state: false
+}))
 
 router.get('/google/callback', (req, res, next) => {
   console.log("=== Google Callback Received ===");
