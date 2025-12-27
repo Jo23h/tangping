@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { API_URL } from '../../config'
 
 function AuthCallback() {
   const navigate = useNavigate()
@@ -17,7 +18,7 @@ function AuthCallback() {
         const payload = JSON.parse(atob(token.split('.')[1]))
 
         // Fetch full user details to get profile picture
-        fetch('http://localhost:3000/users/' + payload.userId, {
+        fetch(`${API_URL}/users/${payload.userId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

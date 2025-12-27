@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
+import { API_URL } from "../../config"
 import "./SignInPage.css"
 
 function SignInPage() {
@@ -13,7 +14,7 @@ function SignInPage() {
     }, [searchParams])
 
     const handleGoogleSignIn = () => {
-        window.location.href = 'http://localhost:3000/auth/google'
+        window.location.href = `${API_URL}/auth/google`
     }
 
     return (
