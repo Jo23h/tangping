@@ -26,11 +26,14 @@ You need to deploy the Frontend and Backend as **separate Railway services** fro
    ```
    MONGODB_URI=<your-mongodb-connection-string>
    JWT_SECRET=<your-jwt-secret>
+   BACKEND_URL=<your-backend-railway-url>
+   FRONTEND_URL=<your-frontend-railway-url>
    GOOGLE_CLIENT_ID=<your-google-oauth-client-id>
    GOOGLE_CLIENT_SECRET=<your-google-oauth-client-secret>
-   FRONTEND_URL=<your-frontend-railway-url>
    ```
-   Note: `PORT` is automatically set by Railway
+   Note:
+   - `PORT` is automatically set by Railway
+   - `BACKEND_URL` should be your backend Railway URL (e.g., `https://tangping-backend.railway.app`)
 
 5. Deploy the service
 
@@ -51,15 +54,31 @@ You need to deploy the Frontend and Backend as **separate Railway services** fro
 
 5. Deploy the service
 
-### 2. Update Environment Variables
+### 2. Configure Google OAuth Console
+
+**CRITICAL:** You must add the Railway callback URL to your Google OAuth configuration:
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+2. Select your OAuth 2.0 Client ID
+3. Under "Authorized redirect URIs", add:
+   ```
+   https://<your-backend-railway-url>/auth/google/callback
+   ```
+   Example: `https://tangping-backend.railway.app/auth/google/callback`
+4. Save the changes
+
+**Without this step, Google OAuth will fail with a 502 error!**
+
+### 3. Update Environment Variables
 
 After both services are deployed:
 
 1. Get the Backend service URL from Railway
-2. Update Frontend's `VITE_API_URL` to point to the Backend URL
-3. Get the Frontend service URL from Railway
-4. Update Backend's `FRONTEND_URL` to point to the Frontend URL
-5. Redeploy both services if necessary
+2. Update Backend's `BACKEND_URL` to the Backend Railway URL (e.g., `https://tangping-backend.railway.app`)
+3. Update Frontend's `VITE_API_URL` to point to the Backend URL
+4. Get the Frontend service URL from Railway
+5. Update Backend's `FRONTEND_URL` to point to the Frontend URL
+6. Redeploy both services to apply changes
 
 ### 3. Configure Custom Domain (Optional)
 
@@ -104,10 +123,14 @@ If you want to use a custom domain:
 - Check that MongoDB allows Railway IP addresses
 - Verify `FRONTEND_URL` is set for CORS
 
-### OAuth not working
-- Update Google OAuth redirect URIs to include production URLs
-- Verify `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set correctly
-- Check callback URLs match your OAuth configuration
+### OAuth shows 502 gateway error
+- **MOST COMMON**: Check Google Console has the correct callback URL added:
+  - Go to Google Cloud Console → Credentials → Your OAuth Client
+  - Verify `https://<backend-url>/auth/google/callback` is in "Authorized redirect URIs"
+- Verify `BACKEND_URL` environment variable is set correctly on Railway
+- Check `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set correctly
+- Ensure `FRONTEND_URL` is set for the redirect after authentication
+- Check Railway logs for any backend errors during OAuth flow
 
 ## Local Development
 
