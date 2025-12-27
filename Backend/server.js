@@ -68,14 +68,16 @@ console.log("MONGODB_URI exists:", !!process.env.MONGODB_URI);
 console.log("MONGODB_URI value:", process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 20) + "..." : "NOT SET");
 console.log("========================");
 
-// Session middleware with MongoStore - fixes MemoryStore warning
+// Session middleware - temporarily using MemoryStore to debug
+// MongoStore was blocking the app from starting
 app.use(session({
   secret: process.env.JWT_SECRET || process.env.SESSION_SECRET || 'tangping_secret_key',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-  }),
+  // Temporarily disabled MongoStore - using MemoryStore for now
+  // store: MongoStore.create({
+  //   mongoUrl: process.env.MONGODB_URI,
+  // }),
   cookie: {
     secure: true, // Required for HTTPS on Railway
     sameSite: 'lax',
@@ -94,7 +96,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const PORT = process.env.PORT || "3000";
+const PORT = parseInt(process.env.PORT) || 8080;
 console.log("🔌 Port Configuration:");
 console.log("  - process.env.PORT:", process.env.PORT || "NOT SET");
 console.log("  - Using PORT:", PORT);
