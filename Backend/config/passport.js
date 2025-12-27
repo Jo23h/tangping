@@ -2,12 +2,19 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/user');
 
+const callbackURL = process.env.BACKEND_URL
+  ? `${process.env.BACKEND_URL}/auth/google/callback`
+  : '/auth/google/callback';
+
+console.log("=== PASSPORT CONFIG ===");
+console.log("Google OAuth Callback URL:", callbackURL);
+console.log("Proxy enabled: true");
+console.log("======================");
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.BACKEND_URL
-      ? `${process.env.BACKEND_URL}/auth/google/callback`
-      : '/auth/google/callback',
+    callbackURL: callbackURL,
     proxy: true  // CRITICAL: Trust Railway's proxy
   },
   async (accessToken, refreshToken, profile, done) => {

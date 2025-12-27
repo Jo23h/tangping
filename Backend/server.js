@@ -18,6 +18,15 @@ connectDB();
 // Trust Railway proxy - CRITICAL for OAuth callbacks to work
 app.set("trust proxy", 1);
 
+// Debug: Log environment variables on startup
+console.log("=== ENVIRONMENT CHECK ===");
+console.log("BACKEND_URL:", process.env.BACKEND_URL || "NOT SET");
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL || "NOT SET");
+console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID ? "SET" : "NOT SET");
+console.log("GOOGLE_CLIENT_SECRET:", process.env.GOOGLE_CLIENT_SECRET ? "SET" : "NOT SET");
+console.log("MONGODB_URI:", process.env.MONGODB_URI ? "SET" : "NOT SET");
+console.log("========================");
+
 // CORS configuration - allow frontend URL from environment variable
 const corsOptions = {
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
