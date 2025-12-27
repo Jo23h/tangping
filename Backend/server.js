@@ -15,6 +15,9 @@ const projectRouter = require("./routers/projects.js")
 const app = express();
 connectDB();
 
+// Trust Railway proxy - CRITICAL for OAuth callbacks to work
+app.set("trust proxy", 1);
+
 // CORS configuration - allow frontend URL from environment variable
 const corsOptions = {
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',

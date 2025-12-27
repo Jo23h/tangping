@@ -31,9 +31,11 @@ You need to deploy the Frontend and Backend as **separate Railway services** fro
    GOOGLE_CLIENT_ID=<your-google-oauth-client-id>
    GOOGLE_CLIENT_SECRET=<your-google-oauth-client-secret>
    ```
-   Note:
+   **CRITICAL Notes:**
    - `PORT` is automatically set by Railway
-   - `BACKEND_URL` should be your backend Railway URL (e.g., `https://tangping-backend.railway.app`)
+   - `BACKEND_URL` is **REQUIRED** for Google OAuth to work (e.g., `https://tangping-backend.railway.app`)
+   - Without `BACKEND_URL`, Google OAuth will fail with 502 errors due to Railway's proxy
+   - Do NOT include trailing slashes in URLs
 
 5. Deploy the service
 
