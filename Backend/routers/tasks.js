@@ -6,11 +6,13 @@ const {
     getAllTasks,
     getSpecificTask,
     updateTask,
-    deleteTask
+    deleteTask,
+    getDeletedTasks
 } = require('../controllers/tasks');
 
 router.post('/', verifyToken, createTask);
 router.get('/', verifyToken, getAllTasks);
+router.get('/deleted', verifyToken, getDeletedTasks);
 router.get('/:id', verifyToken, getSpecificTask);
 router.put('/:id', verifyToken, updateTask);
 router.delete('/:id', verifyToken, deleteTask);

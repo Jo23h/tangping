@@ -1,0 +1,150 @@
+.projects-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 100%;
+  background-color: #fafafa;
+  padding: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  box-sizing: border-box;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.projects-container::-webkit-scrollbar {
+  display: none;
+}
+
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.projects-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.create-project-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #c97a5e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.create-project-btn:hover {
+  background: #b86850;
+}
+
+.projects-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 24px 0 12px 0;
+}
+
+.projects-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.projects-empty p {
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+}
+
+.projects-table {
+  width: 100%;
+  max-width: 100%;
+  background: white;
+  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  table-layout: auto;
+}
+
+.projects-table thead {
+  background-color: #f5f5f5;
+}
+
+.projects-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.projects-table th:last-child {
+  text-align: right;
+  width: 120px;
+}
+
+.project-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.project-row:hover {
+  background-color: #f5f5f5;
+}
+
+.project-row.archived {
+  opacity: 0.6;
+}
+
+.project-row.archived:hover {
+  opacity: 0.8;
+}
+
+.project-row:not(:last-child) td {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.project-name-cell {
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.project-priority-cell {
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.projects-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.projects-content p {
+  font-size: 16px;
+  color: #666;
+}

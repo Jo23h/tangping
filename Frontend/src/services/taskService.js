@@ -65,3 +65,17 @@ export const deleteTask = async (taskId) => {
 
   return await response.json();
 };
+
+export const getDeletedTasks = async () => {
+  const response = await fetch(`${API_URL}/tasks/deleted`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to fetch deleted tasks');
+  }
+
+  return await response.json();
+};

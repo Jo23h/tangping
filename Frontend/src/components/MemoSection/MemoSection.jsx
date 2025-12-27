@@ -50,6 +50,30 @@ function MemoSection({ selectedTask, onTaskUpdate, onTaskSelect }) {
     }
   };
 
+  const handleMemoKeyDown = (event) => {
+    if (event.key === ' ') {
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0);
+      const textBeforeCursor = range.startContainer.textContent.substring(0, range.startOffset);
+
+      // Check if the last character before space is a dash
+      if (textBeforeCursor.endsWith('-')) {
+        event.preventDefault();
+
+        // Insert a tab/indentation after the dash and space
+        const indent = '\u00A0\u00A0\u00A0\u00A0'; // 4 non-breaking spaces for indentation
+        const textNode = document.createTextNode(' ' + indent);
+        range.insertNode(textNode);
+
+        // Move cursor to end of inserted text
+        range.setStartAfter(textNode);
+        range.setEndAfter(textNode);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+  };
+
   if (!selectedTask) {
     return (
       <div className='memo-section'>
@@ -85,6 +109,7 @@ function MemoSection({ selectedTask, onTaskUpdate, onTaskSelect }) {
         suppressContentEditableWarning
         data-placeholder='Start writing...'
         onBlur={handleMemoBlur}
+        onKeyDown={handleMemoKeyDown}
         dangerouslySetInnerHTML={{ __html: memoContent }}
       />
     </div>

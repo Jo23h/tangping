@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { PencilSimpleLine } from '@phosphor-icons/react'
 import './TaskItem.css'
 
 function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTaskEdit }) {
@@ -93,6 +94,14 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
         <span className={`task-due-date ${formatDueDate(task.dueDate).isOverdue ? 'overdue' : ''}`}>
           {formatDueDate(task.dueDate).displayText}
         </span>
+      )}
+      {task.memo && task.memo.trim() && (
+        <PencilSimpleLine
+          weight="light"
+          size={16}
+          className="task-memo-icon"
+          color="#666"
+        />
       )}
       {onDelete && (
         <button

@@ -3,24 +3,75 @@ import './ViewTasks.css';
 import TaskInput from '../TaskInputBar/TaskInput';
 import TaskManager from '../TaskManager/TaskManager';
 import * as taskService from '../../../services/taskService';
+import * as projectService from '../../../services/projectService';
 import { getCurrentUser } from '../../../services/authService';
 
-function ViewTasks({ onTaskSelect, onTaskUpdate }) {
+function ViewTasks({ onTaskSelect, onTaskUpdate, projectId, filterMode }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [inboxId, setInboxId] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [selectedCategoryName, setSelectedCategoryName] = useState('');
+  const [defaultPriority, setDefaultPriority] = useState('none');
   const currentUser = getCurrentUser();
 
-  // Fetch tasks on mount
+  // Fetch inbox and tasks on mount
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    initializeData();
+  }, [projectId, filterMode]);
 
-  const fetchTasks = async () => {
+  const initializeData = async () => {
     try {
       setLoading(true);
+      // Get or create inbox
+      const inbox = await projectService.getOrCreateInbox();
+      setInboxId(inbox._id);
+
+      // Fetch all projects
+      const allProjects = await projectService.getAllProjects();
+      setProjects(allProjects);
+
+      // Set default category and priority based on context
+      if (projectId) {
+        // On a project page - set to that project
+        const currentProject = allProjects.find(p => p._id === projectId);
+        if (currentProject) {
+          setSelectedCategoryId(projectId);
+          setSelectedCategoryName(currentProject.name);
+          // Inherit project's priority as default
+          setDefaultPriority(currentProject.priority || 'none');
+        }
+      } else if (filterMode === 'inbox') {
+        // On inbox page - set to inbox
+        setSelectedCategoryId(inbox._id);
+        setSelectedCategoryName('Inbox');
+        setDefaultPriority('none');
+      } else {
+        // On View Task page - default to inbox
+        setSelectedCategoryId(inbox._id);
+        setSelectedCategoryName('Inbox');
+        setDefaultPriority('none');
+      }
+
+      // Fetch tasks with inbox ID
       const fetchedTasks = await taskService.getAllTasks();
-      setTasks(fetchedTasks);
+
+      // Filter tasks based on mode
+      if (projectId) {
+        // For specific project page: show only tasks for this project
+        const filtered = fetchedTasks.filter(task => task.projectId === projectId);
+        setTasks(filtered);
+      } else if (filterMode === 'inbox') {
+        // For Inbox page: show only tasks without projectId
+        const filtered = fetchedTasks.filter(task => !task.projectId);
+        setTasks(filtered);
+      } else {
+        // For View Task page: show ALL tasks
+        setTasks(fetchedTasks);
+      }
+
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -29,8 +80,29 @@ function ViewTasks({ onTaskSelect, onTaskUpdate }) {
     }
   };
 
+  const fetchTasks = async () => {
+    try {
+      const fetchedTasks = await taskService.getAllTasks();
 
-  const handleAddTask = async (taskText, dueDate, priority) => {
+      // Filter tasks based on mode
+      if (projectId) {
+        // For specific project page: show only tasks for this project
+        const filtered = fetchedTasks.filter(task => task.projectId === projectId);
+        setTasks(filtered);
+      } else if (filterMode === 'inbox') {
+        // For Inbox page: show only tasks without projectId
+        const filtered = fetchedTasks.filter(task => !task.projectId);
+        setTasks(filtered);
+      } else {
+        // For View Task page: show ALL tasks
+        setTasks(fetchedTasks);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleAddTask = async (taskText, dueDate, priority, categoryId) => {
     try {
       const taskData = {
         text: taskText,
@@ -39,11 +111,42 @@ function ViewTasks({ onTaskSelect, onTaskUpdate }) {
         completed: false,
         memo: ''
       };
+
+      // Use the selected category (or passed categoryId)
+      const targetCategoryId = categoryId || selectedCategoryId;
+
+      // Only assign projectId if it's not the inbox (inbox tasks have no projectId)
+      // Check if the category is inbox by comparing with inboxId
+      if (targetCategoryId && targetCategoryId !== inboxId) {
+        taskData.projectId = targetCategoryId;
+      }
+      // If targetCategoryId is inboxId or null, don't set projectId (keeps task in inbox)
+
       const newTask = await taskService.createTask(taskData);
-      setTasks([...tasks, newTask]);
+
+      // Only add to current view if it belongs here
+      if (projectId) {
+        // On project page: only add if task belongs to this project
+        if (newTask.projectId === projectId) {
+          setTasks([...tasks, newTask]);
+        }
+      } else if (filterMode === 'inbox') {
+        // On inbox page: only add if task has no project
+        if (!newTask.projectId) {
+          setTasks([...tasks, newTask]);
+        }
+      } else {
+        // On View Task page: add all tasks
+        setTasks([...tasks, newTask]);
+      }
     } catch (err) {
       setError(err.message);
     }
+  };
+
+  const handleCategoryChange = (categoryId, categoryName) => {
+    setSelectedCategoryId(categoryId);
+    setSelectedCategoryName(categoryName);
   };
 
   const handleToggleTask = async (taskId) => {
@@ -91,9 +194,11 @@ function ViewTasks({ onTaskSelect, onTaskUpdate }) {
   if (loading) {
     return (
       <div className="view-task">
-        <div className="view-task-header">
-          <h1 className="view-task-title">View Task</h1>
-        </div>
+        {!projectId && (
+          <div className="view-task-header">
+            <h1 className="view-task-title">All tasks</h1>
+          </div>
+        )}
         <div className="view-task-content">
           <p>Loading tasks...</p>
         </div>
@@ -101,17 +206,32 @@ function ViewTasks({ onTaskSelect, onTaskUpdate }) {
     );
   }
 
+  const getHeaderTitle = () => {
+    if (filterMode === 'inbox') return 'Inbox';
+    return 'All tasks';
+  };
+
   return (
     <div className="view-task">
-      <div className="view-task-header">
-        <h1 className="view-task-title">View Task</h1>
-        <button className="view-task-menu">...</button>
-      </div>
+      {!projectId && (
+        <div className="view-task-header">
+          <h1 className="view-task-title">{getHeaderTitle()}</h1>
+        </div>
+      )}
 
       {error && <div className="error-message" style={{ color: 'red', padding: '10px' }}>{error}</div>}
 
       <div className="view-task-content">
-        {currentUser?.role !== 'guest' && <TaskInput onAddTask={handleAddTask} />}
+        {currentUser?.role !== 'guest' && (
+          <TaskInput
+            onAddTask={handleAddTask}
+            selectedCategoryId={selectedCategoryId}
+            selectedCategoryName={selectedCategoryName}
+            onCategoryChange={handleCategoryChange}
+            projects={projects}
+            defaultPriority={defaultPriority}
+          />
+        )}
         <TaskManager
           tasks={tasks}
           onToggle={handleToggleTask}

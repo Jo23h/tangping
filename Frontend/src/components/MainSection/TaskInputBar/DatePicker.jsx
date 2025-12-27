@@ -2,6 +2,7 @@ import { useState, forwardRef } from "react"
 import DatePickerLib from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import './DatePicker.css'
+import { CalendarDots, CaretLeft, CaretRight } from '@phosphor-icons/react'
 
 function DatePicker({selectedDate, onDateChange}) {
     const [tempDate, setTempDate] = useState(null);
@@ -9,9 +10,11 @@ function DatePicker({selectedDate, onDateChange}) {
 
     const formatDisplayDate = () => {
       if (!selectedDate)
-        return '📅';
+        return null;
 
-      const date = new Date(selectedDate);
+      // Parse date in local timezone to avoid off-by-one errors
+      const [year, month, day] = selectedDate.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
       const today = new Date();
       const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -26,7 +29,11 @@ function DatePicker({selectedDate, onDateChange}) {
 
     const handleOk = () => {
       if (tempDate) {
-        onDateChange(tempDate.toISOString().split('T')[0]);
+        // Format date in local timezone to avoid off-by-one errors
+        const year = tempDate.getFullYear();
+        const month = String(tempDate.getMonth() + 1).padStart(2, '0');
+        const day = String(tempDate.getDate()).padStart(2, '0');
+        onDateChange(`${year}-${month}-${day}`);
       };
       setTempDate(null);
       setIsOpen(false);
@@ -46,20 +53,56 @@ function DatePicker({selectedDate, onDateChange}) {
         onClick={() => setIsOpen(!isOpen)}
         ref={ref}
       >
-        {formatDisplayDate()}
+        <CalendarDots size={20} />
+        {formatDisplayDate() && <span className="date-text">{formatDisplayDate()}</span>}
       </button>
     ));
 
   return (
     <div className="date-picker">
         <DatePickerLib
-          selected={tempDate || (selectedDate ? new Date(selectedDate) : null)}
+          selected={tempDate || (selectedDate ? (() => {
+            const [year, month, day] = selectedDate.split('-').map(Number);
+            return new Date(year, month - 1, day);
+          })() : null)}
           onChange={(date) => setTempDate(date)}
           open={isOpen}
           onClickOutside={() => setIsOpen(false)}
           shouldCloseOnSelect={false}
           customInput={<CustomButton />}
           dateFormat="MMM d"
+          showTimeSelect={false}
+          showTimeInput={false}
+          timeInputLabel=""
+          renderCustomHeader={({
+            date,
+            decreaseMonth,
+            increaseMonth,
+            prevMonthButtonDisabled,
+            nextMonthButtonDisabled,
+          }) => (
+            <div className="custom-calendar-header">
+              <button
+                type="button"
+                onClick={decreaseMonth}
+                disabled={prevMonthButtonDisabled}
+                className="calendar-nav-button"
+              >
+                <CaretLeft size={20} weight="bold" />
+              </button>
+              <div className="calendar-month-year">
+                {date.toLocaleString('en-US', { month: 'long', year: 'numeric' }).toUpperCase()}
+              </div>
+              <button
+                type="button"
+                onClick={increaseMonth}
+                disabled={nextMonthButtonDisabled}
+                className="calendar-nav-button"
+              >
+                <CaretRight size={20} weight="bold" />
+              </button>
+            </div>
+          )}
         >
           <div className="date-picker-actions">
             <button onClick={handleClear} type="button">Clear</button>

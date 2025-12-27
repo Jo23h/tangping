@@ -18,8 +18,18 @@ const userSchema = new mongoose.Schema({
 
     password: {
         type: String,
-        required: [true, "Enter your password"],
         trim: true
+    },
+
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
+
+    profilePicture: {
+        type: String,
+        default: null
     },
 
     role: {

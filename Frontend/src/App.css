@@ -17,6 +17,13 @@
     flex: 1;
     overflow-y: auto;
     background-color: #fafafa;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .app-container > :nth-child(2)::-webkit-scrollbar {
+    display: none;
   }
 
   /* Right sidebar - Memo section */
@@ -26,6 +33,14 @@
     background-color: white;
     border-left: 1px solid #e0e0e0;
     overflow-y: auto;
+  }
+
+  /* Memo section placeholder for pages without memo */
+  .memo-section-placeholder {
+    width: 40%;
+    flex-shrink: 0;
+    background-color: white;
+    border-left: 1px solid #e0e0e0;
   }
 
 

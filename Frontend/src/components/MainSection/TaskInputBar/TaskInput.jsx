@@ -1,11 +1,18 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import TaskInputField from "./TaskInputField"
+import CategoryPopup from "./CategoryPopup"
 import './TaskInput.css'
 
-function TaskInput({ onAddTask }) {
+function TaskInput({ onAddTask, selectedCategoryId, selectedCategoryName, onCategoryChange, projects, defaultPriority }) {
   const [inputValue, setInputValue] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState('none');
+  const [selectedPriority, setSelectedPriority] = useState(defaultPriority || 'none');
+  const [isCategoryPopupOpen, setIsCategoryPopupOpen] = useState(false);
+
+  // Update selected priority when default priority changes (e.g., navigating to different project)
+  useEffect(() => {
+    setSelectedPriority(defaultPriority || 'none');
+  }, [defaultPriority]);
 
   const parsePriority = (text) => {
     const priorityRegex = /^!(high|medium|low|none)\s+(.+)/i;
@@ -34,11 +41,16 @@ function TaskInput({ onAddTask }) {
   const handleAddTask = () => {
     if (inputValue.trim()) {
       const { text } = parsePriority(inputValue);
-      onAddTask(text, selectedDate, selectedPriority);
+      onAddTask(text, selectedDate, selectedPriority, selectedCategoryId);
       setInputValue('');
       setSelectedDate('');
-      setSelectedPriority('none');
+      // Reset to default priority (project's priority or 'none')
+      setSelectedPriority(defaultPriority || 'none');
     }
+  };
+
+  const handleCategorySelect = (categoryId, categoryName) => {
+    onCategoryChange(categoryId, categoryName);
   };
 
   const handleSubmit = (event) => {
@@ -53,11 +65,20 @@ function TaskInput({ onAddTask }) {
         inputValue={inputValue}
         selectedDate={selectedDate}
         selectedPriority={selectedPriority}
+        selectedCategoryName={selectedCategoryName}
         onInputChange={handleInputChange}
         onDateChange={setSelectedDate}
         onPriorityChange={setSelectedPriority}
+        onCategoryClick={() => setIsCategoryPopupOpen(true)}
         onAddTask={handleAddTask}
         onKeyDown={handleSubmit}
+      />
+      <CategoryPopup
+        isOpen={isCategoryPopupOpen}
+        onClose={() => setIsCategoryPopupOpen(false)}
+        onSelectCategory={handleCategorySelect}
+        selectedCategoryId={selectedCategoryId}
+        projects={projects || []}
       />
     </div>
   )

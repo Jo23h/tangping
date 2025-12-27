@@ -20,9 +20,13 @@ async function getAllTasks(req, res) {
     try {
         let tasks;
         if (req.user.role === 'guest') {
-            tasks = await Task.find();
+            tasks = await Task.find({ isDeleted: false, isArchived: false });
         } else {
-            tasks = await Task.find({ userId: req.user.userId });
+            tasks = await Task.find({
+                userId: req.user.userId,
+                isDeleted: false,
+                isArchived: false
+            });
         }
         return res.json(tasks);
     } catch (error) {
@@ -69,14 +73,27 @@ async function deleteTask(req, res) {
         if (req.user.role === 'guest') {
             return res.status(403).json({ error: 'Guests cannot delete tasks' });
         }
-        const task = await Task.findOneAndDelete({
-            _id: req.params.id,
-            userId: req.user.userId
-        });
+        const task = await Task.findOneAndUpdate(
+            { _id: req.params.id, userId: req.user.userId },
+            { isDeleted: true },
+            { new: true }
+        );
         if (!task) {
             return res.status(404).json({ error: 'Task not found' });
         }
-        res.status(200).json({ message: 'Task deleted successfully' });
+        res.status(200).json({ message: 'Task deleted successfully', task });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+async function getDeletedTasks(req, res) {
+    try {
+        const tasks = await Task.find({
+            userId: req.user.userId,
+            isDeleted: true
+        }).sort({ updatedAt: -1 });
+        return res.json(tasks);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -87,5 +104,6 @@ module.exports = {
     getAllTasks,
     getSpecificTask,
     updateTask,
-    deleteTask
+    deleteTask,
+    getDeletedTasks
 };

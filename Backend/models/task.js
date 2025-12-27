@@ -32,6 +32,22 @@ const taskSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
+    },
+
+    projectId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Project',
+        default: null
+    },
+
+    isArchived: {
+        type: Boolean,
+        default: false
+    },
+
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 });
 

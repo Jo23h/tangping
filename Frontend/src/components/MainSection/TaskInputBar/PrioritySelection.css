@@ -4,15 +4,15 @@
 
 .priority-button {
   background: none;
-  border: 1px solid #e0e0e0;
+  border: none;
   border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 16px;
+  padding: 4px;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #666;
 }
 
 .priority-button:hover {
@@ -27,26 +27,81 @@
   background: white;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  min-width: 150px;
+  min-width: 200px;
+  padding: 8px;
   overflow: hidden;
+}
+
+.priority-section-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: #999;
+  margin-bottom: 8px;
+  padding: 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.priority-flags {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.priority-flag-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.priority-flag-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.priority-flag-btn.selected {
+  background-color: #e8f4ff;
+}
+
+.priority-divider {
+  height: 1px;
+  background-color: #e5e5e5;
+  margin: 6px 0;
 }
 
 .priority-option {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   cursor: pointer;
   transition: background-color 0.2s;
-  font-size: 14px;
+  font-size: 13px;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  border-radius: 4px;
+  color: #1a1a1a;
 }
 
 .priority-option:hover {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5;
 }
 
-.priority-option span:first-child {
+.priority-option span {
+  flex: 1;
+}
+
+.priority-option-arrow {
+  color: #999;
   font-size: 16px;
 }

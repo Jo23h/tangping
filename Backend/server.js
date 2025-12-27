@@ -3,12 +3,14 @@ const express = require("express");
 const cors = require('cors')
 const morgan = require("morgan");
 const bcrypt = require("bcrypt");
+const passport = require('./config/passport');
 const connectDB = require("./config/database.js");
 
 // Import Routers
 const userRouter = require('./routers/users.js')
 const authRouter = require("./routers/auth.js")
 const taskRouter = require("./routers/tasks.js")
+const projectRouter = require("./routers/projects.js")
 
 const app = express();
 connectDB();
@@ -16,6 +18,7 @@ connectDB();
 app.use(cors())
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(passport.initialize());
 
 const PORT = process.env.PORT || "3000";
 
@@ -23,6 +26,7 @@ const PORT = process.env.PORT || "3000";
 app.use("/users", userRouter);
 app.use('/auth', authRouter);
 app.use('/tasks', taskRouter);
+app.use('/projects', projectRouter);
 
 app.listen(PORT, () => {
 });

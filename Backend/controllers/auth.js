@@ -36,7 +36,8 @@ const signUp = async (req, res) => {
                     _id: newUser._id,
                     name: newUser.name,
                     email: newUser.email,
-                    role: newUser.role
+                    role: newUser.role,
+                    profilePicture: newUser.profilePicture
                 }
             })
 
@@ -73,7 +74,8 @@ const signIn = async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                profilePicture: user.profilePicture
             }
         })
 
@@ -106,7 +108,8 @@ const guestSignIn = async (req, res) => {
                 _id: 'guest',
                 name: 'Guest User',
                 email: 'guest@tangping.com',
-                role: 'guest'
+                role: 'guest',
+                profilePicture: null
             }
         })
     } catch (error) {
@@ -114,4 +117,23 @@ const guestSignIn = async (req, res) => {
     }
 }
 
-module.exports = { signUp, signIn, signOut, guestSignIn }
+const googleCallback = async (req, res) => {
+    try {
+        const user = req.user;
+
+        const token = jwt.sign(
+            {
+                userId: user._id,
+                role: user.role
+            },
+            process.env.JWT_SECRET
+        )
+
+        // Redirect to frontend with token
+        res.redirect(`http://localhost:5173/auth/callback?token=${token}`)
+    } catch (error) {
+        res.redirect('http://localhost:5173/signin?error=auth_failed')
+    }
+}
+
+module.exports = { signUp, signIn, signOut, guestSignIn, googleCallback }

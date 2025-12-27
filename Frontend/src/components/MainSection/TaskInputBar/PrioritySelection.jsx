@@ -1,7 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
+import { CaretDown, Flag, FolderOpen } from '@phosphor-icons/react'
 import './PrioritySelection.css'
 
-function PrioritySelection({ selectedPriority, onPriorityChange }) {
+function PrioritySelection({
+  selectedPriority,
+  onPriorityChange,
+  selectedCategoryName,
+  onCategoryClick
+}) {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef(null)
 
@@ -21,19 +27,6 @@ function PrioritySelection({ selectedPriority, onPriorityChange }) {
     setIsOpen(false)
   }
 
-  const getPriorityIcon = () => {
-    switch (selectedPriority) {
-      case 'high':
-        return '🔴'
-      case 'medium':
-        return '🟠'
-      case 'low':
-        return '🟡'
-      default:
-        return '🏳️'
-    }
-  }
-
   return (
     <div className="priority-dropdown" ref={dropdownRef}>
       <button
@@ -41,39 +34,56 @@ function PrioritySelection({ selectedPriority, onPriorityChange }) {
         onClick={() => setIsOpen(!isOpen)}
         type="button"
       >
-        {getPriorityIcon()}
+        <CaretDown weight="light" size={20} />
       </button>
 
       {isOpen && (
         <div className="priority-menu">
-          <div
-            className="priority-option"
-            onClick={() => handleSelectPriority('high')}
-          >
-            <span>🔴</span>
-            <span>High</span>
+          <div className="priority-section-title">Priority</div>
+          <div className="priority-flags">
+            <button
+              className={`priority-flag-btn ${selectedPriority === 'high' ? 'selected' : ''}`}
+              onClick={() => handleSelectPriority('high')}
+              type="button"
+            >
+              <Flag weight="light" size={20} color="#d32f2f" />
+            </button>
+            <button
+              className={`priority-flag-btn ${selectedPriority === 'medium' ? 'selected' : ''}`}
+              onClick={() => handleSelectPriority('medium')}
+              type="button"
+            >
+              <Flag weight="light" size={20} color="#f57c00" />
+            </button>
+            <button
+              className={`priority-flag-btn ${selectedPriority === 'low' ? 'selected' : ''}`}
+              onClick={() => handleSelectPriority('low')}
+              type="button"
+            >
+              <Flag weight="light" size={20} color="#1976d2" />
+            </button>
+            <button
+              className={`priority-flag-btn ${selectedPriority === 'none' ? 'selected' : ''}`}
+              onClick={() => handleSelectPriority('none')}
+              type="button"
+            >
+              <Flag weight="light" size={20} color="#9e9e9e" />
+            </button>
           </div>
-          <div
-            className="priority-option"
-            onClick={() => handleSelectPriority('medium')}
+          <div className="priority-divider"></div>
+          <div className="priority-section-title">Category</div>
+          <button
+            className="priority-option category-option"
+            onClick={() => {
+              onCategoryClick()
+              setIsOpen(false)
+            }}
+            type="button"
           >
-            <span>🟠</span>
-            <span>Medium</span>
-          </div>
-          <div
-            className="priority-option"
-            onClick={() => handleSelectPriority('low')}
-          >
-            <span>🟡</span>
-            <span>Low</span>
-          </div>
-          <div
-            className="priority-option"
-            onClick={() => handleSelectPriority('none')}
-          >
-            <span>🏳️</span>
-            <span>None</span>
-          </div>
+            <FolderOpen weight="light" size={18} />
+            <span>{selectedCategoryName || 'Select Category'}</span>
+            <span className="priority-option-arrow">›</span>
+          </button>
         </div>
       )}
     </div>

@@ -5,9 +5,11 @@ function TaskInputField({
   inputValue,
   selectedDate,
   selectedPriority,
+  selectedCategoryName,
   onInputChange,
   onDateChange,
   onPriorityChange,
+  onCategoryClick,
   onAddTask,
   onKeyDown
 }) {
@@ -31,6 +33,8 @@ function TaskInputField({
       <PrioritySelection
         selectedPriority={selectedPriority}
         onPriorityChange={onPriorityChange}
+        selectedCategoryName={selectedCategoryName}
+        onCategoryClick={onCategoryClick}
       />
     </div>
   )
