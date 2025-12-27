@@ -17,7 +17,12 @@ process.on('uncaughtException', (err) => {
 
 const express = require("express");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+// Try both import methods for connect-mongo compatibility
+let MongoStore = require("connect-mongo");
+// If .default exists, use it (some bundlers need this)
+if (MongoStore.default) {
+  MongoStore = MongoStore.default;
+}
 const cors = require('cors')
 const morgan = require("morgan");
 const bcrypt = require("bcrypt");
@@ -55,6 +60,14 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(express.json());
 app.use(morgan("dev"));
+
+// Debug MongoStore setup
+console.log("=== MONGOSTORE DEBUG ===");
+console.log("MongoStore object:", typeof MongoStore);
+console.log("MongoStore.create exists:", typeof MongoStore.create);
+console.log("MONGODB_URI exists:", !!process.env.MONGODB_URI);
+console.log("MONGODB_URI value:", process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 20) + "..." : "NOT SET");
+console.log("========================");
 
 // Session middleware with MongoStore - fixes MemoryStore warning
 app.use(session({
