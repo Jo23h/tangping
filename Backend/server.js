@@ -87,10 +87,24 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Log ALL incoming requests for debugging
+app.use((req, res, next) => {
+  console.log(`🔵 INCOMING REQUEST: ${req.method} ${req.path}`);
+  console.log(`   Headers Host: ${req.get('host')}`);
+  console.log(`   Protocol: ${req.protocol}`);
+  next();
+});
+
 const PORT = process.env.PORT || "3000";
 console.log("🔌 Port Configuration:");
 console.log("  - process.env.PORT:", process.env.PORT || "NOT SET");
 console.log("  - Using PORT:", PORT);
+
+// Health check endpoint - test if server is reachable
+app.get('/health', (req, res) => {
+  console.log("✅ Health check hit");
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
   // Routes
 app.use("/users", userRouter);
