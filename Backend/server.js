@@ -1,4 +1,14 @@
 require("dotenv").config();
+
+// Catch unhandled promise rejections that cause silent crashes
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  // Log the stack trace for debugging
+  if (reason instanceof Error) {
+    console.error(reason.stack);
+  }
+});
+
 const express = require("express");
 const cors = require('cors')
 const morgan = require("morgan");
@@ -47,5 +57,8 @@ app.use('/auth', authRouter);
 app.use('/tasks', taskRouter);
 app.use('/projects', projectRouter);
 
-app.listen(PORT, () => {
+// Bind to 0.0.0.0 for Railway (required for container networking)
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
