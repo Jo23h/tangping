@@ -40,6 +40,12 @@ const app = express();
 // Trust Railway proxy - CRITICAL for OAuth callbacks to work
 app.set("trust proxy", 1);
 
+// EARLY TEST ENDPOINT - Before ANY middleware
+app.get('/ping', (req, res) => {
+  console.log("🟢 PING endpoint hit!");
+  res.send('PONG');
+});
+
 // Debug: Log environment variables on startup
 console.log("=== ENVIRONMENT CHECK ===");
 console.log("BACKEND_URL:", process.env.BACKEND_URL || "NOT SET");
