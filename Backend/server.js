@@ -17,6 +17,7 @@ process.on('uncaughtException', (err) => {
 
 const express = require("express");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const cors = require('cors')
 const morgan = require("morgan");
 const bcrypt = require("bcrypt");
@@ -55,13 +56,17 @@ app.use(cors(corsOptions))
 app.use(express.json());
 app.use(morgan("dev"));
 
-// Session middleware - required for Passport even with session: false
+// Session middleware with MongoStore - fixes MemoryStore warning
 app.use(session({
-  secret: process.env.JWT_SECRET || 'fallback-secret-change-in-production',
+  secret: process.env.JWT_SECRET || process.env.SESSION_SECRET || 'tangping_secret_key',
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+  }),
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // Only use HTTPS in production
+    secure: true, // Required for HTTPS on Railway
+    sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
