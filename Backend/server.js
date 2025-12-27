@@ -36,7 +36,6 @@ const taskRouter = require("./routers/tasks.js")
 const projectRouter = require("./routers/projects.js")
 
 const app = express();
-connectDB();
 
 // Trust Railway proxy - CRITICAL for OAuth callbacks to work
 app.set("trust proxy", 1);
@@ -126,4 +125,10 @@ app.use((err, req, res, next) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+
+  // Connect to MongoDB AFTER server starts (non-blocking)
+  console.log("⏳ Starting MongoDB connection in background...");
+  connectDB().catch(err => {
+    console.error("MongoDB connection error (non-fatal):", err.message);
+  });
 });
