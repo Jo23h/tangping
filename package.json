@@ -1,0 +1,23 @@
+{
+  "name": "tangping-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tangping - Task Management Application",
+  "scripts": {
+    "install:frontend": "cd Frontend && npm install",
+    "install:backend": "cd Backend && npm install",
+    "install:all": "npm run install:frontend && npm run install:backend",
+    "dev:frontend": "cd Frontend && npm run dev",
+    "dev:backend": "cd Backend && npm run dev",
+    "build:frontend": "cd Frontend && npm run build",
+    "start:frontend": "cd Frontend && npm start",
+    "start:backend": "cd Backend && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jo23h/tangping.git"
+  },
+  "keywords": ["task-management", "productivity"],
+  "author": "",
+  "license": "ISC"
+}

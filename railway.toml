@@ -1,0 +1,23 @@
+# Railway Configuration for Monorepo
+# This file documents the Railway setup for this monorepo
+# You need to create TWO separate services in Railway:
+
+# Service 1: Backend API
+# - Root Directory: /Backend
+# - Build Command: npm install
+# - Start Command: npm start
+# - Environment Variables needed:
+#   - MONGODB_URI
+#   - JWT_SECRET
+#   - GOOGLE_CLIENT_ID
+#   - GOOGLE_CLIENT_SECRET
+#   - FRONTEND_URL (set to your frontend Railway URL)
+#   - PORT (Railway sets this automatically)
+
+# Service 2: Frontend
+# - Root Directory: /Frontend
+# - Build Command: npm install && npm run build
+# - Start Command: npm start
+# - Environment Variables needed:
+#   - VITE_API_URL (set to your backend Railway URL)
+#   - PORT (Railway sets this automatically)
