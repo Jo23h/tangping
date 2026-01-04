@@ -176,11 +176,28 @@ async function getDeletedTasks(req, res) {
     }
 }
 
+async function clearAllDeletedTasks(req, res) {
+    try {
+        const result = await Task.deleteMany({
+            userId: req.user.userId,
+            isDeleted: true
+        });
+
+        res.json({
+            message: 'All deleted tasks cleared successfully',
+            count: result.deletedCount
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 module.exports = {
     createTask,
     getAllTasks,
     getSpecificTask,
     updateTask,
     deleteTask,
-    getDeletedTasks
+    getDeletedTasks,
+    clearAllDeletedTasks
 };

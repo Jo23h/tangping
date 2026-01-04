@@ -93,3 +93,17 @@ export const getDeletedTasks = async () => {
 
   return await response.json();
 };
+
+export const clearAllDeletedTasks = async () => {
+  const response = await fetch(`${API_URL}/tasks/deleted/clear`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to clear deleted tasks');
+  }
+
+  return await response.json();
+};

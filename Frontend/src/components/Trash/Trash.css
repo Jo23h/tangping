@@ -35,15 +35,42 @@
   max-width: 100%;
 }
 
+.trash-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 24px 0 12px 0;
+}
+
+.trash-section-header:first-child {
+  margin-top: 0;
+}
+
 .trash-section-title {
   font-size: 18px;
   font-weight: 600;
   color: #1a1a1a;
-  margin: 24px 0 12px 0;
+  margin: 0;
 }
 
-.trash-section-title:first-child {
-  margin-top: 0;
+.trash-clear-btn {
+  padding: 8px 16px;
+  background-color: #dc4c3e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.trash-clear-btn:hover {
+  background-color: #c53727;
+}
+
+.trash-clear-btn:active {
+  transform: scale(0.98);
 }
 
 .trash-empty {

@@ -63,6 +63,34 @@ function Trash() {
     })
   }
 
+  const handleClearProjects = async () => {
+    if (!window.confirm('Are you sure you want to permanently delete all deleted projects? This action cannot be undone.')) {
+      return
+    }
+
+    try {
+      await projectService.clearAllDeletedProjects()
+      setDeletedProjects([])
+    } catch (error) {
+      console.error('Error clearing deleted projects:', error)
+      alert('Failed to clear deleted projects: ' + error.message)
+    }
+  }
+
+  const handleClearTasks = async () => {
+    if (!window.confirm('Are you sure you want to permanently delete all deleted tasks? This action cannot be undone.')) {
+      return
+    }
+
+    try {
+      await taskService.clearAllDeletedTasks()
+      setDeletedTasks([])
+    } catch (error) {
+      console.error('Error clearing deleted tasks:', error)
+      alert('Failed to clear deleted tasks: ' + error.message)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="trash-container">
@@ -80,7 +108,14 @@ function Trash() {
       </div>
 
       <div className="trash-content">
-        <h2 className="trash-section-title">Deleted Projects</h2>
+        <div className="trash-section-header">
+          <h2 className="trash-section-title">Deleted Projects</h2>
+          {deletedProjects.length > 0 && (
+            <button className="trash-clear-btn" onClick={handleClearProjects}>
+              Clear
+            </button>
+          )}
+        </div>
         {deletedProjects.length === 0 ? (
           <div className="trash-empty">
             <p>No deleted projects</p>
@@ -111,7 +146,14 @@ function Trash() {
           </table>
         )}
 
-        <h2 className="trash-section-title">Deleted Tasks</h2>
+        <div className="trash-section-header">
+          <h2 className="trash-section-title">Deleted Tasks</h2>
+          {deletedTasks.length > 0 && (
+            <button className="trash-clear-btn" onClick={handleClearTasks}>
+              Clear
+            </button>
+          )}
+        </div>
         {deletedTasks.length === 0 ? (
           <div className="trash-empty">
             <p>No deleted tasks</p>

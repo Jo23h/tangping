@@ -163,3 +163,20 @@ exports.getOrCreateInbox = async (req, res) => {
     res.status(500).json({ error: 'Failed to get inbox' });
   }
 };
+
+// Permanently delete all deleted projects
+exports.clearAllDeletedProjects = async (req, res) => {
+  try {
+    const result = await Project.deleteMany({
+      userId: req.user.userId,
+      isDeleted: true
+    });
+
+    res.json({
+      message: 'All deleted projects cleared successfully',
+      count: result.deletedCount
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to clear deleted projects' });
+  }
+};

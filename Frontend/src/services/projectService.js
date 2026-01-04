@@ -109,3 +109,16 @@ export const getDeletedProjects = async () => {
 
   return response.json();
 };
+
+export const clearAllDeletedProjects = async () => {
+  const response = await fetch(`${API_URL}/projects/deleted/clear`, {
+    method: 'DELETE',
+    headers: getAuthHeaders()
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to clear deleted projects');
+  }
+
+  return response.json();
+};

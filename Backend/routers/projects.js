@@ -15,6 +15,9 @@ router.get('/inbox', projectController.getOrCreateInbox);
 // Get deleted projects (trash)
 router.get('/deleted', projectController.getDeletedProjects);
 
+// Clear all deleted projects (permanently delete)
+router.delete('/deleted/clear', projectController.clearAllDeletedProjects);
+
 // Create a new project
 router.post('/', projectController.createProject);
 
