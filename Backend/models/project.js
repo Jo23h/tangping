@@ -28,6 +28,10 @@ const projectSchema = new mongoose.Schema({
   isDeleted: {
     type: Boolean,
     default: false
+  },
+  lastModified: {
+    type: Date,
+    default: Date.now
   }
 }, {
   timestamps: true

@@ -1,7 +1,7 @@
 /* Memo Section - Right Sidebar */
 .memo-section {
   flex: 0 0 40%;
-  background-color: #fff;
+  background-color: #fafafa;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -25,17 +25,18 @@
 
 .memo-header {
   padding: 24px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #e0e0e0;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
+  background-color: #f5f5f5;
 }
 
 .memo-task-title-input {
   font-size: 24px;
   font-weight: 600;
-  color: #000;
+  color: #2e3338;
   margin: 0;
   border: none;
   outline: none;
@@ -46,7 +47,7 @@
 }
 
 .memo-task-title-input::placeholder {
-  color: #ccc;
+  color: #b0b0b0;
 }
 
 .memo-close-btn {
@@ -62,7 +63,7 @@
 }
 
 .memo-close-btn:hover {
-  color: #333;
+  color: #2e3338;
 }
 
 .memo-content {
@@ -70,7 +71,7 @@
   flex: 1;
   font-size: 16px;
   line-height: 1.6;
-  color: #333;
+  color: #2e3338;
   outline: none;
   overflow-y: auto;
   white-space: pre-wrap;
@@ -79,5 +80,5 @@
 
 .memo-content:empty:before {
   content: attr(data-placeholder);
-  color: #ccc;
+  color: #b0b0b0;
 }

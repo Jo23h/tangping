@@ -1,16 +1,47 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import './MemoSection.css';
 import * as taskService from '../../services/taskService';
 
 function MemoSection({ selectedTask, onTaskUpdate, onTaskSelect }) {
   const [taskTitle, setTaskTitle] = useState('');
   const [memoContent, setMemoContent] = useState('');
+  const memoRef = useRef(null);
+  const saveTimeoutRef = useRef(null);
 
   useEffect(() => {
     if (selectedTask) {
       setTaskTitle(selectedTask.text);
       setMemoContent(selectedTask.memo || '');
     }
+  }, [selectedTask]);
+
+  // Save memo content to backend
+  const saveMemo = useCallback(async (content) => {
+    if (selectedTask && content !== selectedTask.memo) {
+      try {
+        const updatedTask = await taskService.updateTask(selectedTask._id, { memo: content });
+        onTaskUpdate(updatedTask);
+      } catch (err) {
+        console.error('Failed to save memo:', err);
+      }
+    }
+  }, [selectedTask, onTaskUpdate]);
+
+  // Cleanup: save on unmount or when selectedTask changes
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      if (memoRef.current && selectedTask) {
+        const content = memoRef.current.innerHTML;
+        if (content !== selectedTask.memo) {
+          taskService.updateTask(selectedTask._id, { memo: content }).catch(err => {
+            console.error('Failed to save memo on cleanup:', err);
+          });
+        }
+      }
+    };
   }, [selectedTask]);
 
   const handleTitleChange = (event) => {
@@ -40,14 +71,28 @@ function MemoSection({ selectedTask, onTaskUpdate, onTaskSelect }) {
   };
 
   const handleMemoBlur = async (event) => {
-    const newMemo = event.target.textContent;
-    if (newMemo !== selectedTask.memo) {
-      try {
-        const updatedTask = await taskService.updateTask(selectedTask._id, { memo: newMemo });
-        onTaskUpdate(updatedTask);
-      } catch (err) {
-      }
+    // Clear any pending debounced save
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
     }
+
+    // Save immediately on blur, using innerHTML to preserve formatting
+    const newMemo = event.target.innerHTML;
+    await saveMemo(newMemo);
+  };
+
+  const handleMemoInput = (event) => {
+    // Clear previous timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Debounce save by 1 second
+    saveTimeoutRef.current = setTimeout(() => {
+      const content = event.target.innerHTML;
+      saveMemo(content);
+    }, 1000);
   };
 
   const handleMemoKeyDown = (event) => {
@@ -104,11 +149,13 @@ function MemoSection({ selectedTask, onTaskUpdate, onTaskSelect }) {
         </button>
       </div>
       <div
+        ref={memoRef}
         className='memo-content'
         contentEditable
         suppressContentEditableWarning
         data-placeholder='Start writing...'
         onBlur={handleMemoBlur}
+        onInput={handleMemoInput}
         onKeyDown={handleMemoKeyDown}
         dangerouslySetInnerHTML={{ __html: memoContent }}
       />

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
-import SignInPage from './components/SignInPage/SignInPage'
+// import SignInPage from './components/SignInPage/SignInPage'
 import NavBar from './components/Navbar/Navbar'
 import MainSection from './components/MainSection/MainSection'
 import MemoSection from './components/MemoSection/MemoSection'
@@ -9,11 +9,14 @@ import Projects from './components/Projects/Projects'
 import ProjectView from './components/Projects/ProjectView'
 import Inbox from './components/Inbox/Inbox'
 import Trash from './components/Trash/Trash'
-import AuthCallback from './components/AuthCallback/AuthCallback'
-import { isAuthenticated } from './services/authService'
+import Home from './components/Home/Home'
+// import AuthCallback from './components/AuthCallback/AuthCallback'
+// import { isAuthenticated } from './services/authService'
 
+// Temporarily disable authentication for local testing
 function ProtectedRoute({ children }) {
-  return isAuthenticated() ? children : <Navigate to="/signin" />
+  return children; // Always allow access
+  // return isAuthenticated() ? children : <Navigate to="/signin" />
 }
 
 function Dashboard() {
@@ -112,12 +115,41 @@ function TrashPage() {
   )
 }
 
+function HomePage() {
+  return (
+    <div className="app-container">
+      <NavBar />
+      <Home />
+    </div>
+  );
+}
+
 function App() {
+  // Initialize mock user for local testing (no authentication required)
+  useEffect(() => {
+    if (!localStorage.getItem('token')) {
+      // Set a mock token for local testing
+      localStorage.setItem('token', 'local-test-token');
+      localStorage.setItem('user', JSON.stringify({
+        name: 'Test User',
+        email: 'test@example.com'
+      }));
+    }
+  }, []);
+
   return (
     <Router>
       <Routes>
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/auth/callback" element={<AuthCallback />} />
+        {/* <Route path="/signin" element={<SignInPage />} />
+        <Route path="/auth/callback" element={<AuthCallback />} /> */}
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/inbox"
           element={
@@ -158,7 +190,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/signin" />} />
+        <Route path="/" element={<Navigate to="/home" />} />
       </Routes>
     </Router>
   )
