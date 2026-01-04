@@ -11,6 +11,9 @@ function Home() {
   const [taskFilter, setTaskFilter] = useState('all');
   const [projectFilter, setProjectFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [taskPage, setTaskPage] = useState(1);
+  const [projectPage, setProjectPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     fetchData();
@@ -58,10 +61,20 @@ function Home() {
   const getFilteredProjects = () => {
     const activeProjects = projects.filter(p => !p.isDeleted && !p.isArchived && p.name !== 'Inbox');
 
+    let filtered;
     if (projectFilter === 'all') {
-      return activeProjects;
+      filtered = activeProjects;
+    } else {
+      filtered = activeProjects.filter(p => p.priority === projectFilter);
     }
-    return activeProjects.filter(p => p.priority === projectFilter);
+
+    // Sort by priority: high -> medium -> low
+    const priorityOrder = { high: 1, medium: 2, low: 3 };
+    return filtered.sort((a, b) => {
+      const priorityA = priorityOrder[a.priority] || 4;
+      const priorityB = priorityOrder[b.priority] || 4;
+      return priorityA - priorityB;
+    });
   };
 
   const formatDate = (dateString) => {
@@ -91,6 +104,29 @@ function Home() {
 
   const filteredTasks = getFilteredTasks();
   const filteredProjects = getFilteredProjects();
+
+  // Pagination
+  const totalTaskPages = Math.ceil(filteredTasks.length / itemsPerPage);
+  const totalProjectPages = Math.ceil(filteredProjects.length / itemsPerPage);
+
+  const paginatedTasks = filteredTasks.slice(
+    (taskPage - 1) * itemsPerPage,
+    taskPage * itemsPerPage
+  );
+
+  const paginatedProjects = filteredProjects.slice(
+    (projectPage - 1) * itemsPerPage,
+    projectPage * itemsPerPage
+  );
+
+  // Reset to page 1 when filter changes
+  useEffect(() => {
+    setTaskPage(1);
+  }, [taskFilter]);
+
+  useEffect(() => {
+    setProjectPage(1);
+  }, [projectFilter]);
 
   if (loading) {
     return (
@@ -144,14 +180,14 @@ function Home() {
                 </tr>
               </thead>
               <tbody>
-                {filteredTasks.length === 0 ? (
+                {paginatedTasks.length === 0 ? (
                   <tr>
                     <td colSpan="4" className="empty-state">
                       No tasks found
                     </td>
                   </tr>
                 ) : (
-                  filteredTasks.map(task => (
+                  paginatedTasks.map(task => (
                     <tr key={task._id} onClick={() => navigate('/dashboard')}>
                       <td className="task-name">{task.text}</td>
                       <td className="project-name">
@@ -174,6 +210,28 @@ function Home() {
               </tbody>
             </table>
           </div>
+
+          {totalTaskPages > 1 && (
+            <div className="pagination">
+              <button
+                className="pagination-btn"
+                onClick={() => setTaskPage(p => Math.max(1, p - 1))}
+                disabled={taskPage === 1}
+              >
+                Previous
+              </button>
+              <span className="pagination-info">
+                Page {taskPage} of {totalTaskPages}
+              </span>
+              <button
+                className="pagination-btn"
+                onClick={() => setTaskPage(p => Math.min(totalTaskPages, p + 1))}
+                disabled={taskPage === totalTaskPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Projects Table */}
@@ -219,14 +277,14 @@ function Home() {
                 </tr>
               </thead>
               <tbody>
-                {filteredProjects.length === 0 ? (
+                {paginatedProjects.length === 0 ? (
                   <tr>
                     <td colSpan="4" className="empty-state">
                       No projects found
                     </td>
                   </tr>
                 ) : (
-                  filteredProjects.map(project => {
+                  paginatedProjects.map(project => {
                     const projectTasks = tasks.filter(t => t.projectId === project._id && !t.isDeleted && !t.isCompleted);
 
                     const now = new Date();
@@ -277,6 +335,28 @@ function Home() {
               </tbody>
             </table>
           </div>
+
+          {totalProjectPages > 1 && (
+            <div className="pagination">
+              <button
+                className="pagination-btn"
+                onClick={() => setProjectPage(p => Math.max(1, p - 1))}
+                disabled={projectPage === 1}
+              >
+                Previous
+              </button>
+              <span className="pagination-info">
+                Page {projectPage} of {totalProjectPages}
+              </span>
+              <button
+                className="pagination-btn"
+                onClick={() => setProjectPage(p => Math.min(totalProjectPages, p + 1))}
+                disabled={projectPage === totalProjectPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
