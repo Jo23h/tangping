@@ -1,4 +1,4 @@
-import NavBar from '../components/NavBar/Navbar';
+import NavBar from '../components/Navbar/Navbar';
 import Projects from '../components/Projects/Projects';
 
 function ProjectsPage() {

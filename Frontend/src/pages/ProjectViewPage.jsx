@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import NavBar from '../components/NavBar/Navbar';
+import NavBar from '../components/Navbar/Navbar';
 import ProjectView from '../components/Projects/ProjectView';
 import GoogleDocViewer from '../components/GoogleDocViewer/GoogleDocViewer';
 import { createOrGetGoogleDoc } from '../services/googleDocsService';

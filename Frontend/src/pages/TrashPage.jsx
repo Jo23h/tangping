@@ -1,4 +1,4 @@
-import NavBar from '../components/NavBar/Navbar';
+import NavBar from '../components/Navbar/Navbar';
 import Trash from '../components/Trash/Trash';
 
 function TrashPage() {
