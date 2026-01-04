@@ -14,7 +14,7 @@ function ViewTasks({ onTaskSelect, onTaskUpdate, onCreateMemo, projectId, filter
   const [projects, setProjects] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState('');
-  const [defaultPriority, setDefaultPriority] = useState('none');
+  const [defaultPriority, setDefaultPriority] = useState('low');
   const currentUser = getCurrentUser();
 
   // Fetch inbox and tasks on mount
@@ -41,18 +41,18 @@ function ViewTasks({ onTaskSelect, onTaskUpdate, onCreateMemo, projectId, filter
           setSelectedCategoryId(projectId);
           setSelectedCategoryName(currentProject.name);
           // Inherit project's priority as default
-          setDefaultPriority(currentProject.priority || 'none');
+          setDefaultPriority(currentProject.priority || 'low');
         }
       } else if (filterMode === 'inbox') {
         // On inbox page - set to inbox
         setSelectedCategoryId(inbox._id);
         setSelectedCategoryName('Inbox');
-        setDefaultPriority('none');
+        setDefaultPriority('low');
       } else {
         // On View Task page - default to inbox
         setSelectedCategoryId(inbox._id);
         setSelectedCategoryName('Inbox');
-        setDefaultPriority('none');
+        setDefaultPriority('low');
       }
 
       // Fetch tasks with inbox ID
@@ -107,7 +107,7 @@ function ViewTasks({ onTaskSelect, onTaskUpdate, onCreateMemo, projectId, filter
       const taskData = {
         text: taskText,
         dueDate: dueDate || null,
-        priority: priority || 'none',
+        priority: priority || 'low',
         completed: false,
         memo: ''
       };

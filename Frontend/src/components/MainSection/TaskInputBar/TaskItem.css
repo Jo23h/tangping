@@ -39,10 +39,6 @@
   border-color: #fbbf24;
 }
 
-.task-checkbox.priority-none {
-  border-color: #ddd;
-}
-
 /* Checked state with priority colors */
 .task-checkbox.priority-high:checked {
   background-color: #dc4c3e;
@@ -57,11 +53,6 @@
 .task-checkbox.priority-low:checked {
   background-color: #fbbf24;
   border-color: #fbbf24;
-}
-
-.task-checkbox.priority-none:checked {
-  background-color: #999;
-  border-color: #999;
 }
 
 .task-checkbox:checked::after {

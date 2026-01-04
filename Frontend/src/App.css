@@ -18,76 +18,7 @@ body {
   background-color: #ffffff;
 }
 
-/* Left sidebar - Navbar */
-.app-container > :nth-child(1) {
-  width: 48px;
-  flex-shrink: 0;
-  background-color: #f5f5f5;
-  border-right: 1px solid #e0e0e0;
-}
-
-/* Center - Main content */
-.app-container > :nth-child(2) {
-  flex: 1;
-  overflow-y: auto;
-  background-color: #ffffff;
-  scrollbar-width: thin;
-  scrollbar-color: #d0d0d0 #ffffff;
-}
-
-/* Scrollbar styling for Webkit browsers */
-.app-container > :nth-child(2)::-webkit-scrollbar {
-  width: 8px;
-}
-
-.app-container > :nth-child(2)::-webkit-scrollbar-track {
-  background: #ffffff;
-}
-
-.app-container > :nth-child(2)::-webkit-scrollbar-thumb {
-  background: #d0d0d0;
-  border-radius: 4px;
-}
-
-.app-container > :nth-child(2)::-webkit-scrollbar-thumb:hover {
-  background: #b0b0b0;
-}
-
-/* Right sidebar - Memo section */
-.app-container > :nth-child(3) {
-  width: 40%;
-  flex-shrink: 0;
-  background-color: #fafafa;
-  border-left: 1px solid #e0e0e0;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #d0d0d0 #fafafa;
-}
-
-.app-container > :nth-child(3)::-webkit-scrollbar {
-  width: 8px;
-}
-
-.app-container > :nth-child(3)::-webkit-scrollbar-track {
-  background: #fafafa;
-}
-
-.app-container > :nth-child(3)::-webkit-scrollbar-thumb {
-  background: #d0d0d0;
-  border-radius: 4px;
-}
-
-.app-container > :nth-child(3)::-webkit-scrollbar-thumb:hover {
-  background: #b0b0b0;
-}
-
-/* Memo section placeholder for pages without memo */
-.memo-section-placeholder {
-  width: 40%;
-  flex-shrink: 0;
-  background-color: #fafafa;
-  border-left: 1px solid #e0e0e0;
-}
+/* Left sidebar - Navbar - using class-based targeting instead of nth-child */
 
 /* Resizable middle section */
 .main-section-resizable {

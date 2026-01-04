@@ -4,17 +4,17 @@ import './CreateProject.css'
 
 function CreateProject({ isOpen, onClose, onCreateProject, onUpdateProject, editingProject }) {
   const [projectName, setProjectName] = useState('')
-  const [priority, setPriority] = useState('none')
+  const [priority, setPriority] = useState('low')
   const [isPriorityOpen, setIsPriorityOpen] = useState(false)
 
   // Set form values when editing
   useEffect(() => {
     if (editingProject) {
       setProjectName(editingProject.name)
-      setPriority(editingProject.priority || 'none')
+      setPriority(editingProject.priority || 'low')
     } else {
       setProjectName('')
-      setPriority('none')
+      setPriority('low')
     }
   }, [editingProject, isOpen])
 
@@ -27,14 +27,14 @@ function CreateProject({ isOpen, onClose, onCreateProject, onUpdateProject, edit
         await onCreateProject({ name: projectName.trim(), priority })
       }
       setProjectName('')
-      setPriority('none')
+      setPriority('low')
       onClose()
     }
   }
 
   const handleCancel = () => {
     setProjectName('')
-    setPriority('none')
+    setPriority('low')
     onClose()
   }
 
@@ -60,7 +60,7 @@ function CreateProject({ isOpen, onClose, onCreateProject, onUpdateProject, edit
       case 'low':
         return 'Low'
       default:
-        return 'None'
+        return 'Low'
     }
   }
 
@@ -122,14 +122,6 @@ function CreateProject({ isOpen, onClose, onCreateProject, onUpdateProject, edit
                   >
                     <Flag weight="light" size={20} color="#1976d2" />
                     <span>Low</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`priority-option-modal ${priority === 'none' ? 'selected' : ''}`}
-                    onClick={() => { setPriority('none'); setIsPriorityOpen(false); }}
-                  >
-                    <Flag weight="light" size={20} color="#9e9e9e" />
-                    <span>None</span>
                   </button>
                 </div>
               )}

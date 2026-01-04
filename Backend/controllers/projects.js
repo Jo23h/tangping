@@ -39,7 +39,7 @@ exports.createProject = async (req, res) => {
 
     const project = new Project({
       name,
-      priority: priority || 'none',
+      priority: priority || 'low',
       userId: req.user.userId
     });
 
@@ -151,7 +151,7 @@ exports.getOrCreateInbox = async (req, res) => {
     if (!inbox) {
       inbox = new Project({
         name: 'Inbox',
-        priority: 'none',
+        priority: 'low',
         userId: req.user.userId,
         isInbox: true
       });

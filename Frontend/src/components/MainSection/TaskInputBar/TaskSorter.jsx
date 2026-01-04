@@ -8,9 +8,9 @@ export const sortTasks = (tasksToSort) => {
       return dateA - dateB;
     }
 
-    const priorityOrder = { high: 1, medium: 2, low: 3, none: 4 };
-    const priorityA = priorityOrder[a.priority] || 4;
-    const priorityB = priorityOrder[b.priority] || 4;
+    const priorityOrder = { high: 1, medium: 2, low: 3 };
+    const priorityA = priorityOrder[a.priority] || 3;
+    const priorityB = priorityOrder[b.priority] || 3;
 
     return priorityA - priorityB;
   });

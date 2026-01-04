@@ -62,13 +62,6 @@ function PrioritySelection({
             >
               <Flag weight="light" size={20} color="#1976d2" />
             </button>
-            <button
-              className={`priority-flag-btn ${selectedPriority === 'none' ? 'selected' : ''}`}
-              onClick={() => handleSelectPriority('none')}
-              type="button"
-            >
-              <Flag weight="light" size={20} color="#9e9e9e" />
-            </button>
           </div>
           <div className="priority-divider"></div>
           <div className="priority-section-title">Category</div>

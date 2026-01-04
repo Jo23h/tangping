@@ -9,7 +9,13 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\nPrepare app for production deployment\n\n- Configure environment variables for frontend and backend URLs\n- Add API_URL configuration for flexible backend endpoint\n- Update Google OAuth to use environment variables\n- Remove deprecated authentication methods (signup, signin, guest)\n- Add .env.example files for both frontend and backend\n- Update .gitignore to exclude environment files\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git push:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm ci:*)",
+      "Bash(.env)",
+      "Bash(git reset:*)",
+      "Bash(git rm:*)",
+      "Bash(git mv:*)",
+      "Bash(git ls-tree:*)"
     ],
     "deny": [],
     "ask": []

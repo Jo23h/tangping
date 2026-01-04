@@ -6,16 +6,16 @@ import './TaskInput.css'
 function TaskInput({ onAddTask, selectedCategoryId, selectedCategoryName, onCategoryChange, projects, defaultPriority }) {
   const [inputValue, setInputValue] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState(defaultPriority || 'none');
+  const [selectedPriority, setSelectedPriority] = useState(defaultPriority || 'low');
   const [isCategoryPopupOpen, setIsCategoryPopupOpen] = useState(false);
 
   // Update selected priority when default priority changes (e.g., navigating to different project)
   useEffect(() => {
-    setSelectedPriority(defaultPriority || 'none');
+    setSelectedPriority(defaultPriority || 'low');
   }, [defaultPriority]);
 
   const parsePriority = (text) => {
-    const priorityRegex = /^!(high|medium|low|none)\s+(.+)/i;
+    const priorityRegex = /^!(high|medium|low)\s+(.+)/i;
     
     const match = text.match(priorityRegex);
 
@@ -44,8 +44,8 @@ function TaskInput({ onAddTask, selectedCategoryId, selectedCategoryName, onCate
       onAddTask(text, selectedDate, selectedPriority, selectedCategoryId);
       setInputValue('');
       setSelectedDate('');
-      // Reset to default priority (project's priority or 'none')
-      setSelectedPriority(defaultPriority || 'none');
+      // Reset to default priority (project's priority or 'low')
+      setSelectedPriority(defaultPriority || 'low');
     }
   };
 
