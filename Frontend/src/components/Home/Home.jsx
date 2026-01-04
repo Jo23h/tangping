@@ -68,12 +68,26 @@ function Home() {
       filtered = activeProjects.filter(p => p.priority === projectFilter);
     }
 
-    // Sort by priority: high -> medium -> low
+    // Sort by priority first, then by days since change (higher days first)
     const priorityOrder = { high: 1, medium: 2, low: 3 };
+    const now = new Date();
+
     return filtered.sort((a, b) => {
+      // First, sort by priority
       const priorityA = priorityOrder[a.priority] || 4;
       const priorityB = priorityOrder[b.priority] || 4;
-      return priorityA - priorityB;
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+
+      // If same priority, sort by days since change (descending - higher days first)
+      const lastModifiedA = a.lastModified || a.updatedAt || a.createdAt;
+      const lastModifiedB = b.lastModified || b.updatedAt || b.createdAt;
+      const daysSinceA = Math.floor((now - new Date(lastModifiedA)) / (1000 * 60 * 60 * 24));
+      const daysSinceB = Math.floor((now - new Date(lastModifiedB)) / (1000 * 60 * 60 * 24));
+
+      return daysSinceB - daysSinceA; // Higher days first
     });
   };
 
@@ -96,10 +110,27 @@ function Home() {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'high': return '#ff6b6b';
-      case 'medium': return '#ffa500';
-      case 'low': return '#4dabf7';
-      default: return '#adb5bd';
+      case 'medium': return '#4dabf7';
+      case 'low': return null; // No color for low priority
+      default: return null;
     }
+  };
+
+  const getDueDateColor = (dueDate) => {
+    if (!dueDate) return '#2e3338'; // default black
+
+    const now = new Date();
+    const due = new Date(dueDate);
+    const timeUntilDue = due - now;
+    const threeDays = 3 * 24 * 60 * 60 * 1000;
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+    if (timeUntilDue >= 0 && timeUntilDue <= threeDays) {
+      return '#ff6b6b'; // Red for due soon
+    } else if (timeUntilDue > threeDays && timeUntilDue <= sevenDays) {
+      return '#4dabf7'; // Blue for upcoming
+    }
+    return '#2e3338'; // Black for others
   };
 
   const filteredTasks = getFilteredTasks();
@@ -193,9 +224,11 @@ function Home() {
                       <td className="project-name">
                         {projects.find(p => p._id === task.projectId)?.name || 'Inbox'}
                       </td>
-                      <td className="due-date">{formatDate(task.dueDate)}</td>
+                      <td className="due-date" style={{ color: getDueDateColor(task.dueDate) }}>
+                        {formatDate(task.dueDate)}
+                      </td>
                       <td>
-                        {task.priority && (
+                        {task.priority && getPriorityColor(task.priority) && (
                           <span
                             className="priority-badge"
                             style={{ backgroundColor: getPriorityColor(task.priority) }}
@@ -313,7 +346,7 @@ function Home() {
                       <tr key={project._id} onClick={() => navigate(`/projects/${project._id}`)}>
                         <td className="project-name">{project.name}</td>
                         <td>
-                          {project.priority && (
+                          {project.priority && getPriorityColor(project.priority) && (
                             <span
                               className="priority-badge"
                               style={{ backgroundColor: getPriorityColor(project.priority) }}

@@ -1,0 +1,140 @@
+.google-doc-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ffffff;
+}
+
+.google-doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #fafafa;
+}
+
+.google-doc-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2e3338;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.google-doc-open-btn {
+  font-size: 12px;
+  color: #7c3aed;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.google-doc-open-btn:hover {
+  background-color: #f0e7ff;
+  color: #6d28d9;
+}
+
+.google-doc-iframe-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.google-doc-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.google-doc-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: #fafafa;
+}
+
+.google-doc-empty-content {
+  text-align: center;
+  padding: 40px;
+}
+
+.google-doc-empty-content p {
+  margin: 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.google-doc-empty-hint {
+  margin-top: 8px !important;
+  font-size: 14px !important;
+  color: #999 !important;
+}
+
+.google-doc-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px;
+  background-color: #fff8f8;
+  text-align: center;
+}
+
+.google-doc-error h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #dc4c3e;
+}
+
+.google-doc-error p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.error-details {
+  font-size: 12px !important;
+  color: #999 !important;
+  font-family: monospace;
+}
+
+.error-retry-btn {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background-color: #7c3aed;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.error-retry-btn:hover {
+  background-color: #6d28d9;
+}
+
+.google-doc-link {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background-color: #7c3aed;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-block;
+  transition: all 0.2s;
+}
+
+.google-doc-link:hover {
+  background-color: #6d28d9;
+}

@@ -118,6 +118,32 @@
   opacity: 0.6;
 }
 
+.task-memo-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+.task-memo-btn:hover {
+  background-color: #e8e8e8;
+}
+
+.task-memo-btn svg {
+  color: #666;
+}
+
+.task-memo-btn:hover svg {
+  color: #7c3aed;
+}
+
 .task-delete-btn {
   background: transparent;
   border: none;

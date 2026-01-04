@@ -5,10 +5,12 @@ import './Projects.css'
 import CreateProject from './CreateProject'
 import ProjectContextMenu from './ProjectContextMenu'
 import * as projectService from '../../services/projectService'
+import * as taskService from '../../services/taskService'
 
 function Projects() {
   const [projects, setProjects] = useState([])
   const [archivedProjects, setArchivedProjects] = useState([])
+  const [tasks, setTasks] = useState([])
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [contextMenu, setContextMenu] = useState(null)
@@ -21,19 +23,51 @@ function Projects() {
 
   const fetchProjects = async () => {
     try {
-      const data = await projectService.getAllProjects()
+      const [projectsData, tasksData] = await Promise.all([
+        projectService.getAllProjects(),
+        taskService.getAllTasks()
+      ])
+
       // Filter out inbox and separate active from archived
-      const nonInboxProjects = data.filter(project => !project.isInbox)
-      const activeProjects = nonInboxProjects.filter(project => !project.isArchived)
+      const nonInboxProjects = projectsData.filter(project => !project.isInbox)
+      const activeProjects = nonInboxProjects.filter(project => !project.isArchived && !project.isDeleted)
       const archived = nonInboxProjects.filter(project => project.isArchived)
-      setProjects(activeProjects)
+
+      // Sort active projects by priority, then by days since change
+      const sorted = sortProjects(activeProjects)
+
+      setProjects(sorted)
       setArchivedProjects(archived)
-      console.log('Fetched projects:', activeProjects, 'Archived:', archived)
+      setTasks(tasksData)
+      console.log('Fetched projects:', sorted, 'Archived:', archived)
     } catch (error) {
       console.error('Error fetching projects:', error)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const sortProjects = (projectsList) => {
+    const priorityOrder = { high: 1, medium: 2, low: 3 }
+    const now = new Date()
+
+    return projectsList.sort((a, b) => {
+      // First, sort by priority
+      const priorityA = priorityOrder[a.priority] || 4
+      const priorityB = priorityOrder[b.priority] || 4
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB
+      }
+
+      // If same priority, sort by days since change (descending - higher days first)
+      const lastModifiedA = a.lastModified || a.updatedAt || a.createdAt
+      const lastModifiedB = b.lastModified || b.updatedAt || b.createdAt
+      const daysSinceA = Math.floor((now - new Date(lastModifiedA)) / (1000 * 60 * 60 * 24))
+      const daysSinceB = Math.floor((now - new Date(lastModifiedB)) / (1000 * 60 * 60 * 24))
+
+      return daysSinceB - daysSinceA // Higher days first
+    })
   }
 
   const handleCreateProject = async (projectData) => {
@@ -117,13 +151,13 @@ function Projects() {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'high':
-        return '#d32f2f'
+        return '#ff6b6b'
       case 'medium':
-        return '#f57c00'
+        return '#4dabf7'
       case 'low':
-        return '#1976d2'
+        return null // No color for low priority
       default:
-        return '#9e9e9e'
+        return null
     }
   }
 
@@ -170,27 +204,65 @@ function Projects() {
           <table className="projects-table">
             <thead>
               <tr>
-                <th>Name</th>
+                <th>Project</th>
                 <th>Priority</th>
+                <th>Tasks (Due Soon / Upcoming / Total)</th>
+                <th>Days Since Change</th>
               </tr>
             </thead>
             <tbody>
-              {projects.map((project) => (
-                <tr
-                  key={project._id}
-                  className="project-row"
-                  onClick={() => navigate(`/projects/${project._id}`)}
-                  onContextMenu={(e) => handleContextMenu(e, project)}
-                >
-                  <td className="project-name-cell">{project.name}</td>
-                  <td
-                    className="project-priority-cell"
-                    style={{ color: getPriorityColor(project.priority) }}
+              {projects.map((project) => {
+                const projectTasks = tasks.filter(t => t.projectId === project._id && !t.isDeleted && !t.completed);
+
+                const now = new Date();
+                const threeDays = 3 * 24 * 60 * 60 * 1000;
+                const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+                const dueSoon = projectTasks.filter(t => {
+                  if (!t.dueDate) return false;
+                  const dueDate = new Date(t.dueDate);
+                  const timeUntilDue = dueDate - now;
+                  return timeUntilDue >= 0 && timeUntilDue <= threeDays;
+                }).length;
+
+                const upcoming = projectTasks.filter(t => {
+                  if (!t.dueDate) return false;
+                  const dueDate = new Date(t.dueDate);
+                  const timeUntilDue = dueDate - now;
+                  return timeUntilDue > threeDays && timeUntilDue <= sevenDays;
+                }).length;
+
+                // Calculate days since last change
+                const lastModified = project.lastModified || project.updatedAt || project.createdAt;
+                const daysSinceChange = Math.floor((now - new Date(lastModified)) / (1000 * 60 * 60 * 24));
+
+                return (
+                  <tr
+                    key={project._id}
+                    className="project-row"
+                    onClick={() => navigate(`/projects/${project._id}`)}
+                    onContextMenu={(e) => handleContextMenu(e, project)}
                   >
-                    {getPriorityText(project.priority)}
-                  </td>
-                </tr>
-              ))}
+                    <td className="project-name-cell">{project.name}</td>
+                    <td className="project-priority-cell">
+                      {getPriorityColor(project.priority) && (
+                        <span
+                          className="priority-badge"
+                          style={{ backgroundColor: getPriorityColor(project.priority) }}
+                        >
+                          {getPriorityText(project.priority)}
+                        </span>
+                      )}
+                    </td>
+                    <td className="task-count-cell">
+                      {dueSoon} / {upcoming} / {projectTasks.length}
+                    </td>
+                    <td className="days-since-change-cell">
+                      {daysSinceChange === 0 ? 'Today' : `${daysSinceChange} day${daysSinceChange === 1 ? '' : 's'}`}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </>
@@ -202,27 +274,65 @@ function Projects() {
           <table className="projects-table">
             <thead>
               <tr>
-                <th>Name</th>
+                <th>Project</th>
                 <th>Priority</th>
+                <th>Tasks (Due Soon / Upcoming / Total)</th>
+                <th>Days Since Change</th>
               </tr>
             </thead>
             <tbody>
-              {archivedProjects.map((project) => (
-                <tr
-                  key={project._id}
-                  className="project-row archived"
-                  onClick={() => navigate(`/projects/${project._id}`)}
-                  onContextMenu={(e) => handleContextMenu(e, project)}
-                >
-                  <td className="project-name-cell">{project.name}</td>
-                  <td
-                    className="project-priority-cell"
-                    style={{ color: getPriorityColor(project.priority) }}
+              {archivedProjects.map((project) => {
+                const projectTasks = tasks.filter(t => t.projectId === project._id && !t.isDeleted && !t.completed);
+
+                const now = new Date();
+                const threeDays = 3 * 24 * 60 * 60 * 1000;
+                const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+                const dueSoon = projectTasks.filter(t => {
+                  if (!t.dueDate) return false;
+                  const dueDate = new Date(t.dueDate);
+                  const timeUntilDue = dueDate - now;
+                  return timeUntilDue >= 0 && timeUntilDue <= threeDays;
+                }).length;
+
+                const upcoming = projectTasks.filter(t => {
+                  if (!t.dueDate) return false;
+                  const dueDate = new Date(t.dueDate);
+                  const timeUntilDue = dueDate - now;
+                  return timeUntilDue > threeDays && timeUntilDue <= sevenDays;
+                }).length;
+
+                // Calculate days since last change
+                const lastModified = project.lastModified || project.updatedAt || project.createdAt;
+                const daysSinceChange = Math.floor((now - new Date(lastModified)) / (1000 * 60 * 60 * 24));
+
+                return (
+                  <tr
+                    key={project._id}
+                    className="project-row archived"
+                    onClick={() => navigate(`/projects/${project._id}`)}
+                    onContextMenu={(e) => handleContextMenu(e, project)}
                   >
-                    {getPriorityText(project.priority)}
-                  </td>
-                </tr>
-              ))}
+                    <td className="project-name-cell">{project.name}</td>
+                    <td className="project-priority-cell">
+                      {getPriorityColor(project.priority) && (
+                        <span
+                          className="priority-badge"
+                          style={{ backgroundColor: getPriorityColor(project.priority) }}
+                        >
+                          {getPriorityText(project.priority)}
+                        </span>
+                      )}
+                    </td>
+                    <td className="task-count-cell">
+                      {dueSoon} / {upcoming} / {projectTasks.length}
+                    </td>
+                    <td className="days-since-change-cell">
+                      {daysSinceChange === 0 ? 'Today' : `${daysSinceChange} day${daysSinceChange === 1 ? '' : 's'}`}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </>

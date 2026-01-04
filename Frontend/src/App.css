@@ -89,4 +89,57 @@ body {
   border-left: 1px solid #e0e0e0;
 }
 
+/* Resizable middle section */
+.main-section-resizable {
+  flex-shrink: 0;
+  overflow-y: auto;
+  background-color: #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: #d0d0d0 #ffffff;
+}
+
+.main-section-resizable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-section-resizable::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+.main-section-resizable::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 4px;
+}
+
+.main-section-resizable::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
+
+/* Resize handle */
+.resize-handle {
+  width: 4px;
+  flex-shrink: 0;
+  cursor: col-resize;
+  background-color: #e0e0e0;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.resize-handle:hover {
+  background-color: #7c3aed;
+}
+
+.resize-handle:active {
+  background-color: #6d28d9;
+}
+
+/* Google Doc section */
+.google-doc-section {
+  flex-shrink: 0;
+  background-color: #fafafa;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 

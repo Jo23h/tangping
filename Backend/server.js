@@ -34,6 +34,7 @@ const userRouter = require('./routers/users.js')
 const authRouter = require("./routers/auth.js")
 const taskRouter = require("./routers/tasks.js")
 const projectRouter = require("./routers/projects.js")
+const activityRouter = require("./routers/activities.js")
 
 const app = express();
 
@@ -118,6 +119,7 @@ app.use("/users", userRouter);
 app.use('/auth', authRouter);
 app.use('/tasks', taskRouter);
 app.use('/projects', projectRouter);
+app.use('/activities', activityRouter);
 
 // Global error handler - MUST be after all routes
 app.use((err, req, res, next) => {

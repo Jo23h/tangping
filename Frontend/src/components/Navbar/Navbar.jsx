@@ -1,11 +1,14 @@
+import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { House, Tray, ListBullets, Folder, Trash } from '@phosphor-icons/react'
+import { House, Tray, ListBullets, Folder, Trash, Gear, ChartLineUp } from '@phosphor-icons/react'
 import './Navbar.css'
+import Settings from '../Settings/Settings'
 // import { signOut, getCurrentUser } from '../../services/authService'
 
 function NavBar() {
   const navigate = useNavigate()
   const location = useLocation()
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   // const user = getCurrentUser()
 
   // const handleSignOut = () => {
@@ -49,6 +52,13 @@ function NavBar() {
           <Folder size={18} weight="regular" />
         </button>
         <button
+          className={`navbar-icon view-icon ${isActive('/activity') ? 'active' : ''}`}
+          title="Activity"
+          onClick={() => navigate('/activity')}
+        >
+          <ChartLineUp size={18} weight="regular" />
+        </button>
+        <button
           className={`navbar-icon view-icon ${isActive('/trash') ? 'active' : ''}`}
           title="Trash"
           onClick={() => navigate('/trash')}
@@ -56,6 +66,21 @@ function NavBar() {
           <Trash size={18} weight="regular" />
         </button>
       </div>
+
+      <div className="navbar-bottom">
+        <button
+          className="navbar-icon settings-icon"
+          title="Settings"
+          onClick={() => setIsSettingsOpen(true)}
+        >
+          <Gear size={18} weight="regular" />
+        </button>
+      </div>
+
+      <Settings
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
 
       {/* <div className="navbar-user">
         {user && user.profilePicture ? (

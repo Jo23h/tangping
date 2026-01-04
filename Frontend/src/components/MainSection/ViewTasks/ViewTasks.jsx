@@ -6,7 +6,7 @@ import * as taskService from '../../../services/taskService';
 import * as projectService from '../../../services/projectService';
 import { getCurrentUser } from '../../../services/authService';
 
-function ViewTasks({ onTaskSelect, onTaskUpdate, projectId, filterMode }) {
+function ViewTasks({ onTaskSelect, onTaskUpdate, onCreateMemo, projectId, filterMode }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -238,6 +238,7 @@ function ViewTasks({ onTaskSelect, onTaskUpdate, projectId, filterMode }) {
           onDelete={handleDeleteTask}
           onItemClick={handleTaskClick}
           onTaskEdit={handleTaskEdit}
+          onCreateMemo={onCreateMemo}
           isGuest={currentUser?.role === 'guest'}
         />
       </div>

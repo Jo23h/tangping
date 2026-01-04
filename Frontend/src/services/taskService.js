@@ -22,6 +22,20 @@ export const getAllTasks = async () => {
   return await response.json();
 };
 
+export const getTaskById = async (taskId) => {
+  const response = await fetch(`${API_URL}/tasks/${taskId}`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to fetch task');
+  }
+
+  return await response.json();
+};
+
 export const createTask = async (taskData) => {
   const response = await fetch(`${API_URL}/tasks`, {
     method: 'POST',

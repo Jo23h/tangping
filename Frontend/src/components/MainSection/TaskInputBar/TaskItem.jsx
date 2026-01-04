@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
-import { PencilSimpleLine } from '@phosphor-icons/react'
+import { PencilSimpleLine, Note } from '@phosphor-icons/react'
 import './TaskItem.css'
 
-function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTaskEdit }) {
+function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTaskEdit, onCreateMemo }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(task.text);
   const inputRef = useRef(null);
@@ -90,18 +90,25 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
           {task.text}
         </span>
       )}
+      {onCreateMemo && (
+        <button
+          onClick={(event) => {
+            event.stopPropagation();
+            onCreateMemo(task._id);
+          }}
+          className="task-memo-btn"
+          title={task.googleDocUrl ? 'Open memo' : 'Create memo'}
+        >
+          <Note size={16} weight={task.googleDocUrl ? 'fill' : 'regular'} />
+        </button>
+      )}
       {task.dueDate && formatDueDate(task.dueDate) && (
-        <span className={`task-due-date ${formatDueDate(task.dueDate).isOverdue ? 'overdue' : ''}`}>
+        <span
+          className={`task-due-date ${formatDueDate(task.dueDate).isOverdue ? 'overdue' : ''}`}
+          style={{ color: formatDueDate(task.dueDate).color }}
+        >
           {formatDueDate(task.dueDate).displayText}
         </span>
-      )}
-      {task.memo && task.memo.trim() && (
-        <PencilSimpleLine
-          weight="light"
-          size={16}
-          className="task-memo-icon"
-          color="#666"
-        />
       )}
       {onDelete && (
         <button

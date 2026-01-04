@@ -6,7 +6,7 @@ import { sortTasks } from '../TaskInputBar/TaskSorter';
 import { formatDueDate } from '../TaskInputBar/dateFormatter';
 import './TaskManager.css';
 
-function TaskManager({ tasks, onToggle, onDelete, onItemClick, onTaskEdit, isGuest }) {
+function TaskManager({ tasks, onToggle, onDelete, onItemClick, onTaskEdit, onCreateMemo, isGuest }) {
   const [activeFilter, setActiveFilter] = useState('All');
 
   const activeTasks = tasks.filter(task => !task.completed);
@@ -26,6 +26,7 @@ function TaskManager({ tasks, onToggle, onDelete, onItemClick, onTaskEdit, isGue
         formatDueDate={formatDueDate}
         onItemClick={onItemClick}
         onTaskEdit={isGuest ? null : onTaskEdit}
+        onCreateMemo={isGuest ? null : onCreateMemo}
       />
 
       <CompletedSection
@@ -35,6 +36,7 @@ function TaskManager({ tasks, onToggle, onDelete, onItemClick, onTaskEdit, isGue
         formatDueDate={formatDueDate}
         onItemClick={onItemClick}
         onTaskEdit={isGuest ? null : onTaskEdit}
+        onCreateMemo={isGuest ? null : onCreateMemo}
       />
     </div>
   );
