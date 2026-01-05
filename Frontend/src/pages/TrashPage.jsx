@@ -5,7 +5,9 @@ function TrashPage() {
   return (
     <div className="app-container">
       <NavBar />
-      <Trash />
+      <div style={{ flex: 1, overflow: 'auto' }}>
+        <Trash />
+      </div>
     </div>
   );
 }

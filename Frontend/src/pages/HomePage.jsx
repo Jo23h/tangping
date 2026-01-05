@@ -5,7 +5,9 @@ function HomePage() {
   return (
     <div className="app-container">
       <NavBar />
-      <Home />
+      <div style={{ flex: 1, overflow: 'auto' }}>
+        <Home />
+      </div>
     </div>
   );
 }

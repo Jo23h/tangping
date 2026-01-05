@@ -229,7 +229,9 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
           onClick={(e) => e.stopPropagation()}
         >
           <div className="context-menu-section">
-            <div className="context-menu-title">Set Due Date</div>
+            <div className="context-menu-title">
+              {task.dueDate ? 'Change Deadline' : 'Set Deadline'}
+            </div>
             <button className="context-menu-item" onClick={() => setDueDate(0)}>
               📅 Today
             </button>
@@ -246,7 +248,7 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
               <>
                 <div className="context-menu-divider"></div>
                 <button className="context-menu-item context-menu-danger" onClick={clearDueDate}>
-                  ✖️ Clear due date
+                  ✖️ Clear deadline
                 </button>
               </>
             )}

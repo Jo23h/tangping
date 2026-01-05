@@ -5,7 +5,9 @@ function ProjectsPage() {
   return (
     <div className="app-container">
       <NavBar />
-      <Projects />
+      <div style={{ flex: 1, overflow: 'auto' }}>
+        <Projects />
+      </div>
     </div>
   );
 }

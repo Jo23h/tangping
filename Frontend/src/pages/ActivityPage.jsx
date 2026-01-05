@@ -5,7 +5,9 @@ function ActivityPage() {
   return (
     <div className="app-container">
       <NavBar />
-      <Activity />
+      <div style={{ flex: 1, overflow: 'auto' }}>
+        <Activity />
+      </div>
     </div>
   );
 }
