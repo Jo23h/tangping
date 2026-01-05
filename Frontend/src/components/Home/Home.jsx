@@ -280,14 +280,12 @@ function Home() {
                         {formatDate(task.dueDate)}
                       </td>
                       <td>
-                        {task.priority && (
-                          <span
-                            className="priority-badge"
-                            style={{ backgroundColor: getPriorityColor(task.priority) }}
-                          >
-                            {task.priority}
-                          </span>
-                        )}
+                        <span
+                          className="priority-badge"
+                          style={{ backgroundColor: getPriorityColor(task.priority || 'low') }}
+                        >
+                          {task.priority || 'low'}
+                        </span>
                       </td>
                     </tr>
                   ))
@@ -399,14 +397,12 @@ function Home() {
                       <tr key={project._id} onClick={() => navigate(`/projects/${project._id}`)}>
                         <td className="project-name">{project.name}</td>
                         <td>
-                          {project.priority && (
-                            <span
-                              className="priority-badge"
-                              style={{ backgroundColor: getPriorityColor(project.priority) }}
-                            >
-                              {project.priority}
-                            </span>
-                          )}
+                          <span
+                            className="priority-badge"
+                            style={{ backgroundColor: getPriorityColor(project.priority || 'low') }}
+                          >
+                            {project.priority || 'low'}
+                          </span>
                         </td>
                         <td className="task-count">
                           {dueSoon} / {upcoming} / {projectTasks.length}

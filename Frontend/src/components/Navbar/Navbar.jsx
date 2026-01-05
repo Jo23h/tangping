@@ -1,20 +1,12 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { House, Tray, ListBullets, Folder, Trash, Gear, ChartLineUp } from '@phosphor-icons/react'
 import './Navbar.css'
 import Settings from '../Settings/Settings'
-// import { signOut, getCurrentUser } from '../../services/authService'
 
 function NavBar() {
   const navigate = useNavigate()
   const location = useLocation()
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-  // const user = getCurrentUser()
-
-  // const handleSignOut = () => {
-  //   signOut()
-  //   navigate('/signin')
-  // }
 
   const isActive = (path) => {
     return location.pathname === path
@@ -28,42 +20,42 @@ function NavBar() {
           title="Home"
           onClick={() => navigate('/home')}
         >
-          <House size={18} weight="regular" />
+          <span style={{ fontSize: '20px' }}>🏠</span>
         </button>
         <button
           className={`navbar-icon view-icon ${isActive('/inbox') ? 'active' : ''}`}
           title="Inbox"
           onClick={() => navigate('/inbox')}
         >
-          <Tray size={18} weight="regular" />
+          <span style={{ fontSize: '20px' }}>📥</span>
         </button>
         <button
           className={`navbar-icon view-icon ${isActive('/dashboard') ? 'active' : ''}`}
           title="View All Tasks"
           onClick={() => navigate('/dashboard')}
         >
-          <ListBullets size={18} weight="regular" />
+          <span style={{ fontSize: '20px' }}>✅</span>
         </button>
         <button
           className={`navbar-icon view-icon ${isActive('/projects') ? 'active' : ''}`}
           title="Projects"
           onClick={() => navigate('/projects')}
         >
-          <Folder size={18} weight="regular" />
+          <span style={{ fontSize: '20px' }}>📁</span>
         </button>
         <button
           className={`navbar-icon view-icon ${isActive('/activity') ? 'active' : ''}`}
           title="Activity"
           onClick={() => navigate('/activity')}
         >
-          <ChartLineUp size={18} weight="regular" />
+          <span style={{ fontSize: '20px' }}>📊</span>
         </button>
         <button
           className={`navbar-icon view-icon ${isActive('/trash') ? 'active' : ''}`}
           title="Trash"
           onClick={() => navigate('/trash')}
         >
-          <Trash size={18} weight="regular" />
+          <span style={{ fontSize: '20px' }}>🗑️</span>
         </button>
       </div>
 
@@ -73,7 +65,7 @@ function NavBar() {
           title="Settings"
           onClick={() => setIsSettingsOpen(true)}
         >
-          <Gear size={18} weight="regular" />
+          <span style={{ fontSize: '20px' }}>⚙️</span>
         </button>
         <button
           className="navbar-icon signout-icon"
@@ -84,7 +76,7 @@ function NavBar() {
             navigate('/signin');
           }}
         >
-          <span style={{ fontSize: '18px' }}>👋</span>
+          <span style={{ fontSize: '20px' }}>👋</span>
         </button>
       </div>
 

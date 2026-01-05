@@ -255,6 +255,12 @@
   letter-spacing: 0.3px;
 }
 
+.priority-badge[style*="background-color: rgb(158, 158, 158)"],
+.priority-badge[style*="background-color: #9e9e9e"] {
+  color: #fff;
+  background-color: #9e9e9e !important;
+}
+
 .task-count {
   color: #6c6c6c;
   font-size: 13px;
