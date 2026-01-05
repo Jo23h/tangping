@@ -5,10 +5,13 @@ import './TaskItem.css'
 function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTaskEdit, onCreateMemo, onDateChange }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingDate, setIsEditingDate] = useState(false);
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
   const [editText, setEditText] = useState(task.text);
   const [editDate, setEditDate] = useState(task.dueDate ? task.dueDate.split('T')[0] : '');
   const inputRef = useRef(null);
   const dateInputRef = useRef(null);
+  const contextMenuRef = useRef(null);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -23,6 +26,19 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
       dateInputRef.current.showPicker?.();
     }
   }, [isEditingDate]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (contextMenuRef.current && !contextMenuRef.current.contains(event.target)) {
+        setShowContextMenu(false);
+      }
+    };
+
+    if (showContextMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showContextMenu]);
 
   const handleTaskClick = () => {
     // Open memo
@@ -96,8 +112,33 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
     }
   };
 
+  const handleContextMenu = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setContextMenuPosition({ x: event.clientX, y: event.clientY });
+    setShowContextMenu(true);
+  };
+
+  const setDueDate = (daysFromNow) => {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+    const dateString = date.toISOString().split('T')[0];
+
+    if (onDateChange) {
+      onDateChange(task._id, dateString);
+    }
+    setShowContextMenu(false);
+  };
+
+  const clearDueDate = () => {
+    if (onDateChange) {
+      onDateChange(task._id, null);
+    }
+    setShowContextMenu(false);
+  };
+
   return (
-    <div className='task-item' onClick={handleTaskClick}>
+    <div className='task-item' onClick={handleTaskClick} onContextMenu={handleContextMenu}>
       <input
         type='checkbox'
         checked={task.completed}
@@ -174,6 +215,43 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
         >
           ×
         </button>
+      )}
+
+      {showContextMenu && (
+        <div
+          ref={contextMenuRef}
+          className="task-context-menu"
+          style={{
+            position: 'fixed',
+            top: `${contextMenuPosition.y}px`,
+            left: `${contextMenuPosition.x}px`,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="context-menu-section">
+            <div className="context-menu-title">Set Due Date</div>
+            <button className="context-menu-item" onClick={() => setDueDate(0)}>
+              📅 Today
+            </button>
+            <button className="context-menu-item" onClick={() => setDueDate(1)}>
+              📅 Tomorrow
+            </button>
+            <button className="context-menu-item" onClick={() => setDueDate(3)}>
+              📅 In 3 days
+            </button>
+            <button className="context-menu-item" onClick={() => setDueDate(7)}>
+              📅 In 1 week
+            </button>
+            {task.dueDate && (
+              <>
+                <div className="context-menu-divider"></div>
+                <button className="context-menu-item context-menu-danger" onClick={clearDueDate}>
+                  ✖️ Clear due date
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

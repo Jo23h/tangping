@@ -193,7 +193,7 @@ function ViewTasks({ onTaskSelect, onTaskUpdate, onCreateMemo, projectId, filter
 
   const handleDateChange = async (taskId, newDate) => {
     try {
-      const updatedTask = await taskService.updateTask(taskId, { dueDate: newDate });
+      const updatedTask = await taskService.updateTask(taskId, { dueDate: newDate || null });
       const updatedTasks = tasks.map(task =>
         task._id === taskId ? updatedTask : task
       );
