@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import HomePage from './pages/HomePage';
@@ -8,28 +7,30 @@ import ProjectsPage from './pages/ProjectsPage';
 import ProjectViewPage from './pages/ProjectViewPage';
 import ActivityPage from './pages/ActivityPage';
 import TrashPage from './pages/TrashPage';
+import SignInPage from './components/SignInPage/SignInPage';
+import AuthCallback from './components/AuthCallback/AuthCallback';
 
-// Temporarily disable authentication for local testing
+// Protected route that checks for authentication
 function ProtectedRoute({ children }) {
-  return children; // Always allow access
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  return children;
 }
 
 function App() {
-  // Initialize mock user for local testing (no authentication required)
-  useEffect(() => {
-    if (!localStorage.getItem('token')) {
-      // Set a mock token for local testing
-      localStorage.setItem('token', 'local-test-token');
-      localStorage.setItem('user', JSON.stringify({
-        name: 'Test User',
-        email: 'test@example.com'
-      }));
-    }
-  }, []);
 
   return (
     <Router>
       <Routes>
+        {/* Public routes */}
+        <Route path="/signin" element={<SignInPage />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+
+        {/* Protected routes */}
         <Route
           path="/home"
           element={
@@ -86,7 +87,21 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/home" />} />
+
+        {/* Root redirect - check if user is authenticated */}
+        <Route
+          path="/"
+          element={
+            localStorage.getItem('token') ? (
+              <Navigate to="/home" replace />
+            ) : (
+              <Navigate to="/signin" replace />
+            )
+          }
+        />
+
+        {/* Catch all - redirect to signin */}
+        <Route path="*" element={<Navigate to="/signin" replace />} />
       </Routes>
     </Router>
   );
