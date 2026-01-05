@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import * as taskService from '../../services/taskService';
 import * as projectService from '../../services/projectService';
+import { sortTasks } from '../MainSection/TaskInputBar/TaskSorter';
 
 function Home() {
   const navigate = useNavigate();
@@ -42,20 +43,23 @@ function Home() {
     if (taskFilter === 'all') {
       filtered = tasks.filter(task => !task.isDeleted && !task.isCompleted);
     } else {
-      const now = new Date();
-      const threeDays = 3 * 24 * 60 * 60 * 1000;
-      const sevenDays = 7 * 24 * 60 * 60 * 1000;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
       filtered = tasks.filter(task => {
         if (task.isDeleted || task.isCompleted || !task.dueDate) return false;
 
         const dueDate = new Date(task.dueDate);
-        const timeUntilDue = dueDate - now;
+        dueDate.setHours(0, 0, 0, 0);
+
+        const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
 
         if (taskFilter === 'due-soon') {
-          return timeUntilDue >= 0 && timeUntilDue <= threeDays;
+          // Tasks due today (0) through 3 days from now
+          return daysUntilDue >= 0 && daysUntilDue <= 3;
         } else if (taskFilter === 'upcoming') {
-          return timeUntilDue > threeDays && timeUntilDue <= sevenDays;
+          // Tasks due 4-7 days from now
+          return daysUntilDue > 3 && daysUntilDue <= 7;
         }
         return false;
       });
@@ -66,7 +70,8 @@ function Home() {
       filtered = filtered.filter(task => task.priority === priorityFilter);
     }
 
-    return filtered;
+    // Apply sorting
+    return sortTasks(filtered);
   };
 
   const getFilteredProjects = () => {
@@ -130,16 +135,18 @@ function Home() {
   const getDueDateColor = (dueDate) => {
     if (!dueDate) return '#2e3338'; // default black
 
-    const now = new Date();
-    const due = new Date(dueDate);
-    const timeUntilDue = due - now;
-    const threeDays = 3 * 24 * 60 * 60 * 1000;
-    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    if (timeUntilDue >= 0 && timeUntilDue <= threeDays) {
-      return '#ff6b6b'; // Red for due soon
-    } else if (timeUntilDue > threeDays && timeUntilDue <= sevenDays) {
-      return '#4dabf7'; // Blue for upcoming
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+
+    const daysUntilDue = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+
+    if (daysUntilDue >= 0 && daysUntilDue <= 3) {
+      return '#ff6b6b'; // Red for due soon (today through 3 days)
+    } else if (daysUntilDue > 3 && daysUntilDue <= 7) {
+      return '#4dabf7'; // Blue for upcoming (4-7 days)
     }
     return '#2e3338'; // Black for others
   };
@@ -365,27 +372,28 @@ function Home() {
                   paginatedProjects.map(project => {
                     const projectTasks = tasks.filter(t => t.projectId === project._id && !t.isDeleted && !t.isCompleted);
 
-                    const now = new Date();
-                    const threeDays = 3 * 24 * 60 * 60 * 1000;
-                    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
 
                     const dueSoon = projectTasks.filter(t => {
                       if (!t.dueDate) return false;
                       const dueDate = new Date(t.dueDate);
-                      const timeUntilDue = dueDate - now;
-                      return timeUntilDue >= 0 && timeUntilDue <= threeDays;
+                      dueDate.setHours(0, 0, 0, 0);
+                      const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                      return daysUntilDue >= 0 && daysUntilDue <= 3;
                     }).length;
 
                     const upcoming = projectTasks.filter(t => {
                       if (!t.dueDate) return false;
                       const dueDate = new Date(t.dueDate);
-                      const timeUntilDue = dueDate - now;
-                      return timeUntilDue > threeDays && timeUntilDue <= sevenDays;
+                      dueDate.setHours(0, 0, 0, 0);
+                      const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                      return daysUntilDue > 3 && daysUntilDue <= 7;
                     }).length;
 
                     // Calculate days since last change
                     const lastModified = project.lastModified || project.updatedAt || project.createdAt;
-                    const daysSinceChange = Math.floor((now - new Date(lastModified)) / (1000 * 60 * 60 * 24));
+                    const daysSinceChange = Math.floor((new Date() - new Date(lastModified)) / (1000 * 60 * 60 * 24));
 
                     return (
                       <tr key={project._id} onClick={() => navigate(`/projects/${project._id}`)}>
