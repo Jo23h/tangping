@@ -18,30 +18,17 @@ export const createOrGetGoogleDoc = async (taskId, taskText) => {
     // Generate document title from task text
     const docTitle = `Task: ${taskText.substring(0, 50)}${taskText.length > 50 ? '...' : ''}`;
 
-    // Create a URL to open a new Google Doc
-    // This URL will create a new doc in the user's drive
-    // Format: https://docs.google.com/document/create?title=TITLE&folder=FOLDER_ID
-    const createUrl = `https://docs.google.com/document/create?folder=${folderId}&title=${encodeURIComponent(docTitle)}`;
+    // Prompt user to create the document and paste the URL
+    const docUrl = prompt(
+      `Click OK, then:\n\n1. Go to your Google Drive folder\n2. Create a new Google Doc\n3. Name it: "${docTitle}"\n4. Copy the document URL from your browser\n5. Paste it below\n\nOr click Cancel to skip.`,
+      'https://docs.google.com/document/d/YOUR_DOC_ID/edit'
+    );
 
-    // Open the creation URL in a new window
-    const newWindow = window.open(createUrl, '_blank', 'width=800,height=600');
+    if (!docUrl || docUrl === 'https://docs.google.com/document/d/YOUR_DOC_ID/edit') {
+      throw new Error('No Google Doc URL provided');
+    }
 
-    // Wait a moment for the doc to be created
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Prompt user for the created document URL
-    const docUrl = await new Promise((resolve) => {
-      // Use a simple approach: ask user to paste the URL
-      setTimeout(() => {
-        const url = prompt(
-          'A new Google Doc has been created. Please copy the URL from the new tab and paste it here:',
-          'https://docs.google.com/document/d/YOUR_DOC_ID/edit'
-        );
-        resolve(url);
-      }, 2000);
-    });
-
-    if (!docUrl || !docUrl.includes('docs.google.com')) {
+    if (!docUrl.includes('docs.google.com')) {
       throw new Error('Invalid Google Doc URL');
     }
 

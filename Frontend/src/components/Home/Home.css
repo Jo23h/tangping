@@ -122,13 +122,14 @@
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
-  min-width: 120px;
+  min-width: 100px;
+  overflow: hidden;
 }
 
 .priority-dropdown button {
   display: block;
   width: 100%;
-  padding: 8px 16px;
+  padding: 6px 12px;
   background-color: transparent;
   border: none;
   text-align: left;
@@ -136,6 +137,8 @@
   font-size: 13px;
   color: #2e3338;
   transition: background-color 0.15s ease;
+  line-height: 1.4;
+  margin: 0;
 }
 
 .priority-dropdown button:hover {
@@ -143,11 +146,11 @@
 }
 
 .priority-dropdown button:first-child {
-  border-radius: 5px 5px 0 0;
+  border-radius: 4px 4px 0 0;
 }
 
 .priority-dropdown button:last-child {
-  border-radius: 0 0 5px 5px;
+  border-radius: 0 0 4px 4px;
 }
 
 .table-container {
