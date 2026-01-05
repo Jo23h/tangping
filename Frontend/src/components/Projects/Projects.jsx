@@ -235,7 +235,7 @@ function Projects() {
 
                 // Calculate days since last change
                 const lastModified = project.lastModified || project.updatedAt || project.createdAt;
-                const daysSinceChange = Math.floor((new Date() - new Date(lastModified)) / (1000 * 60 * 60 * 24));
+                const daysSinceChange = Math.abs(Math.floor((new Date() - new Date(lastModified)) / (1000 * 60 * 60 * 24)));
 
                 return (
                   <tr
@@ -304,7 +304,7 @@ function Projects() {
 
                 // Calculate days since last change
                 const lastModified = project.lastModified || project.updatedAt || project.createdAt;
-                const daysSinceChange = Math.floor((new Date() - new Date(lastModified)) / (1000 * 60 * 60 * 24));
+                const daysSinceChange = Math.abs(Math.floor((new Date() - new Date(lastModified)) / (1000 * 60 * 60 * 24)));
 
                 return (
                   <tr
