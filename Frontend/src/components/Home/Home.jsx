@@ -122,7 +122,7 @@ function Home() {
     switch (priority) {
       case 'high': return '#ff6b6b';
       case 'medium': return '#4dabf7';
-      case 'low': return null; // No color for low priority
+      case 'low': return '#9e9e9e'; // Gray color for low priority
       default: return null;
     }
   };
@@ -273,7 +273,7 @@ function Home() {
                         {formatDate(task.dueDate)}
                       </td>
                       <td>
-                        {task.priority && getPriorityColor(task.priority) && (
+                        {task.priority && (
                           <span
                             className="priority-badge"
                             style={{ backgroundColor: getPriorityColor(task.priority) }}
@@ -391,7 +391,7 @@ function Home() {
                       <tr key={project._id} onClick={() => navigate(`/projects/${project._id}`)}>
                         <td className="project-name">{project.name}</td>
                         <td>
-                          {project.priority && getPriorityColor(project.priority) && (
+                          {project.priority && (
                             <span
                               className="priority-badge"
                               style={{ backgroundColor: getPriorityColor(project.priority) }}
