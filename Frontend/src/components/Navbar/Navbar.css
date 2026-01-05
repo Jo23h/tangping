@@ -36,13 +36,14 @@
   background-color: #7c3aed;
 }
 
-.navbar-icon.active svg {
-  color: white;
+.navbar-icon.active span {
+  filter: brightness(1.2);
 }
 
-.navbar-icon svg {
-  width: 18px;
-  height: 18px;
+.navbar-icon svg,
+.navbar-icon span {
+  width: auto;
+  height: auto;
   color: #4a4a4a;
 }
 
@@ -131,24 +132,28 @@
   background: none;
 }
 
-.navbar-icon.view-icon svg {
-  color: #6c6c6c;
+.navbar-icon.view-icon svg,
+.navbar-icon.view-icon span {
+  opacity: 0.8;
 }
 
 .navbar-icon.view-icon:hover {
   background-color: #e8e8e8;
 }
 
-.navbar-icon.view-icon:hover svg {
-  color: #2e3338;
+.navbar-icon.view-icon:hover svg,
+.navbar-icon.view-icon:hover span {
+  opacity: 1;
 }
 
 .navbar-icon.view-icon.active {
   background-color: #7c3aed;
 }
 
-.navbar-icon.view-icon.active svg {
-  color: white;
+.navbar-icon.view-icon.active svg,
+.navbar-icon.view-icon.active span {
+  opacity: 1;
+  filter: brightness(1.2);
 }
 
 .navbar-bottom {
@@ -165,14 +170,16 @@
   background: none;
 }
 
-.navbar-icon.settings-icon svg {
-  color: #6c6c6c;
+.navbar-icon.settings-icon svg,
+.navbar-icon.settings-icon span {
+  opacity: 0.8;
 }
 
 .navbar-icon.settings-icon:hover {
   background-color: #e8e8e8;
 }
 
-.navbar-icon.settings-icon:hover svg {
-  color: #2e3338;
+.navbar-icon.settings-icon:hover svg,
+.navbar-icon.settings-icon:hover span {
+  opacity: 1;
 }

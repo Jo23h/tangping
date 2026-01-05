@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import { PencilSimpleLine, Note } from '@phosphor-icons/react'
 import './TaskItem.css'
 
 function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTaskEdit, onCreateMemo, onDateChange }) {
@@ -179,7 +178,7 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
           className="task-memo-btn"
           title={task.googleDocUrl ? 'Open memo' : 'Create memo'}
         >
-          <Note size={16} weight={task.googleDocUrl ? 'fill' : 'regular'} />
+          <span style={{ fontSize: '16px' }}>{task.googleDocUrl ? '📝' : '📄'}</span>
         </button>
       )}
       {isEditingDate ? (

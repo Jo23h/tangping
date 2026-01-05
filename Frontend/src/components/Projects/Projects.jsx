@@ -155,7 +155,7 @@ function Projects() {
       case 'medium':
         return '#4dabf7'
       case 'low':
-        return null // No color for low priority
+        return '#9e9e9e' // Gray color for low priority
       default:
         return null
     }
@@ -214,27 +214,28 @@ function Projects() {
               {projects.map((project) => {
                 const projectTasks = tasks.filter(t => t.projectId === project._id && !t.isDeleted && !t.completed);
 
-                const now = new Date();
-                const threeDays = 3 * 24 * 60 * 60 * 1000;
-                const sevenDays = 7 * 24 * 60 * 60 * 1000;
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
 
                 const dueSoon = projectTasks.filter(t => {
                   if (!t.dueDate) return false;
                   const dueDate = new Date(t.dueDate);
-                  const timeUntilDue = dueDate - now;
-                  return timeUntilDue >= 0 && timeUntilDue <= threeDays;
+                  dueDate.setHours(0, 0, 0, 0);
+                  const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                  return daysUntilDue >= 0 && daysUntilDue <= 3;
                 }).length;
 
                 const upcoming = projectTasks.filter(t => {
                   if (!t.dueDate) return false;
                   const dueDate = new Date(t.dueDate);
-                  const timeUntilDue = dueDate - now;
-                  return timeUntilDue > threeDays && timeUntilDue <= sevenDays;
+                  dueDate.setHours(0, 0, 0, 0);
+                  const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                  return daysUntilDue > 3 && daysUntilDue <= 7;
                 }).length;
 
                 // Calculate days since last change
                 const lastModified = project.lastModified || project.updatedAt || project.createdAt;
-                const daysSinceChange = Math.floor((now - new Date(lastModified)) / (1000 * 60 * 60 * 24));
+                const daysSinceChange = Math.floor((new Date() - new Date(lastModified)) / (1000 * 60 * 60 * 24));
 
                 return (
                   <tr
@@ -245,14 +246,12 @@ function Projects() {
                   >
                     <td className="project-name-cell">{project.name}</td>
                     <td className="project-priority-cell">
-                      {getPriorityColor(project.priority) && (
-                        <span
-                          className="priority-badge"
-                          style={{ backgroundColor: getPriorityColor(project.priority) }}
-                        >
-                          {getPriorityText(project.priority)}
-                        </span>
-                      )}
+                      <span
+                        className="priority-badge"
+                        style={{ backgroundColor: getPriorityColor(project.priority || 'low') }}
+                      >
+                        {getPriorityText(project.priority || 'low')}
+                      </span>
                     </td>
                     <td className="task-count-cell">
                       {dueSoon} / {upcoming} / {projectTasks.length}
@@ -284,27 +283,28 @@ function Projects() {
               {archivedProjects.map((project) => {
                 const projectTasks = tasks.filter(t => t.projectId === project._id && !t.isDeleted && !t.completed);
 
-                const now = new Date();
-                const threeDays = 3 * 24 * 60 * 60 * 1000;
-                const sevenDays = 7 * 24 * 60 * 60 * 1000;
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
 
                 const dueSoon = projectTasks.filter(t => {
                   if (!t.dueDate) return false;
                   const dueDate = new Date(t.dueDate);
-                  const timeUntilDue = dueDate - now;
-                  return timeUntilDue >= 0 && timeUntilDue <= threeDays;
+                  dueDate.setHours(0, 0, 0, 0);
+                  const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                  return daysUntilDue >= 0 && daysUntilDue <= 3;
                 }).length;
 
                 const upcoming = projectTasks.filter(t => {
                   if (!t.dueDate) return false;
                   const dueDate = new Date(t.dueDate);
-                  const timeUntilDue = dueDate - now;
-                  return timeUntilDue > threeDays && timeUntilDue <= sevenDays;
+                  dueDate.setHours(0, 0, 0, 0);
+                  const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                  return daysUntilDue > 3 && daysUntilDue <= 7;
                 }).length;
 
                 // Calculate days since last change
                 const lastModified = project.lastModified || project.updatedAt || project.createdAt;
-                const daysSinceChange = Math.floor((now - new Date(lastModified)) / (1000 * 60 * 60 * 24));
+                const daysSinceChange = Math.floor((new Date() - new Date(lastModified)) / (1000 * 60 * 60 * 24));
 
                 return (
                   <tr
@@ -315,14 +315,12 @@ function Projects() {
                   >
                     <td className="project-name-cell">{project.name}</td>
                     <td className="project-priority-cell">
-                      {getPriorityColor(project.priority) && (
-                        <span
-                          className="priority-badge"
-                          style={{ backgroundColor: getPriorityColor(project.priority) }}
-                        >
-                          {getPriorityText(project.priority)}
-                        </span>
-                      )}
+                      <span
+                        className="priority-badge"
+                        style={{ backgroundColor: getPriorityColor(project.priority || 'low') }}
+                      >
+                        {getPriorityText(project.priority || 'low')}
+                      </span>
                     </td>
                     <td className="task-count-cell">
                       {dueSoon} / {upcoming} / {projectTasks.length}
