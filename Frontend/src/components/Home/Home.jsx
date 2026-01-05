@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import * as taskService from '../../services/taskService';
@@ -16,6 +16,10 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [taskPage, setTaskPage] = useState(1);
   const [projectPage, setProjectPage] = useState(1);
+  const [taskContextMenu, setTaskContextMenu] = useState(null);
+  const [projectContextMenu, setProjectContextMenu] = useState(null);
+  const taskContextMenuRef = useRef(null);
+  const projectContextMenuRef = useRef(null);
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -177,6 +181,99 @@ function Home() {
     setProjectPage(1);
   }, [projectFilter]);
 
+  // Close context menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (taskContextMenuRef.current && !taskContextMenuRef.current.contains(event.target)) {
+        setTaskContextMenu(null);
+      }
+      if (projectContextMenuRef.current && !projectContextMenuRef.current.contains(event.target)) {
+        setProjectContextMenu(null);
+      }
+    };
+
+    if (taskContextMenu || projectContextMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [taskContextMenu, projectContextMenu]);
+
+  // Task context menu handlers
+  const handleTaskContextMenu = (event, task) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setTaskContextMenu({
+      x: event.clientX,
+      y: event.clientY,
+      task
+    });
+    setProjectContextMenu(null);
+  };
+
+  const handleMarkComplete = async () => {
+    if (taskContextMenu) {
+      try {
+        await taskService.updateTask(taskContextMenu.task._id, { completed: true });
+        setTasks(tasks.map(t => t._id === taskContextMenu.task._id ? { ...t, completed: true } : t));
+        setTaskContextMenu(null);
+      } catch (error) {
+        console.error('Error marking task as complete:', error);
+        alert('Failed to mark task as complete');
+      }
+    }
+  };
+
+  const handleDeleteTask = async () => {
+    if (taskContextMenu) {
+      try {
+        await taskService.deleteTask(taskContextMenu.task._id);
+        setTasks(tasks.filter(t => t._id !== taskContextMenu.task._id));
+        setTaskContextMenu(null);
+      } catch (error) {
+        console.error('Error deleting task:', error);
+        alert('Failed to delete task');
+      }
+    }
+  };
+
+  // Project context menu handlers
+  const handleProjectContextMenu = (event, project) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setProjectContextMenu({
+      x: event.clientX,
+      y: event.clientY,
+      project
+    });
+    setTaskContextMenu(null);
+  };
+
+  const handleArchiveProject = async () => {
+    if (projectContextMenu) {
+      try {
+        await projectService.archiveProject(projectContextMenu.project._id);
+        setProjects(projects.map(p => p._id === projectContextMenu.project._id ? { ...p, isArchived: true } : p));
+        setProjectContextMenu(null);
+      } catch (error) {
+        console.error('Error archiving project:', error);
+        alert('Failed to archive project');
+      }
+    }
+  };
+
+  const handleDeleteProject = async () => {
+    if (projectContextMenu) {
+      try {
+        await projectService.deleteProject(projectContextMenu.project._id);
+        setProjects(projects.filter(p => p._id !== projectContextMenu.project._id));
+        setProjectContextMenu(null);
+      } catch (error) {
+        console.error('Error deleting project:', error);
+        alert('Failed to delete project');
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="home">
@@ -271,7 +368,11 @@ function Home() {
                   </tr>
                 ) : (
                   paginatedTasks.map(task => (
-                    <tr key={task._id} onClick={() => navigate('/dashboard')}>
+                    <tr
+                      key={task._id}
+                      onClick={() => navigate('/dashboard')}
+                      onContextMenu={(e) => handleTaskContextMenu(e, task)}
+                    >
                       <td className="task-name">{task.text}</td>
                       <td className="project-name">
                         {projects.find(p => p._id === task.projectId)?.name || 'Inbox'}
@@ -394,7 +495,11 @@ function Home() {
                     const daysSinceChange = Math.floor((new Date() - new Date(lastModified)) / (1000 * 60 * 60 * 24));
 
                     return (
-                      <tr key={project._id} onClick={() => navigate(`/projects/${project._id}`)}>
+                      <tr
+                        key={project._id}
+                        onClick={() => navigate(`/projects/${project._id}`)}
+                        onContextMenu={(e) => handleProjectContextMenu(e, project)}
+                      >
                         <td className="project-name">{project.name}</td>
                         <td>
                           <span
@@ -441,6 +546,54 @@ function Home() {
           )}
         </div>
       </div>
+
+      {/* Task Context Menu */}
+      {taskContextMenu && (
+        <div
+          ref={taskContextMenuRef}
+          className="context-menu"
+          style={{
+            position: 'fixed',
+            top: `${taskContextMenu.y}px`,
+            left: `${taskContextMenu.x}px`,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="context-menu-section">
+            <button className="context-menu-item" onClick={handleMarkComplete}>
+              ✅ Mark as Complete
+            </button>
+            <div className="context-menu-divider"></div>
+            <button className="context-menu-item context-menu-danger" onClick={handleDeleteTask}>
+              🗑️ Delete
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Project Context Menu */}
+      {projectContextMenu && (
+        <div
+          ref={projectContextMenuRef}
+          className="context-menu"
+          style={{
+            position: 'fixed',
+            top: `${projectContextMenu.y}px`,
+            left: `${projectContextMenu.x}px`,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="context-menu-section">
+            <button className="context-menu-item" onClick={handleArchiveProject}>
+              📦 Archive
+            </button>
+            <div className="context-menu-divider"></div>
+            <button className="context-menu-item context-menu-danger" onClick={handleDeleteProject}>
+              🗑️ Delete
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
