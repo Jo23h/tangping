@@ -75,28 +75,23 @@ function NavBar() {
         >
           <Gear size={18} weight="regular" />
         </button>
+        <button
+          className="navbar-icon signout-icon"
+          title="Sign Out"
+          onClick={() => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            navigate('/signin');
+          }}
+        >
+          <span style={{ fontSize: '18px' }}>👋</span>
+        </button>
       </div>
 
       <Settings
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
       />
-
-      {/* <div className="navbar-user">
-        {user && user.profilePicture ? (
-          <img
-            src={user.profilePicture}
-            alt={user.name}
-            className="navbar-profile-pic"
-            title={user.name}
-          />
-        ) : (
-          user && <span className="navbar-username-initial">{user.name?.charAt(0) || 'U'}</span>
-        )}
-        <button className="navbar-signout" onClick={handleSignOut} title="Sign Out">
-          <SignOut weight="light" size={24} color="#666" />
-        </button>
-      </div> */}
     </div>
   )
 }

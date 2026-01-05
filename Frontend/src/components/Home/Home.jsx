@@ -9,6 +9,8 @@ function Home() {
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
   const [taskFilter, setTaskFilter] = useState('all');
+  const [priorityFilter, setPriorityFilter] = useState(null);
+  const [showPriorityDropdown, setShowPriorityDropdown] = useState(false);
   const [projectFilter, setProjectFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [taskPage, setTaskPage] = useState(1);
@@ -35,27 +37,36 @@ function Home() {
   };
 
   const getFilteredTasks = () => {
+    let filtered;
+
     if (taskFilter === 'all') {
-      return tasks.filter(task => !task.isDeleted && !task.isCompleted);
+      filtered = tasks.filter(task => !task.isDeleted && !task.isCompleted);
+    } else {
+      const now = new Date();
+      const threeDays = 3 * 24 * 60 * 60 * 1000;
+      const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+      filtered = tasks.filter(task => {
+        if (task.isDeleted || task.isCompleted || !task.dueDate) return false;
+
+        const dueDate = new Date(task.dueDate);
+        const timeUntilDue = dueDate - now;
+
+        if (taskFilter === 'due-soon') {
+          return timeUntilDue >= 0 && timeUntilDue <= threeDays;
+        } else if (taskFilter === 'upcoming') {
+          return timeUntilDue > threeDays && timeUntilDue <= sevenDays;
+        }
+        return false;
+      });
     }
 
-    const now = new Date();
-    const threeDays = 3 * 24 * 60 * 60 * 1000;
-    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    // Apply priority filter if set
+    if (priorityFilter) {
+      filtered = filtered.filter(task => task.priority === priorityFilter);
+    }
 
-    return tasks.filter(task => {
-      if (task.isDeleted || task.isCompleted || !task.dueDate) return false;
-
-      const dueDate = new Date(task.dueDate);
-      const timeUntilDue = dueDate - now;
-
-      if (taskFilter === 'due-soon') {
-        return timeUntilDue >= 0 && timeUntilDue <= threeDays;
-      } else if (taskFilter === 'upcoming') {
-        return timeUntilDue > threeDays && timeUntilDue <= sevenDays;
-      }
-      return false;
-    });
+    return filtered;
   };
 
   const getFilteredProjects = () => {
@@ -153,7 +164,7 @@ function Home() {
   // Reset to page 1 when filter changes
   useEffect(() => {
     setTaskPage(1);
-  }, [taskFilter]);
+  }, [taskFilter, priorityFilter]);
 
   useEffect(() => {
     setProjectPage(1);
@@ -197,6 +208,40 @@ function Home() {
               >
                 Upcoming
               </button>
+              <div className="priority-filter-container">
+                <button
+                  className={`filter-btn ${priorityFilter ? 'active' : ''}`}
+                  onClick={() => setShowPriorityDropdown(!showPriorityDropdown)}
+                >
+                  {priorityFilter ? `Priority: ${priorityFilter.charAt(0).toUpperCase() + priorityFilter.slice(1)}` : 'Priority'}
+                </button>
+                {priorityFilter && (
+                  <button
+                    className="filter-clear-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPriorityFilter(null);
+                      setShowPriorityDropdown(false);
+                    }}
+                    title="Clear priority filter"
+                  >
+                    ×
+                  </button>
+                )}
+                {showPriorityDropdown && (
+                  <div className="priority-dropdown">
+                    <button onClick={() => { setPriorityFilter('high'); setShowPriorityDropdown(false); }}>
+                      High
+                    </button>
+                    <button onClick={() => { setPriorityFilter('medium'); setShowPriorityDropdown(false); }}>
+                      Medium
+                    </button>
+                    <button onClick={() => { setPriorityFilter('low'); setShowPriorityDropdown(false); }}>
+                      Low
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

@@ -6,7 +6,6 @@ function TrashPage() {
     <div className="app-container">
       <NavBar />
       <Trash />
-      <div className="memo-section-placeholder"></div>
     </div>
   );
 }

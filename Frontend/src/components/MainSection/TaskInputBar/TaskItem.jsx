@@ -2,10 +2,13 @@ import { useState, useRef, useEffect } from 'react'
 import { PencilSimpleLine, Note } from '@phosphor-icons/react'
 import './TaskItem.css'
 
-function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTaskEdit, onCreateMemo }) {
+function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTaskEdit, onCreateMemo, onDateChange }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingDate, setIsEditingDate] = useState(false);
   const [editText, setEditText] = useState(task.text);
+  const [editDate, setEditDate] = useState(task.dueDate ? task.dueDate.split('T')[0] : '');
   const inputRef = useRef(null);
+  const dateInputRef = useRef(null);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -13,6 +16,13 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
       inputRef.current.select();
     }
   }, [isEditing]);
+
+  useEffect(() => {
+    if (isEditingDate && dateInputRef.current) {
+      dateInputRef.current.focus();
+      dateInputRef.current.showPicker?.();
+    }
+  }, [isEditingDate]);
 
   const handleTaskClick = () => {
     // Open memo
@@ -55,6 +65,35 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
 
   const handleBlur = () => {
     handleSave();
+  };
+
+  const handleDateClick = (event) => {
+    event.stopPropagation();
+    if (onDateChange) {
+      setIsEditingDate(true);
+    }
+  };
+
+  const handleDateSave = () => {
+    if (editDate && editDate !== (task.dueDate ? task.dueDate.split('T')[0] : '')) {
+      if (onDateChange) {
+        onDateChange(task._id, editDate);
+      }
+    }
+    setIsEditingDate(false);
+  };
+
+  const handleDateBlur = () => {
+    handleDateSave();
+  };
+
+  const handleDateKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleDateSave();
+    } else if (event.key === 'Escape') {
+      setEditDate(task.dueDate ? task.dueDate.split('T')[0] : '');
+      setIsEditingDate(false);
+    }
   };
 
   return (
@@ -102,13 +141,28 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
           <Note size={16} weight={task.googleDocUrl ? 'fill' : 'regular'} />
         </button>
       )}
-      {task.dueDate && formatDueDate(task.dueDate) && (
-        <span
-          className={`task-due-date ${formatDueDate(task.dueDate).isOverdue ? 'overdue' : ''}`}
-          style={{ color: formatDueDate(task.dueDate).color }}
-        >
-          {formatDueDate(task.dueDate).displayText}
-        </span>
+      {isEditingDate ? (
+        <input
+          ref={dateInputRef}
+          type="date"
+          value={editDate}
+          onChange={(event) => setEditDate(event.target.value)}
+          onBlur={handleDateBlur}
+          onKeyDown={handleDateKeyDown}
+          onClick={(event) => event.stopPropagation()}
+          className="task-date-input"
+        />
+      ) : (
+        task.dueDate && formatDueDate(task.dueDate) && (
+          <span
+            className={`task-due-date ${formatDueDate(task.dueDate).isOverdue ? 'overdue' : ''}`}
+            style={{ color: formatDueDate(task.dueDate).color, cursor: onDateChange ? 'pointer' : 'default' }}
+            onClick={handleDateClick}
+            title={onDateChange ? 'Click to edit due date' : ''}
+          >
+            {formatDueDate(task.dueDate).displayText}
+          </span>
+        )
       )}
       {onDelete && (
         <button

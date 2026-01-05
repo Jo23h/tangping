@@ -6,6 +6,7 @@ import * as projectService from '../../services/projectService';
 function Activity() {
   const [activities, setActivities] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [allProjects, setAllProjects] = useState([]); // Keep track of all projects including deleted
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
@@ -19,16 +20,20 @@ function Activity() {
   }, []);
 
   useEffect(() => {
-    // Reset and fetch when category changes
-    setActivities([]);
-    setSkip(0);
-    setHasMore(true);
-    fetchActivities(selectedCategory, 0);
-  }, [selectedCategory]);
+    // Only fetch activities if we have loaded projects
+    if (allProjects.length > 0 || selectedCategory === 'all' || selectedCategory === 'inbox') {
+      // Reset and fetch when category changes
+      setActivities([]);
+      setSkip(0);
+      setHasMore(true);
+      fetchActivities(selectedCategory, 0);
+    }
+  }, [selectedCategory, allProjects]);
 
   const fetchProjects = async () => {
     try {
       const projectsData = await projectService.getAllProjects();
+      setAllProjects(projectsData); // Store all projects for filtering
       setProjects(projectsData.filter(p => !p.isInbox && !p.isDeleted && !p.isArchived));
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -40,10 +45,22 @@ function Activity() {
       setLoading(true);
       const data = await activityService.getActivities(category, LIMIT, currentSkip);
 
+      // Filter out activities from deleted projects
+      const filteredActivities = data.activities.filter(activity => {
+        // If it's a project activity, check if the project is deleted
+        if (activity.projectId) {
+          const project = allProjects.find(p => p._id === activity.projectId);
+          // Exclude if project is deleted or archived
+          return project && !project.isDeleted && !project.isArchived;
+        }
+        // For inbox activities (no projectId), always include
+        return true;
+      });
+
       if (currentSkip === 0) {
-        setActivities(data.activities);
+        setActivities(filteredActivities);
       } else {
-        setActivities(prev => [...prev, ...data.activities]);
+        setActivities(prev => [...prev, ...filteredActivities]);
       }
 
       setHasMore(data.hasMore);

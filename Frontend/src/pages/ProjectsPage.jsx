@@ -6,7 +6,6 @@ function ProjectsPage() {
     <div className="app-container">
       <NavBar />
       <Projects />
-      <div className="memo-section-placeholder"></div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import TaskItem from './TaskItem';
 
-function TaskList({ tasks, onToggle, onDelete, formatDueDate, onItemClick, onTaskEdit, onCreateMemo }) {
+function TaskList({ tasks, onToggle, onDelete, formatDueDate, onItemClick, onTaskEdit, onDateChange, onCreateMemo }) {
   return (
     <div className='task-list'>
       {tasks.map((task) => (
@@ -12,6 +12,7 @@ function TaskList({ tasks, onToggle, onDelete, formatDueDate, onItemClick, onTas
           formatDueDate={formatDueDate}
           onItemClick={onItemClick}
           onTaskEdit={onTaskEdit}
+          onDateChange={onDateChange}
           onCreateMemo={onCreateMemo}
         />
       ))}

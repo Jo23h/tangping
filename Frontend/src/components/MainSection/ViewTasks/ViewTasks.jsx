@@ -191,6 +191,19 @@ function ViewTasks({ onTaskSelect, onTaskUpdate, onCreateMemo, projectId, filter
     }
   };
 
+  const handleDateChange = async (taskId, newDate) => {
+    try {
+      const updatedTask = await taskService.updateTask(taskId, { dueDate: newDate });
+      const updatedTasks = tasks.map(task =>
+        task._id === taskId ? updatedTask : task
+      );
+      setTasks(updatedTasks);
+      onTaskUpdate(updatedTask);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   if (loading) {
     return (
       <div className="view-task">
@@ -238,6 +251,7 @@ function ViewTasks({ onTaskSelect, onTaskUpdate, onCreateMemo, projectId, filter
           onDelete={handleDeleteTask}
           onItemClick={handleTaskClick}
           onTaskEdit={handleTaskEdit}
+          onDateChange={handleDateChange}
           onCreateMemo={onCreateMemo}
           isGuest={currentUser?.role === 'guest'}
         />
