@@ -27,6 +27,16 @@ const userSchema = new mongoose.Schema({
         sparse: true
     },
 
+    googleAccessToken: {
+        type: String,
+        default: null
+    },
+
+    googleRefreshToken: {
+        type: String,
+        default: null
+    },
+
     profilePicture: {
         type: String,
         default: null

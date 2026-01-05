@@ -16,7 +16,11 @@ router.get('/google', (req, res, next) => {
   console.log("Request Host:", req.get('host'));
   next();
 }, passport.authenticate('google', {
-  scope: ['profile', 'email'],
+  scope: [
+    'profile',
+    'email',
+    'https://www.googleapis.com/auth/drive.file'  // Access to create and manage files
+  ],
   session: false,
   state: false
 }))

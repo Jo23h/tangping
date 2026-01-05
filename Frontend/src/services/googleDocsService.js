@@ -1,7 +1,9 @@
-import * as taskService from './taskService';
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 /**
- * Creates or retrieves a Google Doc for a task
+ * Creates or retrieves a Google Doc for a task using backend API
  * @param {string} taskId - The task ID
  * @param {string} taskText - The task text to use as document title
  * @returns {Promise<string>} The Google Doc URL
@@ -15,30 +17,39 @@ export const createOrGetGoogleDoc = async (taskId, taskText) => {
       throw new Error('Please configure your Google Drive folder in Settings first.');
     }
 
-    // Generate document title from task text
-    const docTitle = `Task: ${taskText.substring(0, 50)}${taskText.length > 50 ? '...' : ''}`;
+    // Get the auth token
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('Please sign in to create Google Docs.');
+    }
 
-    // Prompt user to create the document and paste the URL
-    const docUrl = prompt(
-      `Click OK, then:\n\n1. Go to your Google Drive folder\n2. Create a new Google Doc\n3. Name it: "${docTitle}"\n4. Copy the document URL from your browser\n5. Paste it below\n\nOr click Cancel to skip.`,
-      'https://docs.google.com/document/d/YOUR_DOC_ID/edit'
+    // Call backend API to create the Google Doc
+    const response = await axios.post(
+      `${API_URL}/google-docs/create`,
+      {
+        taskId,
+        folderId
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
     );
 
-    if (!docUrl || docUrl === 'https://docs.google.com/document/d/YOUR_DOC_ID/edit') {
-      throw new Error('No Google Doc URL provided');
-    }
-
-    if (!docUrl.includes('docs.google.com')) {
-      throw new Error('Invalid Google Doc URL');
-    }
-
-    // Update the task with the Google Doc URL
-    await taskService.updateTask(taskId, { googleDocUrl: docUrl });
-
-    return docUrl;
+    return response.data.googleDocUrl;
   } catch (error) {
     console.error('Error creating Google Doc:', error);
-    throw error;
+
+    if (error.response?.status === 401) {
+      throw new Error('Google authentication required. Please sign in with Google to create docs automatically.');
+    }
+
+    if (error.response?.data?.error) {
+      throw new Error(error.response.data.error);
+    }
+
+    throw new Error('Failed to create Google Doc. Please try again.');
   }
 };
 

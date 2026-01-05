@@ -15,7 +15,9 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: callbackURL,
-    proxy: true  // CRITICAL: Trust Railway's proxy
+    proxy: true,  // CRITICAL: Trust Railway's proxy
+    accessType: 'offline',  // Request refresh token
+    prompt: 'consent'  // Force consent screen to get refresh token
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -23,7 +25,12 @@ passport.use(new GoogleStrategy({
       let user = await User.findOne({ googleId: profile.id });
 
       if (user) {
-        // User exists, return the user
+        // User exists, update tokens
+        user.googleAccessToken = accessToken;
+        if (refreshToken) {
+          user.googleRefreshToken = refreshToken;
+        }
+        await user.save();
         return done(null, user);
       }
 
@@ -33,6 +40,8 @@ passport.use(new GoogleStrategy({
         name: profile.displayName,
         email: profile.emails[0].value,
         profilePicture: profile.photos[0].value,
+        googleAccessToken: accessToken,
+        googleRefreshToken: refreshToken,
         role: 'user'
       });
 
