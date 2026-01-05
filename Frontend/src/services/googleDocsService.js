@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+import { API_URL } from '../config.js';
 
 /**
  * Creates or retrieves a Google Doc for a task using backend API
@@ -24,32 +22,33 @@ export const createOrGetGoogleDoc = async (taskId, taskText) => {
     }
 
     // Call backend API to create the Google Doc
-    const response = await axios.post(
-      `${API_URL}/google-docs/create`,
-      {
+    const response = await fetch(`${API_URL}/google-docs/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
         taskId,
         folderId
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+      })
+    });
 
-    return response.data.googleDocUrl;
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      if (response.status === 401) {
+        throw new Error('Google authentication required. Please sign in with Google to create docs automatically.');
+      }
+
+      throw new Error(errorData.error || 'Failed to create Google Doc');
+    }
+
+    const data = await response.json();
+    return data.googleDocUrl;
   } catch (error) {
     console.error('Error creating Google Doc:', error);
-
-    if (error.response?.status === 401) {
-      throw new Error('Google authentication required. Please sign in with Google to create docs automatically.');
-    }
-
-    if (error.response?.data?.error) {
-      throw new Error(error.response.data.error);
-    }
-
-    throw new Error('Failed to create Google Doc. Please try again.');
+    throw error;
   }
 };
 
