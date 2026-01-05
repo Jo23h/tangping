@@ -4,7 +4,7 @@ import './ProjectView.css'
 import ViewTasks from '../MainSection/ViewTasks/ViewTasks'
 import * as projectService from '../../services/projectService'
 
-function ProjectView({ onTaskSelect, onTaskUpdate }) {
+function ProjectView({ onTaskSelect, onTaskUpdate, onCreateMemo }) {
   const { id } = useParams()
   const [project, setProject] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -110,6 +110,7 @@ function ProjectView({ onTaskSelect, onTaskUpdate }) {
         projectId={id}
         onTaskSelect={onTaskSelect}
         onTaskUpdate={onTaskUpdate}
+        onCreateMemo={onCreateMemo}
       />
     </div>
   )
