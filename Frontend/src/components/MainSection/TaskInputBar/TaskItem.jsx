@@ -178,7 +178,7 @@ function TaskItem({ task, onToggle, onDelete, formatDueDate, onItemClick, onTask
           className="task-memo-btn"
           title={task.googleDocUrl ? 'Open memo' : 'Create memo'}
         >
-          <span style={{ fontSize: '16px' }}>{task.googleDocUrl ? '📝' : '📄'}</span>
+          <span style={{ fontSize: '18px' }}>{task.googleDocUrl ? '📝' : '📄'}</span>
         </button>
       )}
       {isEditingDate ? (

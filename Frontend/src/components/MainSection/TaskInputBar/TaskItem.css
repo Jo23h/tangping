@@ -128,18 +128,25 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 4px;
   transition: all 0.2s;
   flex-shrink: 0;
-  margin-left: 4px;
+  margin-left: 8px;
+  opacity: 1;
 }
 
 .task-memo-btn:hover {
   background-color: #e8e8e8;
+  transform: scale(1.1);
+}
+
+.task-memo-btn span {
+  display: block;
+  line-height: 1;
 }
 
 .task-memo-btn svg {
