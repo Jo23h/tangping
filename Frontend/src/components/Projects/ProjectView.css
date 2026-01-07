@@ -10,16 +10,26 @@
   padding: 24px 24px 0 24px;
 }
 
+.project-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
 .project-view-header h1 {
   font-size: 28px;
   font-weight: 600;
   color: #1a1a1a;
-  margin: 0 0 16px 0;
+  margin: 0;
 }
 
 .project-name {
   cursor: pointer;
   transition: opacity 0.2s;
+  flex: 1;
+  margin: 0;
 }
 
 .project-name:hover {
@@ -30,11 +40,77 @@
   font-size: 28px;
   font-weight: 600;
   color: #1a1a1a;
-  margin: 0 0 16px 0;
+  margin: 0;
   padding: 4px 8px;
   border: 2px solid #c97a5e;
   border-radius: 4px;
   outline: none;
   width: 100%;
   font-family: inherit;
+  flex: 1;
+}
+
+.project-priority-selector {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.priority-badge-btn {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.priority-badge-btn:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.priority-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 140px;
+  overflow: hidden;
+}
+
+.priority-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.priority-dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.priority-dropdown-item .priority-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }

@@ -10,7 +10,9 @@ function ProjectView({ onTaskSelect, onTaskUpdate, onCreateMemo }) {
   const [isLoading, setIsLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [editName, setEditName] = useState('')
+  const [showPriorityDropdown, setShowPriorityDropdown] = useState(false)
   const inputRef = useRef(null)
+  const priorityDropdownRef = useRef(null)
 
   useEffect(() => {
     fetchProject()
@@ -22,6 +24,19 @@ function ProjectView({ onTaskSelect, onTaskUpdate, onCreateMemo }) {
       inputRef.current.select()
     }
   }, [isEditing])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (priorityDropdownRef.current && !priorityDropdownRef.current.contains(event.target)) {
+        setShowPriorityDropdown(false)
+      }
+    }
+
+    if (showPriorityDropdown) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showPriorityDropdown])
 
   const fetchProject = async () => {
     try {
@@ -70,6 +85,46 @@ function ProjectView({ onTaskSelect, onTaskUpdate, onCreateMemo }) {
     handleSave()
   }
 
+  const handlePriorityChange = async (newPriority) => {
+    try {
+      const updatedProject = await projectService.updateProject(id, {
+        name: project.name,
+        priority: newPriority
+      })
+      setProject(updatedProject)
+      setShowPriorityDropdown(false)
+    } catch (error) {
+      console.error('Error updating project priority:', error)
+      alert('Failed to update project priority')
+    }
+  }
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'high':
+        return '#ff6b6b'
+      case 'medium':
+        return '#4dabf7'
+      case 'low':
+        return '#9e9e9e'
+      default:
+        return '#9e9e9e'
+    }
+  }
+
+  const getPriorityText = (priority) => {
+    switch (priority) {
+      case 'high':
+        return 'High'
+      case 'medium':
+        return 'Medium'
+      case 'low':
+        return 'Low'
+      default:
+        return 'Low'
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="project-view-container">
@@ -89,22 +144,56 @@ function ProjectView({ onTaskSelect, onTaskUpdate, onCreateMemo }) {
   return (
     <div className="project-view-container">
       <div className="project-view-header">
-        {isEditing ? (
-          <input
-            ref={inputRef}
-            type="text"
-            value={editName}
-            onChange={(e) => setEditName(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
-            className="project-name-input"
-            maxLength={120}
-          />
-        ) : (
-          <h1 onClick={handleNameClick} className="project-name">
-            {project.name}
-          </h1>
-        )}
+        <div className="project-header-content">
+          {isEditing ? (
+            <input
+              ref={inputRef}
+              type="text"
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onBlur={handleBlur}
+              className="project-name-input"
+              maxLength={120}
+            />
+          ) : (
+            <h1 onClick={handleNameClick} className="project-name">
+              {project.name}
+            </h1>
+          )}
+          <div className="project-priority-selector" ref={priorityDropdownRef}>
+            <button
+              className="priority-badge-btn"
+              style={{ backgroundColor: getPriorityColor(project.priority || 'low') }}
+              onClick={() => setShowPriorityDropdown(!showPriorityDropdown)}
+              title="Change priority"
+            >
+              {getPriorityText(project.priority || 'low')}
+            </button>
+            {showPriorityDropdown && (
+              <div className="priority-dropdown">
+                <button
+                  className="priority-dropdown-item"
+                  onClick={() => handlePriorityChange('high')}
+                >
+                  <span className="priority-badge" style={{ backgroundColor: '#ff6b6b' }}>High</span>
+                </button>
+                <button
+                  className="priority-dropdown-item"
+                  onClick={() => handlePriorityChange('medium')}
+                >
+                  <span className="priority-badge" style={{ backgroundColor: '#4dabf7' }}>Medium</span>
+                </button>
+                <button
+                  className="priority-dropdown-item"
+                  onClick={() => handlePriorityChange('low')}
+                >
+                  <span className="priority-badge" style={{ backgroundColor: '#9e9e9e' }}>Low</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
       <ViewTasks
         projectId={id}
